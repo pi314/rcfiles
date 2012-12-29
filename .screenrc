@@ -1,0 +1,18 @@
+#Caption
+#學校help配色
+#caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%-09=  %Y %M/%d(%D) %{RW} %C %A"
+caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%= %Y/%M/%d %c"
+#darkgerm配色
+#caption always "%{=u .G} %-w%<%{=ub .y}%n %t%{=u .G}%+w "
+#網路上查到的配色
+#caption always "%{bw} %M/%d %D %C%A %{wb} %-w%{y}%n %t%{w}%+w%{k}"
+#Hardstatus
+#hardstatus alwayslastline "%{=b BW} {%l}%018=%{=B WK} %H %-028=%{YK} %Y %M/%d(%D) %{RW} %C %A"
+#快速切換 window
+bindkey \033[D prev
+bindkey \033[C next
+#編碼切換
+bind b encoding big5 utf8
+bind u encoding utf8 utf8
+
+defencoding utf8
