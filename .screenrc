@@ -15,4 +15,6 @@ bindkey \033[C next
 bind b encoding big5 utf8
 bind u encoding utf8 utf8
 
+shelltitle "-"
+
 defencoding utf8
