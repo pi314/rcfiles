@@ -1,3 +1,3 @@
-git add -A              //如果有新檔案出現要改成 -A
+git add -A              //搜尋所有檔案並加入 commit 清單
 git commit -m "註解"
 git push
