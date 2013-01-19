@@ -20,7 +20,7 @@ nmap <C-k> :tabn<CR>
 imap <C-k> <ESC><C-k>a
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
-imap <C-p> <ESC>"0pi
+imap <C-p> <ESC>a
 
 "顯示行號
 set nu
