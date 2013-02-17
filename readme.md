@@ -1,3 +1,11 @@
-    git add -A              //搜尋所有檔案並加入 commit 清單
+搜尋所有檔案並加入 commit 清單
+
+    git add -A
+
+上註解
+
     git commit -m "註解"
-    git push https://github.com/pi314/rcfiles.git
+
+push
+
+    git push
