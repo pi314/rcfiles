@@ -21,3 +21,6 @@ endif
 
 #echo remember to run screen -r
 setenv LANG zh_TW.UTF-8
+
+# Let "ls" has pretty color
+setenv CLICOLOR
