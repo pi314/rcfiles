@@ -17,6 +17,9 @@ set bg=dark
 set expandtab
 set tabstop=4
 
+set ic           " 設定搜尋忽略大小寫
+set ru           " 第幾行第幾個字
+
 "設定可以使用backspace
 set bs=2
 
