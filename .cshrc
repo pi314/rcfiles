@@ -1,4 +1,3 @@
-alias scheme 'echo This command is a alias, the origin is \"petite\" && petite \!*'
 alias ll 'ls -al'
 alias lsl 'ls -l'
 alias bs2 'screen -X encoding big5; telnet -8 bs2.to; screen -X encoding utf8'
