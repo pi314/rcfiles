@@ -8,6 +8,7 @@ caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%= %Y/%M/%d %c"
 #caption always "%{bw} %M/%d %D %C%A %{wb} %-w%{y}%n %t%{w}%+w%{k}"
 #Hardstatus
 #hardstatus alwayslastline "%{=b BW} {%l}%018=%{=B WK} %H %-028=%{YK} %Y %M/%d(%D) %{RW} %C %A"
+hardstatus alwaysignore
 #快速切換 window
 bindkey \033[D prev
 bindkey \033[C next
