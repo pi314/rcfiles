@@ -1,7 +1,6 @@
 alias ll 'ls -al'
 alias lsl 'ls -l'
 alias bs2 'screen -X encoding big5; telnet -8 bs2.to; screen -X encoding utf8'
-alias cychih 'ssh cychih@bsd3.cs.nctu.edu.tw'
 alias grep 'grep --color=auto'
 
 if ($?prompt) then
@@ -23,3 +22,6 @@ setenv LANG zh_TW.UTF-8
 
 # Let "ls" has pretty color
 setenv CLICOLOR
+
+# Set vim as default editor
+setenv EDITOR vim
