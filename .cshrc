@@ -7,7 +7,7 @@ if ($?prompt) then
   if(! $?WINDOW ) then
     set prompt="%{^[[1;36m%}%T%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}> "
   else
-    set prompt="%{^[[1;36m%}%t%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}%{^[[1;35m%}[W$WINDOW]%{^[[m%}> "
+    set prompt="%{^[[1;36m%}%T%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}%{^[[1;35m%}[W$WINDOW]%{^[[m%}> "
   endif
   if ($?tcsh) then
     set mail = (/var/mail/$USER)
