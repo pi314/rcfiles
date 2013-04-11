@@ -2,6 +2,7 @@ alias ll 'ls -al'
 alias lsl 'ls -l'
 alias bs2 'screen -X encoding big5; telnet -8 bs2.to; screen -X encoding utf8'
 alias grep 'grep --color=auto'
+alias v 'vim -p'
 
 if ($?prompt) then
   if(! $?WINDOW ) then
