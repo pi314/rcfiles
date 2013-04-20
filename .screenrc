@@ -1,3 +1,7 @@
+defutf8 on
+cjkwidth off
+defencoding utf8
+
 #Caption
 #學校help配色
 #caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%-09=  %Y %M/%d(%D) %{RW} %C %A"

@@ -49,6 +49,7 @@ set shiftwidth=4
 
 "狀態列
 set laststatus=2
+set wildmenu
 
 "游標留底
 set scrolloff=5
