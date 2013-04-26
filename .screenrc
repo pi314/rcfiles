@@ -1,5 +1,5 @@
 defutf8 on
-cjkwidth off
+#cjkwidth off
 defencoding utf8
 
 #Caption
