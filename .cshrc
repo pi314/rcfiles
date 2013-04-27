@@ -22,7 +22,24 @@ endif
 setenv LANG zh_TW.UTF-8
 
 # Let "ls" has pretty color
-setenv CLICOLOR
+setenv CLICOLOR yes
+setenv LSCOLORS GxFxFxDxBxegedabagGxGx
+#1. directory
+#2. symbolic link
+#3. socket
+#4. pipe
+#5. executable
+#6. block special
+#7. character special
+#8. executable with setuid bit set
+#9. executable with setgid bit set
+#10.directory writable to others, with sticky bit
+#11.directory writable to others, without sticky bit
 
 # Set vim as default editor
 setenv EDITOR vim
+
+set autoexpand
+set autolist
+set color
+

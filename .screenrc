@@ -16,6 +16,8 @@ hardstatus alwaysignore
 #快速切換 window
 bindkey \033[D prev
 bindkey \033[C next
+bindkey \033j prev
+bindkey \033k next
 #編碼切換
 bind b encoding big5 utf8
 bind u encoding utf8 utf8
