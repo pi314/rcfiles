@@ -14,10 +14,10 @@ caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%= %Y/%M/%d %c"
 #hardstatus alwayslastline "%{=b BW} {%l}%018=%{=B WK} %H %-028=%{YK} %Y %M/%d(%D) %{RW} %C %A"
 hardstatus alwaysignore
 #快速切換 window
-bindkey \033[D prev
+bindkey \033[D prev     # for putty/pietty
 bindkey \033[C next
-bindkey \033j prev
-bindkey \033k next
+bindkey \033[1;5D prev  # for cygwin
+bindkey \033[1;5C next
 #編碼切換
 bind b encoding big5 utf8
 bind u encoding utf8 utf8
