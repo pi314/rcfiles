@@ -20,7 +20,7 @@ endif
 
 #echo remember to run screen -r
 #setenv LANG zh_TW.UTF-8
-setenv LANG en_TW.UTF-8
+setenv LANG zh_TW.UTF-8
 setenv LC_ALL zh_TW.UTF-8
 
 # Let "ls" has pretty color
