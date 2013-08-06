@@ -27,8 +27,8 @@ set bs=2
 
 "tabline settin in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=white    "not active tab page label
-hi TabLineSel  ctermfg=white ctermbg=black    "active tab page label
-hi TabLineFill ctermfg=white ctermbg=blue     "fill the other place
+hi TabLineSel  ctermfg=grey  ctermbg=black    "active tab page label
+hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 nmap <C-j> :tabp<CR>
 imap <C-j> <ESC><C-j>a
