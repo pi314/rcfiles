@@ -36,8 +36,10 @@ nmap <C-k> :tabn<CR>
 imap <C-k> <ESC><C-k>a
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
-imap <C-p> <ESC>a
-imap <C-n> <ESC>a
+nmap <C-p> :tabm -1<CR>
+imap <C-p> <ESC><C-p>a<CR>
+nmap <C-n> :tabm +1<CR>
+imap <C-n> <ESC><C-n>a<CR>
 
 "顯示行號
 set nu
