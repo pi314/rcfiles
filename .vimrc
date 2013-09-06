@@ -13,7 +13,7 @@ syntax on
 set hlsearch
 set bg=dark
 
-"tab 相關
+"tab 字元相關
 set expandtab
 set tabstop=4
 set listchars=tab:>-
@@ -37,6 +37,7 @@ imap <C-k> <ESC><C-k>a
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
 imap <C-p> <ESC>a
+imap <C-n> <ESC>a
 
 "顯示行號
 set nu
