@@ -1,3 +1,4 @@
+alias ls 'ls --color'
 alias ll 'ls -aCl --color'
 alias lsl 'ls -l --color'
 alias grep 'grep --color=auto'
