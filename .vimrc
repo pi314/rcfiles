@@ -40,6 +40,7 @@ nmap <C-p> :tabm -1<CR>
 imap <C-p> <ESC><C-p>a<CR>
 nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a<CR>
+imap <ESC>[Z <ESC><<I
 
 "顯示行號
 set nu
