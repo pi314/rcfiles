@@ -1,4 +1,4 @@
-if ( `uname -a|awk '{print $1}'` == "FreeBSD") then
+if ( `uname` == "FreeBSD") then
     alias ls 'ls-F -G'
     alias ll 'ls -aClG'
     alias lsl 'ls -ClG'
