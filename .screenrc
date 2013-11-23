@@ -1,27 +1,29 @@
+# encodings
 defutf8 on
-#cjkwidth off
 defencoding utf8
 
-#Caption
-#學校help配色
+# Caption
+# color setting provided by NCTUCS
 #caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%-09=  %Y %M/%d(%D) %{RW} %C %A"
 caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%=%H%=%Y/%m/%d %c:%s"
-#darkgerm配色
-#caption always "%{=u .G} %-w%<%{=ub .y}%n %t%{=u .G}%+w "
-#網路上查到的配色
+# from Internet
 #caption always "%{bw} %M/%d %D %C%A %{wb} %-w%{y}%n %t%{w}%+w%{k}"
-#Hardstatus
+
+# Hardstatus
 #hardstatus alwayslastline "%{=b BW} {%l}%018=%{=B WK} %H %-028=%{YK} %Y %M/%d(%D) %{RW} %C %A"
 hardstatus alwaysignore
-#快速切換 window
+
+# switching window
 #bindkey \033[D prev     # for putty/pietty
 #bindkey \033[C next
 bindkey \033[1;5D prev  # for cygwin
 bindkey \033[1;5C next
-#編碼切換
+
+# switching encoding
 bind b encoding big5 utf8
 bind u encoding utf8 utf8
 
+# default title of new window
 shelltitle "-"
 
 defencoding utf8

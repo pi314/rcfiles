@@ -1,35 +1,40 @@
-"編碼相關設定
+" encoding settings
 set encoding=utf-8
 set langmenu=zh_TW.UTF-8
 language message zh_TW.UTF-8
 set fileformat=unix
 set ambiwidth=double
 
-"在左下角顯示模式
+" show mode on bottom-left
 set showmode
 
-"顏色相關設定
+" color settings
 syntax on
 set hlsearch
 set bg=dark
 
-"tab 字元相關
+" tab charactor related settings
 set expandtab
 set tabstop=4
 set listchars=tab:>-
 set list
 
-set ic           " 設定搜尋忽略大小寫
-set ru           " 第幾行第幾個字
+" ignore case on searching
+set ic
 
-"設定可以使用backspace
+" show the coordinate of cursor
+set ru
+
+" enable backspace
 set bs=2
 
-"tabline settin in .vim/plugin/tabline.vim
+" tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=white    "not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    "active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
+
+" hot-keys
 nmap <C-j> :tabp<CR>
 imap <C-j> <ESC><C-j>a
 nmap <C-k> :tabn<CR>
@@ -42,19 +47,17 @@ nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a<CR>
 imap <ESC>[Z <ESC><<I
 
-"顯示行號
+" show line numbers
 set nu
 
-"自動縮排
+" indent related settings
 "set cindent
 set ai
-"set ai == set autoindent
 set shiftwidth=4
 
-"狀態列
+" status line
 set laststatus=2
 set wildmenu
 
-"游標留底
 set scrolloff=5
 
