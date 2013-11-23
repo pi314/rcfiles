@@ -1,10 +1,19 @@
-alias ls 'ls-F --color=auto'
-alias ll 'ls -aCl --color=auto'
-alias lsl 'ls -Cl --color=auto'
+if ( `uname -a|awk '{print $1}'` == "FreeBSD") then
+    alias ls 'ls-F -G'
+    alias ll 'ls -aClG'
+    alias lsl 'ls -ClG'
+else
+    alias ls 'ls-F --color=auto'
+    alias ll 'ls -aCl --color=auto'
+    alias lsl 'ls -Cl --color=auto'
+endif
+
 alias grep 'grep --color=auto'
 alias v 'vim -p'
 
-source .host_aliases.sh
+if (-f .host_aliases.sh) then
+    source .host_aliases.sh
+endif
 
 if ($?prompt) then
   if(! $?WINDOW ) then
