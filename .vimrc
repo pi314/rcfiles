@@ -1,40 +1,40 @@
-" encoding settings
+" Encoding settings
 set encoding=utf-8
 set langmenu=zh_TW.UTF-8
 language message zh_TW.UTF-8
 set fileformat=unix
 set ambiwidth=double
 
-" show mode on bottom-left
+" Show mode on bottom-left
 set showmode
 
-" color settings
+" Color settings
 syntax on
 set hlsearch
 set bg=dark
 
-" tab charactor related settings
+" Tab charactor related settings
 set expandtab
 set tabstop=4
 set listchars=tab:>-
 set list
 
-" ignore case on searching
+" Ignore case on searching
 set ic
 
-" show the coordinate of cursor
+" Show the coordinate of cursor
 set ru
 
-" enable backspace
+" Enable backspace
 set bs=2
 
-" tabline setting in .vim/plugin/tabline.vim
+" Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=white    "not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    "active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
-" hot-keys
+" Hot-keys
 nmap <C-j> :tabp<CR>
 imap <C-j> <ESC><C-j>a
 nmap <C-k> :tabn<CR>
@@ -47,17 +47,30 @@ nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a<CR>
 imap <ESC>[Z <ESC><<I
 
-" show line numbers
+" Show line numbers
 set nu
 
-" indent related settings
-"set cindent
+" Indent related settings
+
+" Set cindent
 set ai
 set shiftwidth=4
 
-" status line
+" Status line
 set laststatus=2
 set wildmenu
 
 set scrolloff=5
 
+
+" My functions!
+
+" Add a line under a rst title
+function! Title(type)
+    if len(a:type) == 1
+        execute "normal yypVr" . a:type
+    else
+        echom "Title type must be only one charactor"
+    endif
+endfunction
+command! -nargs=1 Title call Title(<f-args>)
