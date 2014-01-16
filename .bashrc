@@ -15,3 +15,6 @@ PS1="\[\e[1;36m\]\A"\
 "\[\e[1;34m\]\h"\
 "\[\e[1;32m\][\w]"\
 "\[\e[m\]$ "
+
+bind '"\e[A"':history-search-backward # Use up and down arrow to search
+bind '"\e[B"':history-search-forward  # the history. Invaluable!
