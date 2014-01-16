@@ -59,8 +59,6 @@ if ($?prompt) then
   endif
 endif
 
-#echo remember to run screen -r
-#setenv LANG zh_TW.UTF-8
 setenv LANG zh_TW.UTF-8
 setenv LC_ALL zh_TW.UTF-8
 
@@ -71,3 +69,6 @@ set autoexpand
 set autolist
 #set color
 
+# auto complete cd and mkdir with directories
+complete cd     'p/1/d/'
+complete mkdir  'p/1/d/'
