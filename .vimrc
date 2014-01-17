@@ -42,9 +42,9 @@ imap <C-k> <ESC><C-k>a
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
 nmap <C-p> :tabm -1<CR>
-imap <C-p> <ESC><C-p>a<CR>
+imap <C-p> <ESC><C-p>a
 nmap <C-n> :tabm +1<CR>
-imap <C-n> <ESC><C-n>a<CR>
+imap <C-n> <ESC><C-n>a
 imap <ESC>[Z <ESC><<I
 
 " Show line numbers
