@@ -46,6 +46,10 @@ imap <C-p> <ESC><C-p>a
 nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a
 imap <ESC>[Z <ESC><<I
+nmap <ESC>OA :call Arrow_move("up")<CR>
+nmap <ESC>OB :call Arrow_move("down")<CR>
+nmap <ESC>OC :call Arrow_move("right")<CR>
+nmap <ESC>OD :call Arrow_move("left")<CR>
 
 " Show line numbers
 set nu
@@ -74,3 +78,43 @@ function! Title(type)
     endif
 endfunction
 command! -nargs=1 Title call Title(<f-args>)
+
+" Resize split window functions
+let g:flag_resizing_window = "false"
+function! Set_resize_window_flag(value)
+    if a:value == "start" || a:value == 'true'
+        let g:flag_resizing_window = "true"
+    elseif a:value == "end" || a:value == 'false'
+        let g:flag_resizing_window = "false"
+    endif
+
+    if g:flag_resizing_window == "true"
+        echom "Start Resizing window, use arrow key to resize window."
+    elseif g:flag_resizing_window == 'false'
+        echom "Resizing window ended."
+    endif
+endfunction
+command! -nargs=1 Resize call Set_resize_window_flag(<f-args>)
+
+function! Arrow_move(dir)
+    if g:flag_resizing_window == "true"
+        let acc_sign = ''
+        if a:dir == 'up' || a:dir == 'left'
+            let acc_sign = '-'
+        elseif a:dir == 'down' || a:dir == 'right'
+            let acc_sign = '+'
+        endif
+
+        let acc_cmd  = ''
+        if a:dir == 'up' || a:dir == 'down'
+            let acc_cmd = 'res'
+        elseif a:dir == 'left' || a:dir == 'right'
+            let acc_cmd = 'vertical resize'
+        endif
+        execute ':silent ' . acc_cmd . ' ' . acc_sign . '1'
+        echom "Use arrow key to resize window and :Resize end to finish."
+    elseif g:flag_resizing_window == "false"
+        normal k
+        echom ""
+    endif
+endfunction
