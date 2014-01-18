@@ -82,9 +82,9 @@ command! -nargs=1 Title call Title(<f-args>)
 " Resize split window functions
 let g:flag_resizing_window = "false"
 function! Set_resize_window_flag(value)
-    if a:value == "start" || a:value == 'true'
+    if a:value == "start" || a:value == 'true' || a:value == 'on'
         let g:flag_resizing_window = "true"
-    elseif a:value == "end" || a:value == 'false'
+    elseif a:value == "end" || a:value == 'false' || a:value == 'off'
         let g:flag_resizing_window = "false"
     endif
 
@@ -114,7 +114,15 @@ function! Arrow_move(dir)
         execute ':silent ' . acc_cmd . ' ' . acc_sign . '1'
         echom "Use arrow key to resize window and :Resize end to finish."
     elseif g:flag_resizing_window == "false"
-        normal k
+        if a:dir == 'up'
+            normal k
+        elseif a:dir == 'left'
+            normal h
+        elseif a:dir == 'right'
+            normal l
+        elseif a:dir == 'down'
+            normal j
+        endif
         echom ""
     endif
 endfunction
