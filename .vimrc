@@ -72,7 +72,7 @@ set scrolloff=5
 " Add a line under a rst title
 function! Title(type)
     if len(a:type) == 1
-        execute "normal yypVr" . a:type
+        execute "normal yyp$r" . a:type
     else
         echom "Title type must be only one charactor"
     endif
