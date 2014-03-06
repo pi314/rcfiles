@@ -1,8 +1,9 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-alias ll='ls -al'
-alias lsl='ls -l'
+alias ls='ls --color=auto'
+alias ll='ls -al --color=auto'
+alias lsl='ls -l --color=auto'
 
 # prompt setting
 # color codes needs to be wrapped by \[ and \]
