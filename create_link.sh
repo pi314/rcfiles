@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -- `getopt :f $@`
+set -- `getopt f,: $@`
 
 flags="s"
 force_replace=0

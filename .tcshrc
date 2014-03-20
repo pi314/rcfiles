@@ -39,6 +39,7 @@ endif
 
 alias grep 'grep --color=auto'
 alias v 'vim -p'
+alias open 'cygstart'
 
 if (-f .host_aliases.sh) then
     source .host_aliases.sh
