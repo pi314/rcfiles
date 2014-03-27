@@ -40,6 +40,7 @@ endif
 alias grep 'grep --color=auto'
 alias v 'vim -p'
 alias open 'cygstart'
+alias ping "ping \!:1 | iconv -s -f CP950 -t UTF-8"
 
 if (-f .host_aliases.sh) then
     source .host_aliases.sh
