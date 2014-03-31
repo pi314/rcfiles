@@ -1,4 +1,4 @@
-if ( `uname` == "FreeBSD") then
+if (`uname` == "FreeBSD") then
     alias ls 'ls-F -G'
     alias ll 'ls -aClG'
     alias lsl 'ls -ClG'
@@ -39,8 +39,12 @@ endif
 
 alias grep 'grep --color=auto'
 alias v 'vim -p'
-alias open 'cygstart'
-alias ping "ping \!:1 | iconv -s -f CP950 -t UTF-8"
+
+# CYGWIN-only aliases
+if (`uname | cut -b 1-6` == "CYGWIN") then
+    alias open 'cygstart'
+    alias ping "ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
+endif
 
 if (-f .host_aliases.sh) then
     source .host_aliases.sh
