@@ -74,3 +74,5 @@ set autolist
 # auto complete cd and mkdir with directories
 complete cd     'p/1/d/'
 complete mkdir  'p/1/d/'
+complete rm     'p/1/f/'
+complete rm     'p/2/d/'
