@@ -54,3 +54,6 @@ PS1="\[\e[1;36m\]\A"\
 
 bind '"\e[A"':history-search-backward # Use up and down arrow to search
 bind '"\e[B"':history-search-forward  # the history. Invaluable!
+
+bind '"\ej"':shell-backward-word
+bind '"\ek"':shell-forward-word
