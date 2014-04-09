@@ -36,3 +36,7 @@ There are a few hot-keys I used to manage tabs.
 ===========
 I spent a lot of time on adjusting the color of screen's caption.
 Thereis a strange thing that, same color setting, results different between Cygwin's screen and BSD's screen.
+
+.bashrc
+=======
+Similar to .tcshrc
