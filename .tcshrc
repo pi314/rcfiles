@@ -64,6 +64,10 @@ if ($?prompt) then
     bindkey -k down history-search-forward
     bindkey "\ej" backward-word
     bindkey "\ek" forward-word
+
+    # for pietty "home" "end"
+    bindkey "\e[1~" beginning-of-line
+    bindkey "\e[4~" end-of-line
   endif
 endif
 
