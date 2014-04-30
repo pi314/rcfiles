@@ -45,7 +45,6 @@ nmap <C-p> :tabm -1<CR>
 imap <C-p> <ESC><C-p>a
 nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a
-imap <ESC>[Z <ESC><<I
 nmap <ESC>OA :call Arrow_move("up")<CR>
 nmap <ESC>OB :call Arrow_move("down")<CR>
 nmap <ESC>OC :call Arrow_move("right")<CR>
