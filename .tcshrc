@@ -44,6 +44,7 @@ alias v 'vim -p'
 if (`uname | cut -b 1-6` == "CYGWIN") then
     alias open 'cygstart'
     alias ping "ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
+    alias startx startxwin
 endif
 
 if (-f .host_aliases.sh) then
@@ -73,9 +74,8 @@ endif
 
 setenv LANG zh_TW.UTF-8
 setenv LC_ALL zh_TW.UTF-8
-
-# Set vim as default editor
 setenv EDITOR vim
+setenv DISPLAY localhost:0
 
 set autoexpand
 set autolist
