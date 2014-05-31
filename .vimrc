@@ -20,6 +20,7 @@ set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
 autocmd FileType html setlocal shiftwidth=2 tabstop=2
+autocmd FileType make setlocal noexpandtab
 
 " Ignore case on searching
 set ic
