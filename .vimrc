@@ -14,10 +14,12 @@ set hlsearch
 set bg=dark
 
 " Tab charactor related settings
-set expandtab
-set tabstop=4
+set expandtab       " changes user pressed TAB to spaces
+set tabstop=4       " changes the width of the TAB character
+set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
+autocmd FileType html setlocal shiftwidth=2 tabstop=2
 
 " Ignore case on searching
 set ic
