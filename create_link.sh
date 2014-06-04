@@ -16,7 +16,8 @@ if [ $force_replace -eq 1 ]; then
     flags=${flags}f
 fi
 
-ln -${flags} ~/.rcfiles/.tcshrc   ~/.tcshrc
-ln -${flags} ~/.rcfiles/.vimrc    ~/.vimrc
-ln -${flags} ~/.rcfiles/.screenrc ~/.screenrc
-ln -${flags} ~/.rcfiles/.bashrc   ~/.bashrc
+ln -${flags} ~/.rcfiles/.tcshrc    ~/.tcshrc
+ln -${flags} ~/.rcfiles/.vimrc     ~/.vimrc
+ln -${flags} ~/.rcfiles/.screenrc  ~/.screenrc
+ln -${flags} ~/.rcfiles/.bashrc    ~/.bashrc
+ln -${flags} ~/.rcfiles/.gitconfig ~/.gitconfig
