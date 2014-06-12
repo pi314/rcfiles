@@ -51,7 +51,7 @@ set host_str="${white}%m${end}"
 
 set shell_name="`echo $SHELL | rev | cut -d'/' -f1 | rev`"
 
-set screen_str='[$session_name W$WINDOW]'
+set screen_str='${purple}[$session_name W$WINDOW]${end}'
 
 set uid_str='`sh -c '$quote'if [ $_uid == root ]; then echo \#; else echo \>;fi'$quote'`'
 
