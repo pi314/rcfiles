@@ -23,7 +23,44 @@ printf "\n\n"
 
 #alias update_git_repo_flag "set git_repo_flag=${git_repo_flag}a"
 
-alias precmd 'set prompt="|[%~]`date`\n|%T%n@%m> "'
+set black='%{^[[1\;30m%}'
+set red='%{^[[1\;31m%}'
+set green='%{^[[1\;32m%}'
+set yellow='%{^[[1\;33m%}'
+set blue='%{^[[1\;34m%}'
+set purple='%{^[[1\;35m%}'
+set cyan='%{^[[1\;36m%}'
+set white='%{^[[1\;37m%}'
+set end='%{^[[m%}'
+set quote='"\""'
+
+set _cs1='`sh -c '$quote'if [ $last_succ -eq 0 ]; then echo $black; else echo ${red};fi'$quote'`'
+set _cs2='`sh -c '$quote'echo ${end};'$quote'`'
+set cmd_succ="${_cs1}|${_cs2}"
+
+set pwd_str="${green}[%~]${end}"
+
+set git_head_name="'(`git symbolic-ref HEAD | rev | cut -d'/' -f1 | rev`)'"
+set git_str='`sh -c '$quote'if [ -d .git ]; then echo $git_head_name; fi'$quote'`'
+
+set newline="\n"
+
+set time_str="${cyan}%T${end}"
+set user_str="${yellow}%n${end}"
+set host_str="${white}%m${end}"
+
+set shell_name="`echo $SHELL | rev | cut -d'/' -f1 | rev`"
+
+set screen_str='[$session_name W$WINDOW]'
+
+set uid_str='`sh -c '$quote'if [ $_uid == root ]; then echo \#; else echo \>;fi'$quote'`'
+
+if(! $?WINDOW ) then
+        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${black}['${shell_name}']${end}'${uid_str}' "'
+    else
+        set session_name="`echo $STY | cut -d '.' -f2`"
+        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${black}['${shell_name}']${end}'${screen_str}${uid_str}' "'
+endif
 
 #set prompt="%{^[[1;36m%}%T%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}%{^[[1;35m%}[$session_name W$WINDOW]%{^[[m%}> "
 
