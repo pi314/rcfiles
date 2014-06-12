@@ -1,6 +1,9 @@
 #[{pwd}][{window_name} {window_index}]({branch_name})
 #{time}{username}@{hostname}> {cursor here}
 
+#TODO
+# fix CYGWIN's windows style path blablabla with "\""
+
 printf "\n\n\n"
 printf "\033[1;30m|\033[1;32m[`pwd`]\033[m\n"
 printf "\033[1;30m|\033[1;36m20:38\033[1;33mpi314\033[m"
