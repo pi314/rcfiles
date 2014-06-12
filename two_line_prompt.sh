@@ -51,15 +51,14 @@ set host_str="${white}%m${end}"
 
 set shell_name="`echo $SHELL | rev | cut -d'/' -f1 | rev`"
 
-set screen_str='${purple}[$session_name W$WINDOW]${end}'
-
 set uid_str='`sh -c '$quote'if [ $_uid == root ]; then echo \#; else echo \>;fi'$quote'`'
 
 if(! $?WINDOW ) then
-        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${black}['${shell_name}']${end}'${uid_str}' "'
+        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${blue}['${shell_name}']${end}'${uid_str}' "'
     else
         set session_name="`echo $STY | cut -d '.' -f2`"
-        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${black}['${shell_name}']${end}'${screen_str}${uid_str}' "'
+        set screen_str="${purple}[$session_name W$WINDOW]${end}"
+        alias precmd 'set last_succ="$?"; set _uid="`whoami`"; set prompt="'${cmd_succ}'${pwd_str}'${git_str}'${blue}jobs:%j${end}%{${newline}%}'${cmd_succ}'${time_str}${user_str}@${host_str}${blue}['${shell_name}']${end}${screen_str}'${uid_str}' "'
 endif
 
 #set prompt="%{^[[1;36m%}%T%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}%{^[[1;35m%}[$session_name W$WINDOW]%{^[[m%}> "
