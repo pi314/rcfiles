@@ -2,6 +2,7 @@
 #{time}{username}@{hostname}> {cursor here}
 
 #TODO
+# giveup in tcsh, do this in bash
 # fix CYGWIN's windows style path blablabla with "\""
 
 printf "\n\n\n"
