@@ -114,3 +114,4 @@ needed info
 
 [{pwd}][{window_name} {window_index}]({branch_name})
 {time}{username}@{hostname}> {cursor here}
+
