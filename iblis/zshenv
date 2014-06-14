@@ -1,0 +1,58 @@
+# ==================================
+# Zsh Options
+# ==================================
+setopt sh_word_split
+setopt extended_glob
+setopt appendhistory 
+setopt autocd
+setopt nomatch
+unsetopt beep
+# ==================================
+# Enviroment Variable
+# ==================================
+path=(/sbin /bin /usr/sbin /usr/bin /usr/games /usr/local/sbin /usr/local/bin $HOME/bin)
+
+export PAGER=less
+
+export LSCOLORS="ExFxcxdxbxegedabagacad"
+
+export TERM='xterm-256color'
+export TERMCAP='xterm|xterm-color:Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm:tc=xterm-xfree86:'
+
+encode=en_US.UTF-8
+export LANG=$encode
+export LANGUAGE=$encode
+export LC_CTYPE=$encode
+export LC_COLLATE=$encode
+export LC_TIME=$encode
+export LC_NUMERIC=$encode
+export LC_MONETARY=$encode
+export LC_MESSAGES=$encode
+export LC_ALL=$encode
+
+export PACKAGEROOT='ftp://ftp.tw.freebsd.org'
+
+# For python shell
+export PYTHONSTARTUP=~/.pyrc
+
+# For vim pager
+if [[ -x `where vim` ]]
+then
+	if [[ -x $HOME/bin/vimpager ]]
+	then
+		export PAGER=$HOME/bin/vimpager
+		alias less=$PAGER
+	fi
+	if [[ -x $HOME/bin/vimcat ]]
+	then
+		alias vcat=$HOME/bin/vimcat
+		alias vc=$HOME/bin/vimcat
+	fi
+fi
+
+if [[ $USER == 'root' ]]
+then
+	prompt="%B[%F{red}%n%f@%m %~%(?.. %F{red}Oops%f)]%# %b"
+else
+	prompt="%B[%F{cyan}%n%f@%m %~%(?.. %F{red}Oops%f)]%# %b"
+fi
