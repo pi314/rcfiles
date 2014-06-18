@@ -48,10 +48,11 @@ function git_branch_name () {
 
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
 
+screen_str=""
 if [[ "$TERM" == "screen" ]]
 then
     session_name="`echo $STY | cut -d '.' -f2`"
-    screen_str="${purple}[$session_name W$WINDOW]${end}"
+    screen_str="%{[1;35m[$session_name W$WINDOW][m%}"
 fi
 
 prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${black}[zsh]${end}
