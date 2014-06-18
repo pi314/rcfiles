@@ -25,10 +25,11 @@ function dir_stacks () {
     if [[ $depth -gt 1 ]]
     then
         echo -n "${d_green}"
-        for (( i = 1; i < $depth; i += 1))
-        do 
-            echo -n "["
-        done
+        printf '['%.0s {2..${depth}}
+        #for (( i = 1; i < $depth; i += 1))
+        #do 
+        #    echo -n "["
+        #done
     fi
 }
 
