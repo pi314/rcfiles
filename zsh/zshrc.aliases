@@ -1,0 +1,56 @@
+if [[ `uname` == 'FreeBSD' ]]
+then
+    alias ls='ls -G'
+    alias ll='ls -aClG'
+    alias lsl='ls -ClG'
+    #Let "ls has pretty color
+    # a     black
+    # b     red
+    # c     green
+    # d     brown
+    # e     blue
+    # f     magenta
+    # g     cyan
+    # h     light grey
+    # x     default foreground or background
+
+    # 1.   directory
+    # 2.   symbolic link
+    # 3.   socket
+    # 4.   pipe
+    # 5.   executable
+    # 6.   block special
+    # 7.   character special
+    # 8.   executable with setuid bit set
+    # 9.   executable with setgid bit set
+    # 10.  directory writable to others, with sticky bit
+    # 11.  directory writable to others, without sticky
+    #      bit
+    #                1 2 3 4 5 6 7 8 9 1011
+    export LSCOLORS='GxFxcxDxCxegedabagacad'
+else
+    alias ls='ls --color=auto'
+    alias ll='ls -aCl --color=auto'
+    alias lsl='ls -Cl --color=auto'
+    export LS_COLORS="di=01;36:ln=01;35"
+fi
+
+alias grep='grep --color=auto'
+alias v='vim -p'
+
+if [[ `uname | cut -b 1-6` == 'CYGWIN' ]]
+then
+    alias open='cygstart'
+    alias ping="ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
+    alias startx=startxwin
+fi
+
+alias cd..='cd ..'
+alias cd...='cd ../..'
+alias cd....='cd ../../..'
+
+function mkcd () {
+    mkdir $1 && cd $1
+}
+
+alias sudo='sudo -E'

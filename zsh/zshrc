@@ -1,59 +1,33 @@
-setopt PROMPT_SUBST
-
-autoload -U colors && colors
-
-black="%{$fg_bold[black]%}"
-red="%{$fg_bold[red]%}"
-d_green="%{$fg[green]%}"
-green="%{$fg_bold[green]%}"
-yellow="%{$fg_bold[yellow]%}"
-blue="%{$fg_bold[blue]%}"
-purple="%{$fg_bold[purple]%}"
-cyan="%{$fg_bold[cyan]%}"
-white="%{$fg_bold[white]%}"
-end="%{$reset_color%}"
-
-function get_date_str ()
-{
-    printf "`date`"
-}
-
-last_cmd_succ="%(?.${black}.${red})|${end}"
-
-function dir_stacks () {
-    depth=`dirs -p | wc -l`
-    if [[ $depth -gt 1 ]]
-    then
-        echo -n "${d_green}"
-        printf '['%.0s {2..${depth}}
-        #for (( i = 1; i < $depth; i += 1))
-        #do 
-        #    echo -n "["
-        #done
-    fi
-}
-
-function current_path () {
-    echo "$(dir_stacks)${green}[%~]${end}"
-}
-
-function git_branch_name () {
-    branch_name=$(git symbolic-ref HEAD 2>/dev/null)
-
-    if [[ -n $branch_name ]]
-    then
-        echo "${blue}(${branch_name#refs/heads/})${end}"
-    fi
-}
-
-suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
-
-screen_str=""
-if [[ "$TERM" == "screen" ]]
+if [[ -f $HOME/.rcfiles/zsh/zshrc.prompt ]]
 then
-    session_name="`echo $STY | cut -d '.' -f2`"
-    screen_str="%{[1;35m[$session_name W$WINDOW][m%}"
+    source $HOME/.rcfiles/zsh/zshrc.prompt
 fi
 
-prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${black}[zsh]${end}
-${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}@${white}%m${end}${screen_str}> '
+if [[ -f $HOME/.rcfiles/zsh/zshrc.aliases ]]
+then
+    source $HOME/.rcfiles/zsh/zshrc.aliases
+fi
+
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+
+##########################
+# Bindkey
+##########################
+bindkey -e
+bindkey "\e[A"      history-beginning-search-backward
+bindkey "\e[B"      history-beginning-search-forward
+bindkey "\e[H"      beginning-of-line
+bindkey "\e[F"      end-of-line
+bindkey "\ej"       backward-word
+bindkey "\ek"       forward-word
+
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/cychih/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
