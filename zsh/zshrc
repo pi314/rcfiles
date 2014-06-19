@@ -26,7 +26,7 @@ bindkey "\ek"       forward-word
 
 # End of lines configured by zsh-newuser-install
 # The following lines were added by compinstall
-zstyle :compinstall filename '/home/cychih/.zshrc'
+zstyle :compinstall filename '/home/cychih/.rcfiles/zsh/zshrc'
 
 autoload -Uz compinit
 compinit
