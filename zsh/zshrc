@@ -1,20 +1,28 @@
+##########################
+# Prompt
+##########################
 if [[ -f $HOME/.rcfiles/zsh/zshrc.prompt ]]
 then
     source $HOME/.rcfiles/zsh/zshrc.prompt
 fi
 
+##########################
+# Aliases
+##########################
 if [[ -f $HOME/.rcfiles/zsh/zshrc.aliases ]]
 then
     source $HOME/.rcfiles/zsh/zshrc.aliases
 fi
 
-# Lines configured by zsh-newuser-install
+##########################
+# History
+##########################
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 
 ##########################
-# Bindkey
+# Bindkeys
 ##########################
 bindkey -e
 bindkey "\e[A"      history-beginning-search-backward
@@ -24,10 +32,17 @@ bindkey "\e[F"      end-of-line
 bindkey "\ej"       backward-word
 bindkey "\ek"       forward-word
 
-# End of lines configured by zsh-newuser-install
-# The following lines were added by compinstall
-zstyle :compinstall filename '/home/cychih/.rcfiles/zsh/zshrc'
+
+##########################
+# Completions
+##########################
+fpath=($HOME/.rcfiles/zsh/completions $fpath)
 
 autoload -Uz compinit
 compinit
-# End of lines added by compinstall
+
+autoload -U colors
+colors
+
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
