@@ -25,12 +25,14 @@ SAVEHIST=1000
 # Bindkeys
 ##########################
 bindkey -e
-bindkey "\e[A"      history-beginning-search-backward
-bindkey "\e[B"      history-beginning-search-forward
 bindkey "\e[H"      beginning-of-line
 bindkey "\e[F"      end-of-line
 bindkey "\ej"       backward-word
 bindkey "\ek"       forward-word
+
+bindkey "\e[A"      up-line-or-search
+bindkey "\e[B"      down-line-or-search
+bindkey '^R'        history-incremental-search-backward
 
 
 ##########################
