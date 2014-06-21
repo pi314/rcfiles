@@ -45,10 +45,4 @@ autoload -U colors
 colors
 
 zstyle ':completion:*' menu select=2
-
-if [[ $ls_version == 'BSD' ]]
-then
-    zstyle ':completion:*' list-colors ${(s.:.)LSCOLORS}
-else
-    zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-fi
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
