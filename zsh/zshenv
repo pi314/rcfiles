@@ -1,9 +1,33 @@
-if [[ `uname -s` == "FreeBSD" ]]
-then
-    export ls_version="BSD"
-else
-    export ls_version="GNU"
-fi
+UNAME_UTILITY="/usr/bin/uname"
+
+export ZSH_KERNEL_TYPE="$($UNAME_UTILITY -s)"
+
+case $ZSH_KERNEL_TYPE in
+
+    "FreeBSD")
+        export LS_VERSION="BSD"
+        ;;
+
+    "Darwin")   # Mac OS
+        export LS_VERSION="BSD"
+        ;;
+
+    "Linux")
+        export LS_VERSION="GNU"
+        ;;
+
+    *)
+        if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN"* ]]; then
+            export ZSH_KERNEL_TYPE="CYGWIN"
+            export LS_VERSION="GNU"
+        else
+            export ZSH_KERNEL_TYPE="UNKNOWN"
+            echo "Unknown OS type"
+            uname -a
+            export LS_VERSION="GNU"     # guess it uses GNU ls
+        fi
+
+esac
 
 #Let "ls has pretty color
 # a     black

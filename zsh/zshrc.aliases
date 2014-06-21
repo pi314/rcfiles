@@ -1,4 +1,4 @@
-if [[ $ls_version == 'BSD' ]]
+if [[ $LS_VERSION == "BSD" ]]
 then
 
     alias ls='ls -G'
@@ -16,8 +16,7 @@ fi
 alias grep='grep --color=auto'
 alias v='vim -p'
 
-uname=`uname`
-if [[ ${uname:0:6} == 'CYGWIN' ]]
+if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]
 then
     alias open='cygstart'
     alias ping="ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
