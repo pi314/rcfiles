@@ -1,0 +1,9 @@
+if [[ `uname -s` == "FreeBSD" ]]
+then
+    export ls_version="BSD"
+else
+    export ls_version="GNU"
+fi
+
+export LSCOLORS='GxFxcxDxCxegedabagacad'
+export LS_COLORS="di=01;36:ln=01;35"

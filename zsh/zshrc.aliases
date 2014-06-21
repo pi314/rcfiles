@@ -1,0 +1,37 @@
+if [[ $ls_version == 'BSD' ]]
+then
+
+    alias ls='ls -G'
+    alias ll='ls -aClG'
+    alias lsl='ls -ClG'
+
+else
+
+    alias ls='ls --color=auto'
+    alias ll='ls -aCl --color=auto'
+    alias lsl='ls -Cl --color=auto'
+
+fi
+
+alias grep='grep --color=auto'
+alias v='vim -p'
+
+uname=`uname`
+if [[ ${uname:0:6} == 'CYGWIN' ]]
+then
+    alias open='cygstart'
+    alias ping="ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
+    alias startx=startxwin
+fi
+
+alias cd..='cd ..'
+alias cd...='cd ../..'
+alias cd....='cd ../../..'
+
+function mkcd () {
+    mkdir $1 && cd $1
+}
+
+alias sudo='sudo -E'
+
+alias tmux='rm -r /tmp/tmux-*; tmux'
