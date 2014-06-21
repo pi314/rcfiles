@@ -37,11 +37,11 @@ function git_branch_name () {
 
     if [[ -n $branch_name ]]
     then
-        if [[ "`git status --porcelain | wc -l`" != "0" ]]
+        if [[ "`git status --porcelain`" == "" ]]
         then
-            echo "${red}(${branch_name#refs/heads/})${end}"
-        else
             echo "${blue}(${branch_name#refs/heads/})${end}"
+        else
+            echo "${red}(${branch_name#refs/heads/})${end}"
         fi
     fi
 }
