@@ -3,12 +3,14 @@ then
 
     alias ls='ls -G'
     alias ll='ls -aClG'
+    alias l='ls -aClG'
     alias lsl='ls -ClG'
 
 else
 
     alias ls='ls --color=auto'
     alias ll='ls -aCl --color=auto'
+    alias l='ls -aCl --color=auto'
     alias lsl='ls -Cl --color=auto'
 
 fi
