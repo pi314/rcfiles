@@ -5,13 +5,13 @@ not_sure_tag="\033[1;33m"
 error_tag="\033[1;31m"
 end_tag="\033[m"
 
-files="zsh/zshrc
-zsh/zshenv
-vimrc
-screenrc
-tcshrc
-bashrc
-gitconfig"
+files="zsh/.zshrc
+zsh/.zshenv
+.vimrc
+.screenrc
+.tcshrc
+.bashrc
+.gitconfig"
 
 for f in $files; do
 
@@ -21,11 +21,11 @@ for f in $files; do
         filename="${f##*/}"
     fi
 
-    printf "Installing .$filename into $HOME\n"
+    printf "Installing $filename into $HOME\n"
 
-    if [ -f "$HOME/.$filename" ]; then
+    if [ -f "$HOME/$filename" ]; then
 
-        printf "${error_tag}$HOME/.$filename exists, do backup${end_tag}\n"
+        printf "${error_tag}$HOME/$filename exists, do backup${end_tag}\n"
 
         if [ ! -d "$HOME/.old_rcfiles" ]; then
 
@@ -45,15 +45,19 @@ for f in $files; do
 
         fi
 
-        mv "$HOME/.$filename" "$HOME/.old_rcfiles/$BACKUP_DIR"
+        mv "$HOME/$filename" "$HOME/.old_rcfiles/$BACKUP_DIR"
 
         printf "${good_tag}Backup $HOME/.$filename done${end_tag}\n"
     
     fi
 
-    ln -s "$HOME/.rcfiles/$f" "$HOME/.$filename"
+    ln -sf "$HOME/.rcfiles/$f" "$HOME/$filename"
+    # if the soft link is targeted to a none-exist file,
+    #  the "if [ -f $filename ]" will be false
+    #  but the following "ln -s" will failed
+    #  so the -f option is needed
 
-    echo "Install $HOME/.$filename done"
+    echo "Install $HOME/$filename done"
     echo ""
 
 done

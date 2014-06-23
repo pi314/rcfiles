@@ -8,4 +8,4 @@ lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(
 lg = !"git lg2"
 
 [push]
-	default = simple
+	default = current

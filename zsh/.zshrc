@@ -1,17 +1,17 @@
 ##########################
 # Prompt
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/zshrc.prompt ]]
+if [[ -f $HOME/.rcfiles/zsh/.zshrc.prompt ]]
 then
-    source $HOME/.rcfiles/zsh/zshrc.prompt
+    source $HOME/.rcfiles/zsh/.zshrc.prompt
 fi
 
 ##########################
 # Aliases
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/zshrc.aliases ]]
+if [[ -f $HOME/.rcfiles/zsh/.zshrc.aliases ]]
 then
-    source $HOME/.rcfiles/zsh/zshrc.aliases
+    source $HOME/.rcfiles/zsh/.zshrc.aliases
 fi
 
 ##########################
