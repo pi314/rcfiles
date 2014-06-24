@@ -55,5 +55,7 @@ then
     screen_str="%{[1;35m[$session_name W$WINDOW][m%}"
 fi
 
+uid_str="%(!.#.>)"
+
 prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${black}[zsh]${end}
-${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}@${white}%m${end}${screen_str}> '
+${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}@${white}%m${end}${screen_str}${uid_str} '
