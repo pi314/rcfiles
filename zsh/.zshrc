@@ -27,8 +27,12 @@ SAVEHIST=1000
 bindkey -e
 bindkey "\e[H"      beginning-of-line
 bindkey "\e[1~"     beginning-of-line   # for screen
+bindkey "\eOH"      beginning-of-line   # for cygwin + mosh
+
 bindkey "\e[F"      end-of-line
 bindkey "\e[4~"     end-of-line         # for screen
+bindkey "\eOF"      end-of-line         # for cygwin + mosh
+
 bindkey "\ej"       backward-word
 bindkey "\ek"       forward-word
 
