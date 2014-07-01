@@ -40,6 +40,8 @@ bindkey "\e[A"      up-line-or-search
 bindkey "\e[B"      down-line-or-search
 bindkey '^R'        history-incremental-search-backward
 
+bindkey "\e[3~"     delete-char
+
 
 ##########################
 # Completions
