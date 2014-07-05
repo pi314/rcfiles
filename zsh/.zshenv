@@ -1,3 +1,7 @@
+if [[ $PATH != *$HOME/bin* ]]; then
+    PATH="$HOME/bin:$PATH"
+fi
+
 UNAME_UTILITY="/usr/bin/uname"
 
 export ZSH_KERNEL_TYPE="$($UNAME_UTILITY -s)"
