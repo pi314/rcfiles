@@ -8,6 +8,9 @@ set ambiwidth=double
 " Show mode on bottom-left
 set showmode
 
+" Show command on bottom-right
+set showcmd
+
 " Color settings
 syntax on
 set hlsearch
