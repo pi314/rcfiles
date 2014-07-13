@@ -66,6 +66,11 @@ nmap <ESC>OB :call Arrow_move("down")<CR>
 nmap <ESC>OC :call Arrow_move("right")<CR>
 nmap <ESC>OD :call Arrow_move("left")<CR>
 
+" generate a checkbox at the beginning of line
+nmap <C-c> I[ ] <ESC>
+imap <C-c> <Home>[ ] <ESC>
+vmap <C-c> :s/^/[ ] /<CR>:noh<CR>
+
 " Show line numbers
 set nu
 
