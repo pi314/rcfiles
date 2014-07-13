@@ -42,16 +42,25 @@ hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
 " Hot-keys
+
+" move moving between long wrapped lines
+" must use nnoremap #no recursive map
+nnoremap k gk
+nnoremap j gj
+
 nmap <C-j> :tabp<CR>
 imap <C-j> <ESC><C-j>a
 nmap <C-k> :tabn<CR>
 imap <C-k> <ESC><C-k>a
+
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
+
 nmap <C-p> :tabm -1<CR>
 imap <C-p> <ESC><C-p>a
 nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a
+
 nmap <ESC>OA :call Arrow_move("up")<CR>
 nmap <ESC>OB :call Arrow_move("down")<CR>
 nmap <ESC>OC :call Arrow_move("right")<CR>
