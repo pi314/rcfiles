@@ -67,9 +67,9 @@ nmap <ESC>OC :call Arrow_move("right")<CR>
 nmap <ESC>OD :call Arrow_move("left")<CR>
 
 " generate a checkbox at the beginning of line
-nmap <C-c> I[ ] <ESC>
-imap <C-c> <Home>[ ] <ESC>
-vmap <C-c> :s/^/[ ] /<CR>:noh<CR>
+nmap <C-c> :call Add_checkbox()<CR>
+imap <C-c> <ESC>:call Add_checkbox()<CR>
+vmap <C-c> :call Add_checkbox()<CR>
 
 " Show line numbers
 set nu
@@ -145,4 +145,20 @@ function! Arrow_move(dir)
         endif
         echom ""
     endif
+endfunction
+
+
+function! Add_checkbox ()
+    let l:line = getline('.')
+    if l:line[0:2] == '[ ]'
+        let l:line = '[v]' . l:line[3:]
+    elseif l:line[0:2] == '[v]'
+        let l:line = '[x]' . l:line[3:]
+    elseif l:line[0:2] == '[x]'
+        let l:line = '[ ]' . l:line[3:]
+    else
+        let l:line = '[ ] ' . l:line
+    endif
+    call setline('.', l:line)
+    echom ""
 endfunction
