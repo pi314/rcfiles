@@ -96,15 +96,19 @@ command! -nargs=1 Title call Title(<f-args>)
 
 function! Add_checkbox ()
     let l:line = getline('.')
-    if l:line[0:2] == '[ ]'
-        let l:line = '[v]' . l:line[3:]
-    elseif l:line[0:2] == '[v]'
-        let l:line = '[x]' . l:line[3:]
-    elseif l:line[0:2] == '[x]'
-        let l:line = '[ ]' . l:line[3:]
+
+    let l:prefix_space = matchstr(l:line, '^ *')
+    let l:after_space_data = l:line[strlen(l:prefix_space):]
+
+    if l:after_space_data[0:2] == '[ ]'
+        let l:after_space_data = '[v]' . l:after_space_data[3:]
+    elseif l:after_space_data[0:2] == '[v]'
+        let l:after_space_data = '[x]' . l:after_space_data[3:]
+    elseif l:after_space_data[0:2] == '[x]'
+        let l:after_space_data = '[ ]' . l:after_space_data[3:]
     else
-        let l:line = '[ ] ' . l:line
+        let l:after_space_data = '[ ] ' . l:after_space_data
     endif
-    call setline('.', l:line)
-    echom ""
+    call setline('.', l:prefix_space . l:after_space_data)
+    execute "normal ^l"
 endfunction
