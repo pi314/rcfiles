@@ -21,7 +21,7 @@ alias v='vim -p'
 if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]
 then
     alias open='cygstart'
-    alias ping="ping \!:1 /t | iconv -s -f CP950 -t UTF-8"
+    alias ping="cygstart cmd /K ping"
     alias startx=startxwin
 fi
 
