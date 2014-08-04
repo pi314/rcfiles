@@ -102,13 +102,21 @@ function! Add_checkbox ()
 
     if l:after_space_data[0:2] == '[ ]'
         let l:after_space_data = '[v]' . l:after_space_data[3:]
+
     elseif l:after_space_data[0:2] == '[v]'
         let l:after_space_data = '[x]' . l:after_space_data[3:]
+
     elseif l:after_space_data[0:2] == '[x]'
         let l:after_space_data = '[ ]' . l:after_space_data[3:]
+
+    elseif l:after_space_data[0:2] =~ '^\[.\]$'
+        let l:after_space_data = '[ ]' . l:after_space_data[3:]
+
     else
         let l:after_space_data = '[ ] ' . l:after_space_data
     endif
+
     call setline('.', l:prefix_space . l:after_space_data)
     execute "normal ^l"
+    echom ""
 endfunction
