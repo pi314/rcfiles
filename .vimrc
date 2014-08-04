@@ -61,10 +61,10 @@ imap <C-p> <ESC><C-p>a
 nmap <C-n> :tabm +1<CR>
 imap <C-n> <ESC><C-n>a
 
-nmap <ESC>OA :call Arrow_move("up")<CR>
-nmap <ESC>OB :call Arrow_move("down")<CR>
-nmap <ESC>OC :call Arrow_move("right")<CR>
-nmap <ESC>OD :call Arrow_move("left")<CR>
+" generate a checkbox at the beginning of line
+nmap <C-c> :call Add_checkbox()<CR>
+imap <C-c> <ESC>:call Add_checkbox()<CR>
+vmap <C-c> :call Add_checkbox()<CR>
 
 " Show line numbers
 set nu
@@ -94,50 +94,29 @@ function! Title(type)
 endfunction
 command! -nargs=1 Title call Title(<f-args>)
 
-" Resize split window functions
-let g:flag_resizing_window = "false"
-function! Set_resize_window_flag(value)
-    if a:value == "start" || a:value == 'true' || a:value == 'on'
-        let g:flag_resizing_window = "true"
-    elseif a:value == "end" || a:value == 'false' || a:value == 'off'
-        let g:flag_resizing_window = "false"
+function! Add_checkbox ()
+    let l:line = getline('.')
+
+    let l:prefix_space = matchstr(l:line, '^ *')
+    let l:after_space_data = l:line[strlen(l:prefix_space):]
+
+    if l:after_space_data[0:2] == '[ ]'
+        let l:after_space_data = '[v]' . l:after_space_data[3:]
+
+    elseif l:after_space_data[0:2] == '[v]'
+        let l:after_space_data = '[x]' . l:after_space_data[3:]
+
+    elseif l:after_space_data[0:2] == '[x]'
+        let l:after_space_data = '[ ]' . l:after_space_data[3:]
+
+    elseif l:after_space_data[0:2] =~ '^\[.\]$'
+        let l:after_space_data = '[ ]' . l:after_space_data[3:]
+
+    else
+        let l:after_space_data = '[ ] ' . l:after_space_data
     endif
 
-    if g:flag_resizing_window == "true"
-        echom "Start Resizing window, use arrow key to resize window."
-    elseif g:flag_resizing_window == 'false'
-        echom "Resizing window ended."
-    endif
-endfunction
-command! -nargs=1 Resize call Set_resize_window_flag(<f-args>)
-
-function! Arrow_move(dir)
-    if g:flag_resizing_window == "true"
-        let acc_sign = ''
-        if a:dir == 'up' || a:dir == 'left'
-            let acc_sign = '-'
-        elseif a:dir == 'down' || a:dir == 'right'
-            let acc_sign = '+'
-        endif
-
-        let acc_cmd  = ''
-        if a:dir == 'up' || a:dir == 'down'
-            let acc_cmd = 'res'
-        elseif a:dir == 'left' || a:dir == 'right'
-            let acc_cmd = 'vertical resize'
-        endif
-        execute ':silent ' . acc_cmd . ' ' . acc_sign . '1'
-        echom "Use arrow key to resize window and :Resize end to finish."
-    elseif g:flag_resizing_window == "false"
-        if a:dir == 'up'
-            normal k
-        elseif a:dir == 'left'
-            normal h
-        elseif a:dir == 'right'
-            normal l
-        elseif a:dir == 'down'
-            normal j
-        endif
-        echom ""
-    endif
+    call setline('.', l:prefix_space . l:after_space_data)
+    execute "normal ^l"
+    echom ""
 endfunction
