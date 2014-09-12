@@ -36,7 +36,7 @@ set ru
 set bs=2
 
 " Tabline setting in .vim/plugin/tabline.vim
-hi TabLine     ctermfg=black ctermbg=white    "not active tab page label
+hi TabLine     ctermfg=black ctermbg=grey     "not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    "active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
