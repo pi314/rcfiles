@@ -1,5 +1,11 @@
+if [[ -d /opt ]]; then
+    if [[ $PATH != */opt/bin* ]]; then
+        export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+    fi
+fi
+
 if [[ $PATH != *$HOME/bin* ]]; then
-    PATH="$HOME/bin:$PATH"
+    export PATH="$HOME/bin:$PATH"
 fi
 
 UNAME_UTILITY="/usr/bin/uname"
