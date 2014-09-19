@@ -1,16 +1,21 @@
+if [[ -f /etc/profile ]]; then
+    PATH=""
+    source /etc/profile
+fi
+
 if [[ -d /opt ]]; then
     if [[ $PATH != */opt/bin* ]]; then
-        export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+        PATH="/opt/local/bin:/opt/local/sbin:$PATH"
     fi
 fi
 
 if [[ $PATH != *$HOME/bin* ]]; then
-    export PATH="$HOME/bin:$PATH"
+    PATH="$HOME/bin:$PATH"
 fi
 
-UNAME_UTILITY="/usr/bin/uname"
+export PATH
 
-export ZSH_KERNEL_TYPE="$($UNAME_UTILITY -s)"
+export ZSH_KERNEL_TYPE="$(/usr/bin/uname -s)"
 
 case $ZSH_KERNEL_TYPE in
 
