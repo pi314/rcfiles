@@ -3,15 +3,20 @@ if [[ -f /etc/profile ]]; then
     source /etc/profile
 fi
 
-if [[ -d /opt ]]; then
-    if [[ $PATH != */opt/bin* ]]; then
-        PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-    fi
-fi
+folders=(
+    "/opt/local/bin"
+    "/opt/local/sbin"
+    "$HOME/.cabal/bin"
+    "$HOME/bin"
+)
 
-if [[ $PATH != *$HOME/bin* ]]; then
-    PATH="$HOME/bin:$PATH"
-fi
+for i in $folders; do
+    if [[ -d $i ]]; then
+        if [[ $PATH != *$i* ]]; then
+            PATH="$i:$PATH"
+        fi
+    fi
+done
 
 export PATH
 
