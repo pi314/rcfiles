@@ -24,7 +24,11 @@ SAVEHIST=1000
 ##########################
 # Bindkeys
 ##########################
-bindkey -e
+bindkey -v
+zle -A kill-whole-line      vi-kill-line
+zle -A backward-kill-word   vi-backward-kill-word
+zle -A backward-delete-char vi-backward-delete-char
+
 bindkey "\e[H"      beginning-of-line
 bindkey "\e[1~"     beginning-of-line   # for screen
 bindkey "\eOH"      beginning-of-line   # for cygwin + mosh
