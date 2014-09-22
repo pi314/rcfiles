@@ -3,12 +3,15 @@ setopt PROMPT_SUBST
 autoload -U colors && colors
 
 black="%{$fg_bold[black]%}"
+gray="%{$fd[white]%}"
+grey="%{$fd[white]%}"
 red="%{$fg_bold[red]%}"
 d_green="%{$fg[green]%}"
 green="%{$fg_bold[green]%}"
 yellow="%{$fg_bold[yellow]%}"
 blue="%{$fg_bold[blue]%}"
-purple="%{$fg_bold[purple]%}"
+purple="%{$fg_bold[magenta]%}"
+magenta="%{$fg_bold[magenta]%}"
 cyan="%{$fg_bold[cyan]%}"
 white="%{$fg_bold[white]%}"
 end="%{$reset_color%}"
@@ -16,7 +19,7 @@ end="%{$reset_color%}"
 last_cmd_succ="%(?.${black}.${red})|${end}"
 
 function dir_stacks () {
-    depth=`dirs -p | wc -l`
+    depth=`dirs -p | wc -l | tr -d ' '`
     if [[ $depth -gt 1 ]]
     then
         echo -n "${d_green}"
@@ -57,5 +60,25 @@ fi
 
 uid_str="%(!.#.>)"
 
-prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${black}[zsh]${end}
+vim_mode_str="${black}[zsh]${end}"
+
+function zle-line-finish {
+    vim_mode_str="${black}[zsh]${end}"
+}
+function zle-keymap-select {
+    case ${KEYMAP} in
+    vicmd)
+        vim_mode_str="${purple}:zsh:${end}"
+        ;;
+    viins|main)
+        vim_mode_str="${black}[zsh]${end}"
+        ;;
+    esac
+    zle reset-prompt
+}
+zle -N zle-line-finish
+zle -N zle-keymap-select
+
+prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${vim_mode_str}
 ${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}@${white}%m${end}${screen_str}${uid_str} '
+
