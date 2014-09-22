@@ -20,8 +20,7 @@ last_cmd_succ="%(?.${black}.${red})|${end}"
 
 function dir_stacks () {
     depth=`dirs -p | wc -l | tr -d ' '`
-    if [[ $depth -gt 1 ]]
-    then
+    if [[ $depth -gt 1 ]]; then
         echo -n "${d_green}"
         printf '['%.0s {2..${depth}}
         #for (( i = 1; i < $depth; i += 1))
@@ -38,8 +37,7 @@ function current_path () {
 function git_branch_name () {
     branch_name=$(git symbolic-ref HEAD 2>/dev/null)
 
-    if [[ -n $branch_name ]]
-    then
+    if [[ -n $branch_name ]]; then
         if [[ "`git status --porcelain`" == "" ]]
         then
             echo "${blue}(${branch_name#refs/heads/})${end}"
@@ -52,10 +50,15 @@ function git_branch_name () {
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
 
 screen_str=""
-if [[ "$TERM" == 'screen' ]]
-then
-    session_name="`echo $STY | cut -d '.' -f2`"
-    screen_str="%{[1;35m[$session_name W$WINDOW][m%}"
+if [[ "$TERM" == 'screen' ]]; then
+    if [[ -n "$TMUX" ]]; then
+        session_name=`tmux display-message -p '#S'`
+        WINDOW=`tmux display-message -p '#I'`
+        screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
+    elif [[ -n "$STY" ]]; then
+        session_name="`echo $STY | cut -d '.' -f2`"
+        screen_str="%{[1;35m[$session_name S$WINDOW][m%}"
+    fi
 fi
 
 uid_str="%(!.#.>)"
@@ -68,7 +71,7 @@ function zle-line-finish {
 function zle-keymap-select {
     case ${KEYMAP} in
     vicmd)
-        vim_mode_str="${purple}:zsh:${end}"
+        vim_mode_str="${cyan}:zsh:${end}"
         ;;
     viins|main)
         vim_mode_str="${black}[zsh]${end}"

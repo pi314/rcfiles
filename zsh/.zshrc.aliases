@@ -1,13 +1,10 @@
-if [[ $LS_VERSION == "BSD" ]]
-then
-
+if [[ $LS_VERSION == "BSD" ]]; then
     alias ls='ls -G'
     alias ll='ls -aClG'
     alias l='ls -aClG'
     alias lsl='ls -ClG'
 
 else
-
     alias ls='ls --color=auto'
     alias ll='ls -aCl --color=auto'
     alias l='ls -aCl --color=auto'
@@ -18,8 +15,7 @@ fi
 alias grep='grep --color=auto'
 alias v='vim -p'
 
-if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]
-then
+if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]; then
     alias open='cygstart'
     alias ping="cygstart cmd /K ping"
     alias startx=startxwin
