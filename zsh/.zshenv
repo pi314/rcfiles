@@ -1,6 +1,12 @@
 if [[ -f /etc/profile ]]; then
+    backup_PATH=$PATH
     PATH=""
     source /etc/profile
+
+    if [[ -z $PATH ]]; then
+        # /etc/profile is empty
+        PATH=$backup_PATH
+    fi
 fi
 
 folders=(
