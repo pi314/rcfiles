@@ -7,7 +7,7 @@ end_tag="\033[m"
 
 files="zsh/.zshrc
 zsh/.zshenv
-.vimrc
+.vim
 .screenrc
 .tcshrc
 .bashrc
