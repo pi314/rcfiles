@@ -86,6 +86,9 @@ nmap <C-c> :call Add_checkbox()<CR>
 imap <C-c> <ESC>:call Add_checkbox()<CR>
 vmap <C-c> :call Add_checkbox()<CR>
 
+" toggle the nerd tree
+nmap  :NERDTreeToggle<CR>
+
 " brackets
 command! -nargs=1 Br call Bracket_replace(<f-args>)
 command! -nargs=1 BR call Bracket_replace(<f-args>)
