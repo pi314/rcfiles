@@ -1,3 +1,23 @@
+" ============================================================================
+" Vundle initialization
+
+" no vi-compatible
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#begin()
+
+" Plugins
+Bundle 'gmarik/vundle'
+Bundle 'The-NERD-tree'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+" ============================================================================
+" Plugins
+" ============================================================================
+
 " Encoding settings
 set encoding=utf-8
 set langmenu=zh_TW.UTF-8
@@ -65,6 +85,9 @@ imap <C-n> <ESC><C-n>a
 nmap <C-c> :call Add_checkbox()<CR>
 imap <C-c> <ESC>:call Add_checkbox()<CR>
 vmap <C-c> :call Add_checkbox()<CR>
+
+" toggle the nerd tree
+nmap  :NERDTreeToggle<CR>
 
 " brackets
 command! -nargs=1 Br call Bracket_replace(<f-args>)
@@ -206,5 +229,3 @@ function! Add_checkbox ()
     execute "normal ^l"
     echom ""
 endfunction
-
-filetype plugin on

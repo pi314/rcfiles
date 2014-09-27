@@ -1,2 +1,7 @@
+.vim/.netrwhist
+.vim/bundle/*
+.vim/local/*
+.vim/tmp/*
+
 *.swp
 *.swo
