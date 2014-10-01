@@ -12,8 +12,8 @@ call vundle#begin()
 Bundle 'gmarik/vundle'
 Bundle 'The-NERD-tree'
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+call vundle#end()           " required
+filetype plugin indent on   " required
 " ============================================================================
 " Plugins
 " ============================================================================
@@ -42,9 +42,6 @@ set tabstop=4       " changes the width of the TAB character
 set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
-autocmd FileType html setlocal shiftwidth=2 tabstop=2
-autocmd FileType xml  setlocal shiftwidth=2 tabstop=2
-autocmd FileType make setlocal noexpandtab
 
 " Ignore case on searching
 set ic
