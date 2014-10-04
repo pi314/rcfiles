@@ -65,18 +65,18 @@ hi VIMlogo     ctermfg=white ctermbg=blue
 nnoremap k gk
 nnoremap j gj
 
-nmap <C-j> :tabp<CR>
-imap <C-j> <ESC><C-j>a
-nmap <C-k> :tabn<CR>
-imap <C-k> <ESC><C-k>a
+nmap tj :tabp<CR>
+imap tj <ESC>:tabp<CR>
+nmap tk :tabn<CR>
+imap tk <ESC><C-k>
 
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
 
-nmap <C-p> :tabm -1<CR>
-imap <C-p> <ESC><C-p>a
-nmap <C-n> :tabm +1<CR>
-imap <C-n> <ESC><C-n>a
+nmap tp :tabm -1<CR>
+imap tp <ESC>:tabm -1<CR>
+nmap tn :tabm +1<CR>
+imap tn <ESC>:tabm +1<CR>
 
 " generate a checkbox at the beginning of line
 nmap <C-c> :call Add_checkbox()<CR>
@@ -86,6 +86,7 @@ vmap <C-c> :call Add_checkbox()<CR>
 " toggle the nerd tree
 nmap  :NERDTreeToggle<CR>
 
+" Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>
 
 
