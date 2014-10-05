@@ -1,3 +1,5 @@
+set ambiwidth=single
+
 " Superscripts
 imap <buffer> \^0 ⁰
 imap <buffer> \^1 ¹
