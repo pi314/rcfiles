@@ -73,6 +73,7 @@ nmap tk :tabn<CR>
 
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
+nmap tt :tabe<SPACE>
 
 nmap tp :tabm -1<CR>
 nmap tn :tabm +1<CR>
