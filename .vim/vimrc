@@ -1,5 +1,6 @@
-" ============================================================================
+" ============================================================================ "
 " Vundle initialization
+" ============================================================================ "
 
 " no vi-compatible
 set nocompatible
@@ -14,9 +15,9 @@ Bundle 'The-NERD-tree'
 
 call vundle#end()           " required
 filetype plugin indent on   " required
-" ============================================================================
-" Plugins
-" ============================================================================
+" ============================================================================ "
+" Vundle ok "
+" ============================================================================ "
 
 " Encoding settings
 set encoding=utf-8
@@ -53,15 +54,17 @@ set ru
 set bs=2
 
 " Tabline setting in .vim/plugin/tabline.vim
-hi TabLine     ctermfg=black ctermbg=grey     "not active tab page label
-hi TabLineSel  ctermfg=grey  ctermbg=black    "active tab page label
-hi TabLineFill ctermfg=grey  ctermbg=white    "fill the other place
+hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
+hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
+hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
-" Hot-keys
+" ======== "
+" Hot-keys "
+" ======== "
 
 " move moving between long wrapped lines
-" must use nnoremap #no recursive map
+" must use nnoremap = no recursive map
 nnoremap k gk
 nnoremap j gj
 
@@ -75,7 +78,8 @@ nmap tp :tabm -1<CR>
 nmap tn :tabm +1<CR>
 
 " toggle the nerd tree
-nmap  :NERDTreeToggle<CR>
+nmap <C-n> :NERDTreeToggle<CR>
+imap <C-n> <ESC>:NERDTreeToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>
