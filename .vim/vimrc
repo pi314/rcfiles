@@ -66,17 +66,13 @@ nnoremap k gk
 nnoremap j gj
 
 nmap tj :tabp<CR>
-imap tj <ESC>:tabp<CR>
 nmap tk :tabn<CR>
-imap tk <ESC><C-k>
 
 nmap <C-t> :tabe<SPACE>
 imap <C-t> <ESC><C-t>
 
 nmap tp :tabm -1<CR>
-imap tp <ESC>:tabm -1<CR>
 nmap tn :tabm +1<CR>
-imap tn <ESC>:tabm +1<CR>
 
 " toggle the nerd tree
 nmap  :NERDTreeToggle<CR>
