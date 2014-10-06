@@ -13,6 +13,7 @@ call vundle#begin()
 Bundle 'gmarik/vundle'
 Bundle 'The-NERD-tree'
 Bundle 'Rykka/riv.vim'
+Bundle 'tomtom/tcomment_vim'
 
 call vundle#end()           " required
 filetype plugin indent on   " required
