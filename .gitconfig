@@ -12,5 +12,7 @@
 
 [color]
     ui = true
+
 [core]
-	editor = vim
+    editor = vim
+    pager = less -r
