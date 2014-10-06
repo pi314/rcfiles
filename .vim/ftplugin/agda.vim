@@ -1,4 +1,5 @@
-set ambiwidth=single
+setlocal ambiwidth=single
+setlocal commentstring=--%s
 
 imap <buffer> \'{z} ź
 imap <buffer> \.{B} Ḃ
