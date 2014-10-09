@@ -31,4 +31,5 @@ function mkcd () {
 
 alias sudo='sudo -E'
 
-#alias tmux='rm -r /tmp/tmux-*; tmux'
+alias -s py=python
+alias -s sh=sh
