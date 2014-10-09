@@ -87,6 +87,34 @@ nnoremap <CR> o<ESC>
 " brackets
 command! -nargs=1 Br call Bracket_replace(<f-args>)
 command! -nargs=1 BR call Bracket_replace(<f-args>)
+
+" Show line numbers
+set nu
+
+" Indent related settings
+
+" Set cindent
+set ai
+set shiftwidth=4
+
+" Status line
+set laststatus=2
+set wildmenu
+
+set scrolloff=5
+
+"""" My functions!
+
+" Add a line under a rst title
+command! -nargs=1 Title call Title(<f-args>)
+function! Title(type)
+    if len(a:type) == 1
+        execute "normal yyp$r" . a:type
+    else
+        echom "Title type must be only one charactor"
+    endif
+endfunction
+
 " This function uses mark z
 function! Bracket_replace (from_to)
     if len(a:from_to) != 2
@@ -170,31 +198,3 @@ function! Bracket_replace (from_to)
     "echom l:from . l:to
 
 endfunction
-
-" Show line numbers
-set nu
-
-" Indent related settings
-
-" Set cindent
-set ai
-set shiftwidth=4
-
-" Status line
-set laststatus=2
-set wildmenu
-
-set scrolloff=5
-
-"""" My functions!
-
-" Add a line under a rst title
-command! -nargs=1 Title call Title(<f-args>)
-function! Title(type)
-    if len(a:type) == 1
-        execute "normal yyp$r" . a:type
-    else
-        echom "Title type must be only one charactor"
-    endif
-endfunction
-
