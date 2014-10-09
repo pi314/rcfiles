@@ -1,3 +1,4 @@
+setlocal commentstring=#%s
 function! Add_checkbox ()
     let l:line = getline('.')
 
