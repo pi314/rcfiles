@@ -83,6 +83,9 @@ imap <C-n> <ESC>:NERDTreeToggle<CR>
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>
 
+" map these by hand
+inoremap <C-h> <BS>
+nnoremap <C-h> <BS>
 
 " brackets
 command! -nargs=1 Br call Bracket_replace(<f-args>)
