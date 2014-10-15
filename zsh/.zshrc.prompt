@@ -27,6 +27,7 @@ function dir_stacks () {
         #do 
         #    echo -n "["
         #done
+
     fi
 }
 
@@ -35,16 +36,25 @@ function current_path () {
 }
 
 function git_branch_name () {
-    branch_name=$(git symbolic-ref HEAD 2>/dev/null)
-
+    branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
     if [[ -n $branch_name ]]; then
-        if [[ "`git status --porcelain`" == "" ]]
-        then
-            echo "${blue}(${branch_name#refs/heads/})${end}"
+        if [[ "`git status --porcelain`" == "" ]]; then
+            # This repo is clean
+            echo "${blue}(${branch_name})${end}"
+
         else
-            echo "${red}(${branch_name#refs/heads/})${end}"
+            # This repo is dirty, now check if there are changes to be commited
+            if [[ -z $(git status -s -uno) ]]; then
+                # This repo is dirty, but no modify on tracked files
+                echo "${purple}(${branch_name})${end}"
+            else
+                # This repo is dirty, and there are changes had been staged
+                echo "${red}(${branch_name})${end}"
+            fi
+
         fi
     fi
+
 }
 
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
@@ -55,9 +65,11 @@ if [[ "$TERM" == 'screen' ]]; then
         session_name=`tmux display-message -p '#S'`
         WINDOW=`tmux display-message -p '#I'`
         screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
+
     elif [[ -n "$STY" ]]; then
         session_name="`echo $STY | cut -d '.' -f2`"
         screen_str="%{[1;35m[$session_name S$WINDOW][m%}"
+
     fi
 fi
 
@@ -67,17 +79,21 @@ vim_mode_str="${black}[zsh]${end}"
 
 function zle-line-finish {
     vim_mode_str="${black}[zsh]${end}"
+
 }
 function zle-keymap-select {
     case ${KEYMAP} in
     vicmd)
         vim_mode_str="${cyan}:zsh:${end}"
         ;;
+
     viins|main)
         vim_mode_str="${black}[zsh]${end}"
         ;;
+
     esac
     zle reset-prompt
+
 }
 zle -N zle-line-finish
 zle -N zle-keymap-select
