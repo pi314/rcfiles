@@ -46,6 +46,9 @@ set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
 
+" Auto indent
+set ai
+
 " Ignore case on searching
 set ic
 
@@ -93,12 +96,6 @@ command! -nargs=1 BR call Bracket_replace(<f-args>)
 
 " Show line numbers
 set nu
-
-" Indent related settings
-
-" Set cindent
-set ai
-set shiftwidth=4
 
 " Status line
 set laststatus=2
