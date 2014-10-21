@@ -1,4 +1,4 @@
-source liu3.test.vim
+source boshiamy_table.vim
 
 function! SendKey (findstart, base)
     if a:findstart
