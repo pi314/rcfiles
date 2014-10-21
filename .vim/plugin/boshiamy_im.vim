@@ -21925,11 +21925,16 @@ function! SendKey (findstart, base)
     if a:findstart
         " locate the start of the boshiamy key sequence
         let line = getline('.')
-        let start = col('.') - 1
+        let start = col('.') - 1    " col is 1 indexed
+
+        if l:line[ strlen(l:line)-1 ] ==# ","
+            return strlen(l:line)-1
+        endif
+
         while l:start > 0 && l:line[l:start-1] =~# '[,.abcdefghijklmnopqrstuvwxyz1234567890]'
             let start -= 1
-
         endwhile
+
         return l:start
 
     else
