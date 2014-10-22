@@ -21931,7 +21931,7 @@ function! SendKey (findstart, base)
             return strlen(l:line)-1
         endif
 
-        while l:start > 0 && l:line[l:start-1] =~# '[,.abcdefghijklmnopqrstuvwxyz1234567890]'
+        while l:start > 0 && l:line[l:start-1] =~# "[,.abcdefghijklmnopqrstuvwxyz1234567890']"
             let start -= 1
         endwhile
 
