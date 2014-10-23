@@ -21921,17 +21921,20 @@ let boshiamy_table["zzrb"] = ["艞"]
 let boshiamy_table["zzrv"] = ["艞"]
 let boshiamy_table["zzw"] = ["籧"]
 
+function! Valid_char (c)
+    if a:c =~# "[',.a-z0-9]" || a:c == "[" || a:c == "]"
+        return 1
+    endif
+    return 0
+endfunction
+
 function! SendKey (findstart, base)
     if a:findstart
         " locate the start of the boshiamy key sequence
         let line = getline('.')
         let start = col('.') - 1    " col is 1 indexed
 
-        if l:line[ strlen(l:line)-1 ] ==# ","
-            return strlen(l:line)-1
-        endif
-
-        while l:start > 0 && l:line[l:start-1] =~# "[,.abcdefghijklmnopqrstuvwxyz1234567890']"
+        while l:start > 0 && Valid_char(l:line[l:start-1])
             let start -= 1
         endwhile
 
@@ -21943,7 +21946,7 @@ function! SendKey (findstart, base)
             return g:boshiamy_table[a:base]
 
         else
-            return [a:base." "]
+            return ['"'.a:base.'"'." "]
 
         endif
 
