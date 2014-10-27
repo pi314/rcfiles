@@ -3,8 +3,8 @@ setopt PROMPT_SUBST
 autoload -U colors && colors
 
 black="%{$fg_bold[black]%}"
-gray="%{$fd[white]%}"
-grey="%{$fd[white]%}"
+gray="%{$fg[white]%}"
+grey="%{$fg[white]%}"
 red="%{$fg_bold[red]%}"
 d_green="%{$fg[green]%}"
 green="%{$fg_bold[green]%}"
@@ -99,5 +99,5 @@ zle -N zle-line-finish
 zle -N zle-keymap-select
 
 prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${vim_mode_str}
-${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}@${white}%m${end}${screen_str}${uid_str} '
+${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}${gray}@${end}${white}%m${end}${screen_str}${uid_str} '
 
