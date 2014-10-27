@@ -60,7 +60,7 @@ function git_branch_name () {
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
 
 screen_str=""
-if [[ "$TERM" == 'screen' ]]; then
+if [[ "$TERM" == 'screen'* ]]; then
     if [[ -n "$TMUX" ]]; then
         session_name=`tmux display-message -p '#S'`
         WINDOW=`tmux display-message -p '#I'`
