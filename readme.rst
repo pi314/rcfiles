@@ -68,3 +68,24 @@ I use Ctrl+Left, Ctrl+Right to switch between windows
 =======
 
 Similar to ``.tcshrc``, some color settings adjusted.
+
+zsh
+===
+
+After failure on adjusting tcsh two line prompt, I switched to ``zsh``.
+
+I love my zsh prompt, I placed many infomations in it: (of course it may be slower, I don't care)
+
+- last command return code
+- directory stack depth (``pushd`` and ``popd``)
+- current path
+- current git branch name
+- current git branch status (clean, dirty, or very dirty)
+- suspend jobs
+- zsh vim mode (insert or command mode)
+- time (not automatically update)
+- username
+- hostname
+- current user privilege
+
+All information in two lines, I love it ~
