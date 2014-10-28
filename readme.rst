@@ -16,7 +16,7 @@ Installation
 
 Old rcfiles will be backed up, after these configuration file being installed, ``setup.sh`` will ask you if you want to install vim plugins.
 
-Remember to change the user data in ``.gitconfig``
+Remember to change the user data in ``.gitconfig`` (or delete it)
 
 .tcshrc
 =======
