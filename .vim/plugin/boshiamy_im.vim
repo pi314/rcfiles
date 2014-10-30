@@ -21970,17 +21970,6 @@ function! Toggle_im ()
     return ''
 endfunction
 
-function! SendSpace ()
-    if g:boshiamy_active
-        normal i<C-x><C-u>
-        return ''
-
-    else
-        return ' '
-
-    endif
-endfunction
-
 inoremap <expr> ,, Toggle_im()
 inoremap <expr> <space> g:boshiamy_active ? "<C-x><C-u>" : " "
 autocmd InsertLeave * let g:boshiamy_active=0
