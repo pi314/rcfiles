@@ -21923,10 +21923,15 @@ let boshiamy_table["zzrb"] = ["艞"]
 let boshiamy_table["zzrv"] = ["艞"]
 let boshiamy_table["zzw"] = ["籧"]
 
-function! Valid_char (c)
-    if a:c =~# "[',.a-z0-9]" || a:c == "[" || a:c == "]"
+function! CharType (c)
+    if a:c =~# "[a-z0-9]"
         return 1
+
+    elseif a:c == "[" || a:c == "]" || a:c == "," || a:c == "." || a:c == "'"
+        return 2
+
     endif
+
     return 0
 endfunction
 
@@ -21936,7 +21941,7 @@ function! SendKey (findstart, base)
         let line = getline('.')
         let start = col('.') - 1    " col is 1 indexed
 
-        while l:start > 0 && Valid_char(l:line[l:start-1])
+        while l:start > 0 && CharType(l:line[l:start-1])
             let start -= 1
         endwhile
 
@@ -21948,7 +21953,37 @@ function! SendKey (findstart, base)
             return g:boshiamy_table[a:base]
 
         else
-            return [a:base." "]
+            let pointer = 0
+            let char_type = CharType(a:base[l:pointer])
+            let buffer = ""
+
+            while l:pointer < strlen(a:base)
+                let new_char_type = CharType(a:base[l:pointer])
+
+                if l:new_char_type == l:char_type
+                    let buffer .= a:base[l:pointer]
+
+                else
+                    let l:char_type = l:new_char_type
+
+                    if g:boshiamy_active && has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
+                        let ret = []
+
+                        for i in g:boshiamy_table[ strpart(a:base, l:pointer) ]
+                            call add(l:ret, l:buffer . i)
+                        endfor
+
+                        return l:ret
+
+                    endif
+
+                endif
+
+                let l:pointer = l:pointer + 1
+
+            endwhile
+
+            return [a:base ." "]
 
         endif
 
@@ -21968,17 +22003,6 @@ function! Toggle_im ()
 
     endif
     return ''
-endfunction
-
-function! SendSpace ()
-    if g:boshiamy_active
-        normal i<C-x><C-u>
-        return ''
-
-    else
-        return ' '
-
-    endif
 endfunction
 
 inoremap <expr> ,, Toggle_im()
