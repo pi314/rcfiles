@@ -21930,6 +21930,9 @@ function! CharType (c)
     elseif a:c == "[" || a:c == "]" || a:c == "," || a:c == "." || a:c == "'"
         return 2
 
+    elseif a:c =~# "[A-Z]"
+        return 8
+
     endif
 
     return 0
@@ -21960,7 +21963,7 @@ function! SendKey (findstart, base)
             while l:pointer < strlen(a:base)
                 let new_char_type = CharType(a:base[l:pointer])
 
-                if l:new_char_type == l:char_type
+                if l:new_char_type % 7 == l:char_type % 7
                     let buffer .= a:base[l:pointer]
 
                 else
