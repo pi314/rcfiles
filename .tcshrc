@@ -1,9 +1,22 @@
-if (`uname` == "FreeBSD") then
+set LS_TYPE=""
+
+if ( `uname` == "FreeBSD" ) then
+    set LS_TYPE="BSD"
+
+else if ( `uname` == "Darwin" ) then
+    set LS_TYPE="BSD"
+
+else
+    set LS_TYPE="GNU"
+
+endif
+
+if ($LS_TYPE == "BSD") then
     alias ls 'ls-F -G'
     alias ll 'ls -aClG'
     alias lsl 'ls -ClG'
 
-    #Let "ls has pretty color
+    #Let "ls" has pretty color
     # a     black
     # b     red
     # c     green
@@ -35,6 +48,7 @@ else
     alias lsl 'ls -Cl --color=auto'
     # Let "ls" has pretty color
     setenv LS_COLORS "di=01;36:ln=01;35"
+
 endif
 
 alias grep 'grep --color=auto'
