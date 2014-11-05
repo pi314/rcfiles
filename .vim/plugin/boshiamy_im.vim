@@ -21963,10 +21963,7 @@ function! SendKey (findstart, base)
             while l:pointer < strlen(a:base)
                 let new_char_type = CharType(a:base[l:pointer])
 
-                if l:new_char_type % 7 == l:char_type % 7
-                    let buffer .= a:base[l:pointer]
-
-                else
+                if l:new_char_type % 7 != l:char_type % 7
                     let l:char_type = l:new_char_type
 
                     if g:boshiamy_active && has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
@@ -21982,6 +21979,7 @@ function! SendKey (findstart, base)
 
                 endif
 
+                let buffer .= a:base[l:pointer]
                 let l:pointer = l:pointer + 1
 
             endwhile
