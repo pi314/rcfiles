@@ -14,11 +14,25 @@ nnoremap t5 :Title<SPACE>'<CR>
 nnoremap t6 :Title<SPACE>`<CR>
 
 command! -nargs=1 Title call Title(<f-args>)
-function! Title(type)
-    if len(a:type) == 1
-        execute "normal yyp$r" . a:type
-    else
-        echom "Title type must be only one charactor"
+function! Title(title_char)
+    if len(a:title_char) == 1
+        let current_line_content = getline('.')
+        let title_string = repeat(a:title_char, strdisplaywidth(l:current_line_content))
+        let next_line_content = getline(line('.') + 1)
+
+        if l:next_line_content ==# ''
+            call append('.', l:title_string)
+
+        elseif l:next_line_content =~# '^\(.\)\1*$'
+            call setline(line('.')+1, l:title_string)
+
+        else
+            call append('.', '')
+            call append('.', l:title_string)
+
+        endif
+
     endif
+
 endfunction
 
