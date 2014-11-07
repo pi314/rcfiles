@@ -40,9 +40,12 @@ function git_branch_name () {
     if [[ -n $branch_name ]]; then
         # you are now in a git repo
         is_bare=$(git rev-parse --is-bare-repository)
-        if [[ "$is_bare" == "false" ]]; then
-            # it's a normal repo
+        if [[ "$is_bare" == "true" ]]; then
+            # this repo is bare
+            echo "${blue}(=BARE=)${end}"
 
+        else
+            # it's a normal repo
             if [[ "`git status --porcelain`" == "" ]]; then
                 # This repo is clean
                 echo "${blue}(${branch_name})${end}"
@@ -52,18 +55,14 @@ function git_branch_name () {
                 if [[ -z $(git status -s -uno) ]]; then
                     # This repo is dirty, but no modify on tracked files
                     echo "${purple}(${branch_name})${end}"
+
                 else
                     # This repo is dirty, and there are changes had been staged
                     echo "${red}(${branch_name})${end}"
+
                 fi
-
             fi
-
-        else
-            # this repo is bare
-            echo "${blue}(HEAD:bare)${end}"
         fi
-
     fi
 
 }
