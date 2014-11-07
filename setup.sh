@@ -40,9 +40,9 @@ install_file () {
 
 get_file_name () {
     f=$1
-    if [ "${f##*/}" == $f ]; then   # normal position
+    if [ "${f##*/}" = $f ]; then   # normal position
         echo "$f"
-    elif [ "n${f##*/}" == "n" ]; then   # the "file" is a directory
+    elif [ "n${f##*/}" = "n" ]; then   # the "file" is a directory
         # this is important: return ".vim" instead of ".vim/"
         # or your "$HOME/.vim" LINK will considered to be a directory
         echo "${f%%/*}"
