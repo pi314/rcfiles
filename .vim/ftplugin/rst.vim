@@ -17,6 +17,11 @@ command! -nargs=1 Title call Title(<f-args>)
 function! Title(title_char)
     if len(a:title_char) == 1
         let current_line_content = getline('.')
+
+        if l:current_line_content =~# '^\(.\)\1*$'  " the cursor is on the title line?
+            call cursor(line('.') - 1, col('.'))
+        endif
+
         let title_string = repeat(a:title_char, strdisplaywidth(l:current_line_content))
         let next_line_content = getline(line('.') + 1)
 
