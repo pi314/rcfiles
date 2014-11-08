@@ -31,7 +31,8 @@ function mkcd () {
 
 alias sudo='sudo -E'
 
-if [[ `command -v python3` ]]; then
+is_python3_installed=$(command -v python3)
+if [[ $? -eq 0 ]]; then
     # Hey, there is Python 3 installed, why not use it?
     alias python=python3
 fi
