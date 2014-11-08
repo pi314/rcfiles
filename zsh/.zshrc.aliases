@@ -31,5 +31,10 @@ function mkcd () {
 
 alias sudo='sudo -E'
 
+if [[ `command -v python3` ]]; then
+    # Hey, there is Python 3 installed, why not use it?
+    alias python=python3
+fi
+
 alias -s py=python
 alias -s sh=sh
