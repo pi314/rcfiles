@@ -4,3 +4,35 @@ setlocal smarttab
 setlocal expandtab
 setlocal nosmartindent
 setlocal wrap
+
+" Add a line under a rst title
+nnoremap t1 :Title<SPACE>=<CR>
+nnoremap t2 :Title<SPACE>-<CR>
+nnoremap t3 :Title<SPACE>~<CR>
+nnoremap t4 :Title<SPACE>"<CR>
+nnoremap t5 :Title<SPACE>'<CR>
+nnoremap t6 :Title<SPACE>`<CR>
+
+command! -nargs=1 Title call Title(<f-args>)
+function! Title(title_char)
+    if len(a:title_char) == 1
+        let current_line_content = getline('.')
+        let title_string = repeat(a:title_char, strdisplaywidth(l:current_line_content))
+        let next_line_content = getline(line('.') + 1)
+
+        if l:next_line_content ==# ''
+            call append('.', l:title_string)
+
+        elseif l:next_line_content =~# '^\(.\)\1*$'
+            call setline(line('.')+1, l:title_string)
+
+        else
+            call append('.', '')
+            call append('.', l:title_string)
+
+        endif
+
+    endif
+
+endfunction
+
