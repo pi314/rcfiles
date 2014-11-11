@@ -21924,14 +21924,17 @@ let boshiamy_table["zzrv"] = ["艞"]
 let boshiamy_table["zzw"] = ["籧"]
 
 function! CharType (c)
-    if a:c =~# "[a-z0-9]"
+    if a:c =~# "[a-zA-Z0-9]"
         return 1
 
-    elseif a:c == "[" || a:c == "]" || a:c == "," || a:c == "." || a:c == "'"
+    elseif a:c == "[" || a:c == "]"
         return 2
 
-    elseif a:c =~# "[A-Z]"
-        return 8
+    elseif a:c == "," || a:c == "."
+        return 3
+
+    elseif a:c == "'"
+        return 4
 
     endif
 
@@ -21963,7 +21966,7 @@ function! SendKey (findstart, base)
             while l:pointer < strlen(a:base)
                 let new_char_type = CharType(a:base[l:pointer])
 
-                if l:new_char_type % 7 != l:char_type % 7
+                if l:new_char_type != l:char_type
                     let l:char_type = l:new_char_type
 
                     if g:boshiamy_active && has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
