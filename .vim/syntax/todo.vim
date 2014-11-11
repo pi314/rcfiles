@@ -1,3 +1,12 @@
+" rst syntax
+syn match   rstSection          /.*\n([=`'"~^_*+#-])\1*/
+syn match   rstBulletList       /^\ *[-*+]/
+syn match   rstEnumeratedList   /^\ *\d\+\./
+syn match   rstEnumeratedList   /^\ *#\./
+hi def link rstSections         Label       " yellow
+hi def link rstBulletList       Comment     " cyan
+hi def link rstEnumeratedList   Comment     " cyan
+
 syn match   custom_checkbox     "\[.\]"
 syn match   empty_checkbox      "\[ \]"
 syn match   checked_checkbox    "\[v\]"
@@ -25,15 +34,6 @@ hi def link dquote_string       String
 hi def link squote_string       String
 hi def      date_string         cterm=underline ctermfg=7 " green
 hi def link important           Error
-
-" rst syntax
-syn match   rstSection          /.*\n([=`'"~^_*+#-])\1*/
-syn match   rstBulletList       /^\ *[-*+]/
-syn match   rstEnumeratedList   /^\ *\d\+\./
-syn match   rstEnumeratedList   /^\ *#\./
-hi def link rstSections         Label       " yellow
-hi def link rstBulletList       Comment     " cyan
-hi def link rstEnumeratedList   Comment     " cyan
 
 " Just for fun
 syn match   Google_G            '\<G\(oogle\>\)\@='
