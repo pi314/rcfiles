@@ -46,6 +46,9 @@ set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
 
+" Auto indent
+set ai
+
 " Ignore case on searching
 set ic
 
@@ -54,6 +57,15 @@ set ru
 
 " Enable backspace
 set bs=2
+
+" Show line numbers
+set nu
+
+" Status line
+set laststatus=2
+set wildmenu
+
+set scrolloff=5
 
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
@@ -70,15 +82,15 @@ hi VIMlogo     ctermfg=white ctermbg=blue
 nnoremap k gk
 nnoremap j gj
 
-nmap tj :tabp<CR>
-nmap tk :tabn<CR>
-nmap tt :tabe<SPACE>
-nmap tp :tabm -1<CR>
-nmap tn :tabm +1<CR>
+nnoremap tj :tabp<CR>
+nnoremap tk :tabn<CR>
+nnoremap tt :tabe<SPACE>
+nnoremap tp :tabm -1<CR>
+nnoremap tn :tabm +1<CR>
 
 " toggle the nerd tree
-nmap <C-n> :NERDTreeToggle<CR>
-imap <C-n> <ESC>:NERDTreeToggle<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
+inoremap <C-n> <ESC>:NERDTreeToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>
@@ -87,36 +99,11 @@ nnoremap <CR> o<ESC>
 inoremap <C-h> <BS>
 nnoremap <C-h> <BS>
 
+"""" My functions!
+
 " brackets
 command! -nargs=1 Br call Bracket_replace(<f-args>)
 command! -nargs=1 BR call Bracket_replace(<f-args>)
-
-" Show line numbers
-set nu
-
-" Indent related settings
-
-" Set cindent
-set ai
-set shiftwidth=4
-
-" Status line
-set laststatus=2
-set wildmenu
-
-set scrolloff=5
-
-"""" My functions!
-
-" Add a line under a rst title
-command! -nargs=1 Title call Title(<f-args>)
-function! Title(type)
-    if len(a:type) == 1
-        execute "normal yyp$r" . a:type
-    else
-        echom "Title type must be only one charactor"
-    endif
-endfunction
 
 " This function uses mark z
 function! Bracket_replace (from_to)

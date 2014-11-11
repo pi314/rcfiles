@@ -1,7 +1,19 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+LS_TYPE=""
 if [ `uname` == "FreeBSD" ]; then
+    LS_TYPE="BSD"
+
+elif [ `uname` == "Darwin" ]; then
+    LS_TYPE="BSD"
+
+else
+    LS_TYPE="GNU"
+
+fi
+
+if [ $LS_TYPE == "BSD" ]; then
     alias ls='ls -G'
     alias ll='ls -aClG'
     alias lsl='ls -ClG'
@@ -38,6 +50,7 @@ else
     alias lsl='ls -Cl --color=auto'
     # Let "ls" has pretty color
     export LS_COLORS="di=01;36:ln=01;35"
+
 fi
 
 # prompt setting
