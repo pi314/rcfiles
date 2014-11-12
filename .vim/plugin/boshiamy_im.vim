@@ -1,3 +1,8 @@
+" vim:fdm=marker
+" toggle all folding by "zi"
+
+" boshiamy_table
+" {{{
 let boshiamy_table = {}
 let boshiamy_table["'"] = ["、", "．", "‧"]
 let boshiamy_table["''"] = ["“", "〝"]
@@ -21922,6 +21927,12 @@ let boshiamy_table["zzr"] = ["箎", "艞"]
 let boshiamy_table["zzrb"] = ["艞"]
 let boshiamy_table["zzrv"] = ["艞"]
 let boshiamy_table["zzw"] = ["籧"]
+" }}}
+
+" chewing_table
+" {{{
+"
+" }}}
 
 function! CharType (c)
     if a:c =~# "[a-zA-Z0-9]"
