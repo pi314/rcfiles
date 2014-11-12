@@ -69,22 +69,6 @@ function git_branch_name () {
 
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
 
-screen_str=""
-if [[ "$TERM" == 'screen'* ]]; then
-    if [[ -n "$TMUX" ]]; then
-        session_name=`tmux display-message -p '#S'`
-        WINDOW=`tmux display-message -p '#I'`
-        screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
-
-    elif [[ -n "$STY" ]]; then
-        session_name="`echo $STY | cut -d '.' -f2`"
-        screen_str="%{[1;35m[$session_name S$WINDOW][m%}"
-
-    fi
-fi
-
-uid_str="%(!.#.>)"
-
 vim_mode_str="${black}[zsh]${end}"
 
 function zle-line-finish {
@@ -108,6 +92,27 @@ function zle-keymap-select {
 zle -N zle-line-finish
 zle -N zle-keymap-select
 
+time_str="${cyan}%T${end}"
+user_name_str="${yellow}%n${end}"
+at_str="${gray}@${end}"
+host_name_str="${white}%m${end}"
+
+screen_str=""
+if [[ "$TERM" == 'screen'* ]]; then
+    if [[ -n "$TMUX" ]]; then
+        session_name=`tmux display-message -p '#S'`
+        WINDOW=`tmux display-message -p '#I'`
+        screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
+
+    elif [[ -n "$STY" ]]; then
+        session_name="`echo $STY | cut -d '.' -f2`"
+        screen_str="%{[1;35m[$session_name S$WINDOW][m%}"
+
+    fi
+fi
+
+uid_str="%(!.#.>)"
+
 prompt='${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${vim_mode_str}
-${last_cmd_succ}${cyan}%T${end}${yellow}%n${end}${gray}@${end}${white}%m${end}${screen_str}${uid_str} '
+${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${screen_str}${uid_str} '
 
