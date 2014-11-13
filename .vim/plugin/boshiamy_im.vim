@@ -1,3 +1,8 @@
+" vim:fdm=marker
+" toggle all folding by "zi"
+
+" boshiamy_table
+" {{{
 let boshiamy_table = {}
 let boshiamy_table["'"] = ["、", "．", "‧"]
 let boshiamy_table["''"] = ["“", "〝"]
@@ -350,6 +355,7 @@ let boshiamy_table[",snr"] = ["▲"]
 let boshiamy_table[",sns"] = ["▼"]
 let boshiamy_table[",snv"] = ["▽"]
 let boshiamy_table[",snw"] = ["Δ"]
+let boshiamy_table[",space"] = ["　"]
 let boshiamy_table[",so"] = ["♂", "∮"]
 let boshiamy_table[",sov"] = ["∮"]
 let boshiamy_table[",sr"] = ["ㄙ"]
@@ -16263,7 +16269,7 @@ let boshiamy_table["ssp"] = ["紗"]
 let boshiamy_table["ssq"] = ["緇"]
 let boshiamy_table["ssqt"] = ["繅"]
 let boshiamy_table["ssrb"] = ["纘"]
-let boshiamy_table["sss"] = ["絑"]
+let boshiamy_table["sss"] = ["絑", "尛"]
 let boshiamy_table["ssu"] = ["綃"]
 let boshiamy_table["st"] = ["街"]
 let boshiamy_table["sta"] = ["順", "紜"]
@@ -21922,6 +21928,12 @@ let boshiamy_table["zzr"] = ["箎", "艞"]
 let boshiamy_table["zzrb"] = ["艞"]
 let boshiamy_table["zzrv"] = ["艞"]
 let boshiamy_table["zzw"] = ["籧"]
+" }}}
+
+" chewing_table
+" {{{
+"
+" }}}
 
 function! CharType (c)
     if a:c =~# "[a-zA-Z0-9]"
