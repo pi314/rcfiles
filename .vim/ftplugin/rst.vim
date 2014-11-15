@@ -41,3 +41,5 @@ function! Title(title_char)
 
 endfunction
 
+nnoremap < <<
+nnoremap > >>
