@@ -1,4 +1,9 @@
 setlocal commentstring=#%s
+
+" generate a checkbox at the beginning of line
+nnoremap <buffer> <C-c> :call Add_checkbox()<CR>
+inoremap <buffer> <C-c> <ESC>:call Add_checkbox()<CR>
+vnoremap <buffer> <C-c> :call Add_checkbox()<CR>
 function! Add_checkbox ()
     let l:line = getline('.')
 
@@ -26,7 +31,5 @@ function! Add_checkbox ()
     echom ""
 endfunction
 
-" generate a checkbox at the beginning of line
-nmap <buffer> <C-c> :call Add_checkbox()<CR>
-imap <buffer> <C-c> <ESC>:call Add_checkbox()<CR>
-vmap <buffer> <C-c> :call Add_checkbox()<CR>
+nnoremap < <<
+nnoremap > >>

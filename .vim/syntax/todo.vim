@@ -7,6 +7,7 @@ hi def link rstSections         Label       " yellow
 hi def link rstBulletList       Comment     " cyan
 hi def link rstEnumeratedList   Comment     " cyan
 
+" todo.vim syntax
 syn match   custom_checkbox     "\[.\]"
 syn match   empty_checkbox      "\[ \]"
 syn match   checked_checkbox    "\[v\]"
@@ -48,3 +49,7 @@ hi def      Google_second_o     cterm=bold ctermfg=3
 hi def      Google_g            cterm=bold ctermfg=4
 hi def      Google_l            cterm=bold ctermfg=2
 hi def      Google_e            cterm=bold ctermfg=1
+syn match   facebook            '\<facebook\>'
+hi def      facebook            cterm=bold ctermfg=white ctermbg=blue
+syn match   Yahoo               '\<Yahoo!'
+hi def      Yahoo               cterm=bold ctermfg=magenta
