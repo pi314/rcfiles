@@ -18,7 +18,7 @@ function! Title(title_char)
     if len(a:title_char) == 1
         let current_line_content = getline('.')
 
-        if l:current_line_content =~# '^\(.\)\1*$'  " the cursor is on the title line?
+        if l:current_line_content =~# '^\([^a-zA-Z]\)\1*$'  " the cursor is on the title line?
             call cursor(line('.') - 1, col('.'))
         endif
 
@@ -28,7 +28,7 @@ function! Title(title_char)
         if l:next_line_content ==# ''
             call append('.', l:title_string)
 
-        elseif l:next_line_content =~# '^\(.\)\1*$'
+        elseif l:next_line_content =~# '^\([^a-zA-Z]\)\1*$'
             call setline(line('.')+1, l:title_string)
 
         else
@@ -41,3 +41,5 @@ function! Title(title_char)
 
 endfunction
 
+nnoremap < <<
+nnoremap > >>
