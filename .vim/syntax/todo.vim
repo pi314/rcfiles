@@ -1,4 +1,5 @@
-" todo.vim syntax
+syntax case match
+
 syn match   custom_checkbox     "\[.\]"
 syn match   empty_checkbox      "\[ \]"
 syn match   checked_checkbox    "\[v\]"
@@ -44,3 +45,9 @@ syn match   facebook            '\<facebook\>'
 hi def      facebook            cterm=bold ctermfg=white ctermbg=blue
 syn match   Yahoo               '\<Yahoo!'
 hi def      Yahoo               cterm=bold ctermfg=magenta
+syn match   twitter             '\<twitter\>'
+hi def      twitter             cterm=bold ctermfg=7 ctermbg=6
+syn match   Mcdonald_M          "\<M\(cdonald's\>\)\@="
+syn match   Mcdonald_other      "\(\<M\)\@<=cdonald's\>"
+hi def      Mcdonald_M          cterm=bold ctermfg=3 ctermbg=1
+hi def      Mcdonald_other      cterm=bold ctermfg=7 ctermbg=1
