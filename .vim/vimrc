@@ -99,6 +99,10 @@ nnoremap <CR> o<ESC>
 inoremap <C-h> <BS>
 nnoremap <C-h> <BS>
 
+" hot key for macro register q
+" Do register Q
+nnoremap dq @q
+
 """" My functions!
 
 " brackets
