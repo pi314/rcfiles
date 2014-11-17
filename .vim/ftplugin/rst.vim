@@ -43,5 +43,32 @@ function! Title(title_char)
 
 endfunction
 
-nnoremap < <<
-nnoremap > >>
+nnoremap < :call ShiftIndent("LEFT")<CR>
+nnoremap > :call ShiftIndent("RIGHT")<CR>
+vnoremap < :call ShiftIndent("LEFT")<CR>
+vnoremap > :call ShiftIndent("RIGHT")<CR>
+
+function! ShiftIndent (direction)
+    let line = getline('.')
+    let pspace = strlen(matchstr(l:line, '^ *'))
+    let line_after_space  = l:line[ (l:pspace) :]
+    let u_shiftwidth = &shiftwidth
+    let remain_space = l:pspace % l:u_shiftwidth
+
+    if a:direction ==# "LEFT"
+        let pspace = l:pspace - ((l:remain_space != 0) ? (l:remain_space) : (l:u_shiftwidth))
+        let l:pspace = (l:pspace < 0) ? 0 : (l:pspace)
+
+    else
+        let pspace = l:pspace + ((l:remain_space != 0) ? (l:u_shiftwidth - l:remain_space) : (l:u_shiftwidth))
+
+    endif
+
+    if l:line_after_space =~# '^[-*+] .*$'
+        let line_after_space = "*-+"[(l:pspace / l:u_shiftwidth) % 3] . l:line_after_space[1:]
+    endif
+
+    call setline('.', repeat(' ', l:pspace) . l:line_after_space)
+    normal! ^
+
+endfunction
