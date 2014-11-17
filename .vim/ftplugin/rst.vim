@@ -52,20 +52,24 @@ function! ShiftIndent (direction)
     let line = getline('.')
     let pspace = strlen(matchstr(l:line, '^ *'))
     let line_after_space  = l:line[ (l:pspace) :]
-    let u_shiftwidth = &shiftwidth
-    let remain_space = l:pspace % l:u_shiftwidth
+    let remain_space = l:pspace % (&shiftwidth)
 
     if a:direction ==# "LEFT"
-        let pspace = l:pspace - ((l:remain_space != 0) ? (l:remain_space) : (l:u_shiftwidth))
+        let pspace = l:pspace - ((l:remain_space != 0) ? (l:remain_space) : &shiftwidth)
         let l:pspace = (l:pspace < 0) ? 0 : (l:pspace)
 
     else
-        let pspace = l:pspace + ((l:remain_space != 0) ? (l:u_shiftwidth - l:remain_space) : (l:u_shiftwidth))
+        let pspace = l:pspace + ((l:remain_space != 0) ? (&shiftwidth - l:remain_space) : &shiftwidth)
 
     endif
 
-    if l:line_after_space =~# '^[-*+] .*$'
-        let line_after_space = "*-+"[(l:pspace / l:u_shiftwidth) % 3] . l:line_after_space[1:]
+    if l:line_after_space =~# '^[-*+] \+.*$'
+        " bulleted list
+        let bullet = "*-+"[(l:pspace / &shiftwidth) % 3]
+        let pure_data = matchstr(l:line_after_space[1:], '\(^ \+\)\@<=[^ ].*$')
+        let bullet_space = repeat(' ', &softtabstop - ((l:pspace + 1) % (&softtabstop)) )
+        let line_after_space = l:bullet . l:bullet_space . l:pure_data
+
     endif
 
     call setline('.', repeat(' ', l:pspace) . l:line_after_space)
