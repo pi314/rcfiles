@@ -1,11 +1,4 @@
-" rst syntax
-syn match   rstSection          /.*\n([=`'"~^_*+#-])\1*/
-syn match   rstBulletList       /^\ *[-*+]/
-syn match   rstEnumeratedList   /^\ *\d\+\./
-syn match   rstEnumeratedList   /^\ *#\./
-hi def link rstSections         Label       " yellow
-hi def link rstBulletList       Comment     " cyan
-hi def link rstEnumeratedList   Comment     " cyan
+syntax case match
 
 syn match   custom_checkbox     "\[.\]"
 syn match   empty_checkbox      "\[ \]"
@@ -48,3 +41,15 @@ hi def      Google_second_o     cterm=bold ctermfg=3
 hi def      Google_g            cterm=bold ctermfg=4
 hi def      Google_l            cterm=bold ctermfg=2
 hi def      Google_e            cterm=bold ctermfg=1
+syn match   facebook            '\<facebook\>'
+hi def      facebook            cterm=bold ctermfg=white ctermbg=blue
+syn match   Yahoo               '\<Yahoo!'
+hi def      Yahoo               cterm=bold ctermfg=magenta
+syn match   twitter             '\<twitter\>'
+hi def      twitter             cterm=bold ctermfg=7 ctermbg=6
+syn match   Mcdonald_M          "\<M\(cdonald's\>\)\@="
+syn match   Mcdonald_other      "\(\<M\)\@<=cdonald's\>"
+hi def      Mcdonald_M          cterm=bold ctermfg=3 ctermbg=1
+hi def      Mcdonald_other      cterm=bold ctermfg=7 ctermbg=1
+syn match   Line                '\<Line\>'
+hi def      Line                cterm=bold ctermfg=7 ctermbg=2
