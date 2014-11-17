@@ -36,6 +36,3 @@ function! Add_checkbox ()
     execute "normal ^l"
     echom ""
 endfunction
-
-nnoremap < <<
-nnoremap > >>
