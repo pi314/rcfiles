@@ -51,3 +51,5 @@ syn match   Mcdonald_M          "\<M\(cdonald's\>\)\@="
 syn match   Mcdonald_other      "\(\<M\)\@<=cdonald's\>"
 hi def      Mcdonald_M          cterm=bold ctermfg=3 ctermbg=1
 hi def      Mcdonald_other      cterm=bold ctermfg=7 ctermbg=1
+syn match   Line                '\<Line\>'
+hi def      Line                cterm=bold ctermfg=7 ctermbg=2
