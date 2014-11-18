@@ -26,7 +26,7 @@ done
 
 export PATH
 
-export ZSH_KERNEL_TYPE="$(/usr/bin/uname -s)"
+export ZSH_KERNEL_TYPE="$(/usr/bin/env uname -s)"
 
 case $ZSH_KERNEL_TYPE in
 
