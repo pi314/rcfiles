@@ -11,7 +11,6 @@ syn match   C_comment           "#.*$"
 syn region  dquote_string       start=+"+ skip=+\\\\\|\\"+ end=+"+
 syn region  squote_string       start=+'+ skip=+\\\\\|\\"+ end=+'+
 syn match   date_string         "[0-9][0-9]/[0-9][0-9]"
-syn match   important           "\*.*\*"
 
 hi def      empty_checkbox      cterm=bold ctermfg=7 " white
 hi def      custom_checkbox     cterm=bold ctermfg=7 " white
@@ -24,7 +23,6 @@ hi def link C_comment           Comment
 hi def link dquote_string       String
 hi def link squote_string       String
 hi def      date_string         cterm=underline ctermfg=7 " green
-hi def link important           Error
 
 " Just for fun
 syn match   Google_G            '\<G\(oogle\>\)\@='
