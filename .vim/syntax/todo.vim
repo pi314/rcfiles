@@ -51,3 +51,6 @@ hi def      Mcdonald_M          cterm=bold ctermfg=3 ctermbg=1
 hi def      Mcdonald_other      cterm=bold ctermfg=7 ctermbg=1
 syn match   Line                '\<Line\>'
 hi def      Line                cterm=bold ctermfg=7 ctermbg=2
+syn match   FileZilla           '\<Fz\>'
+syn match   FileZilla           '\<FileZilla\>'
+hi def      FileZilla           cterm=bold ctermfg=7 ctermbg=1
