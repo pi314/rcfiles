@@ -7,9 +7,9 @@ setlocal nosmartindent
 setlocal wrap
 
 " generate a checkbox at the beginning of line
-nnoremap <buffer> <C-c> :call Add_checkbox()<CR>
-inoremap <buffer> <C-c> <ESC>:call Add_checkbox()<CR>
-vnoremap <buffer> <C-c> :call Add_checkbox()<CR>
+nnoremap <buffer> <silent> <C-c> :call Add_checkbox()<CR>
+inoremap <buffer> <silent> <C-c> <ESC>:call Add_checkbox()<CR>
+vnoremap <buffer> <silent> <C-c> :call Add_checkbox()<CR>
 function! Add_checkbox ()
     let l:line = getline('.')
 
