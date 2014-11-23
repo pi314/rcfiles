@@ -6,13 +6,13 @@ setlocal nosmartindent
 setlocal wrap
 
 " Add a line under a rst title
-nnoremap t0 :call Title("=")<CR>jyykP
-nnoremap t1 :call Title("=")<CR>
-nnoremap t2 :call Title("-")<CR>
-nnoremap t3 :call Title("~")<CR>
-nnoremap t4 :call Title('"')<CR>
-nnoremap t5 :call Title("'")<CR>
-nnoremap t6 :call Title("`")<CR>
+nnoremap <buffer> <silent> t0 :call Title("=")<CR>jyykP
+nnoremap <buffer> <silent> t1 :call Title("=")<CR>
+nnoremap <buffer> <silent> t2 :call Title("-")<CR>
+nnoremap <buffer> <silent> t3 :call Title("~")<CR>
+nnoremap <buffer> <silent> t4 :call Title('"')<CR>
+nnoremap <buffer> <silent> t5 :call Title("'")<CR>
+nnoremap <buffer> <silent> t6 :call Title("`")<CR>
 
 function! Title(title_char)
     if len(a:title_char) == 1
@@ -43,10 +43,10 @@ function! Title(title_char)
 
 endfunction
 
-nnoremap < :call ShiftIndent("LEFT")<CR>
-nnoremap > :call ShiftIndent("RIGHT")<CR>
-vnoremap < :call ShiftIndent("LEFT")<CR>
-vnoremap > :call ShiftIndent("RIGHT")<CR>
+nnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
+nnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
+vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
+vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
 
 function! ShiftIndent (direction)
     let line = getline('.')
