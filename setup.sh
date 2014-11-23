@@ -30,14 +30,6 @@ while [ "n$1" != "n" ]; do
     shift
 done
 
-install_folder () {
-    echo "install folder $1"
-}
-
-install_file () {
-    echo "install file $1"
-}
-
 get_file_name () {
     f=$1
     if [ "${f##*/}" = $f ]; then   # normal position
@@ -69,6 +61,29 @@ backup_old_file () {
     mv "$1" "$BACKUP_FILE_PATH"
 }
 
+ask_user () {
+    __return_var=$1
+
+    while [ 1 ]; do
+        read ybn
+        case $ybn in
+            [Yy] | "")
+                break;;
+
+            [Bb] )
+                break;;
+
+            [Nn] )
+                break;;
+
+            * )
+                ;;
+
+        esac
+
+    done
+}
+
 for f in $files; do
 
     filename=`get_file_name $f`
@@ -77,7 +92,7 @@ for f in $files; do
 
     INSTALL=1
 
-    if [ -h "$filepath" ]; then
+    if [ -L "$filepath" ]; then
         rm "$filepath"
         printf "${not_sure_color}$filepath@ symbolic link removed${end_color}\n"
 
