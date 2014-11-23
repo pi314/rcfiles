@@ -62,7 +62,10 @@ backup_old_file () {
 }
 
 ask_user () {
-    __return_var=$1
+    # ask_user opTion return_var
+    option=$1
+    __returnvar=$2
+    #eval $__resultvar="'result'"
 
     while [ 1 ]; do
         read ybn
@@ -82,6 +85,7 @@ ask_user () {
         esac
 
     done
+
 }
 
 for f in $files; do
