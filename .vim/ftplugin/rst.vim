@@ -6,7 +6,7 @@ setlocal nosmartindent
 setlocal wrap
 
 " Add a line under a rst title
-nnoremap <buffer> <silent> t0 :call Title("=")<CR>jyykP
+nnoremap <buffer> <silent> t0 :call Title("==")<CR>
 nnoremap <buffer> <silent> t1 :call Title("=")<CR>
 nnoremap <buffer> <silent> t2 :call Title("-")<CR>
 nnoremap <buffer> <silent> t3 :call Title("~")<CR>
@@ -14,31 +14,63 @@ nnoremap <buffer> <silent> t4 :call Title('"')<CR>
 nnoremap <buffer> <silent> t5 :call Title("'")<CR>
 nnoremap <buffer> <silent> t6 :call Title("`")<CR>
 
-function! Title(title_char)
-    if len(a:title_char) == 1
-        let line = getline('.')
+function! Title(i_title_char)
+    let title_char = a:i_title_char
+    let t0 = 0
 
-        let title_pattern = '^\([^a-zA-Z]\)\1*$'
-        if l:line =~# l:title_pattern
-            " the cursor is on the title line
-            call cursor(line('.') - 1, col('.'))
-        endif
+    if l:title_char ==# "=="
+        let t0 = 1
+        let l:title_char = "="
 
-        let title_string = repeat(a:title_char, strdisplaywidth(l:line))
-        let next_line_content = getline(line('.') + 1)
+    elseif len(l:title_char) != 1
+        return
 
-        if l:next_line_content ==# ''
-            call append('.', l:title_string)
+    endif
 
-        elseif l:next_line_content =~# l:title_pattern
-            call setline(line('.')+1, l:title_string)
+    let orig_row = line('.')
+    let orig_col = col('.')
+    let line = getline('.')
+
+    let title_pattern = '^\([^a-zA-Z]\)\1*$'
+    if l:line =~# l:title_pattern
+        " the cursor is on the title line
+        if getline(l:orig_row + 2) =~# l:title_pattern
+            " the cursor is on the t0 upper line
+            call cursor(l:orig_row + 1, col('.'))
 
         else
-            call append('.', '')
-            call append('.', l:title_string)
+            " the cursor is on the t0 lower line
+            call cursor(l:orig_row - 1, col('.'))
 
         endif
 
+    endif
+
+    if getline(line('.') - 1) =~# l:title_pattern
+        " remove the t0 upper line
+        normal! kdd
+        call cursor(line('.'), l:orig_col)
+    endif
+
+    let title_string = repeat(l:title_char, strdisplaywidth(l:line))
+    let next_line_content = getline(line('.') + 1)
+
+    if l:next_line_content ==# ''
+        call append('.', l:title_string)
+
+    elseif l:next_line_content =~# l:title_pattern
+        call setline(line('.')+1, l:title_string)
+
+    else
+        call append('.', '')
+        call append('.', l:title_string)
+
+    endif
+
+    if l:t0
+        call append(line('.') - 1, l:title_string)
+    else
+        call cursor(l:orig_row, col('.'))
     endif
 
 endfunction
