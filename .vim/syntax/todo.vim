@@ -16,14 +16,6 @@ hi def      question_checkbox   cterm=bold ctermfg=yellow
 syn match   C_comment           "#.*$"
 hi def link C_comment           Comment
 
-syn region  dquote_string       start=+"+ skip=+\\\\\|\\"+ end=+"+
-syn region  squote_string       start=+'+ skip=+\\\\\|\\"+ end=+'+
-hi def link dquote_string       String
-hi def link squote_string       String
-
-syn match   date_string         "[0-9][0-9]/[0-9][0-9]"
-hi def      date_string         cterm=underline ctermfg=white
-
 syn match   regex_r_quote       'r/\([^/]*/\)\@='
 syn match   regex_r_quote       "r'\([^']*'\)\@="
 syn match   regex_r_quote       'r"\([^"]*"\)\@='
@@ -38,6 +30,14 @@ syn match   regex_pattern       "\(r'\)\@<=[^']*\('\)\@="
 syn match   regex_pattern       '\(r"\)\@<=[^"]*\("\)\@='
 hi def      regex_r_quote                  ctermfg=darkmagenta
 hi def      regex_pattern       cterm=bold ctermfg=magenta
+
+syn region  dquote_string       start=+"+ skip=+\\\\\|\\"+ end=+"+
+syn region  squote_string       start=+'+ skip=+\\\\\|\\"+ end=+'+
+hi def link dquote_string       String
+hi def link squote_string       String
+
+syn match   date_string         "[0-9][0-9]/[0-9][0-9]"
+hi def      date_string         cterm=underline ctermfg=white
 
 
 " Just for fun
