@@ -16,28 +16,6 @@ end_color="\033[m"
 BACKUP_DIR_NAME="`date +%Y%m%d_%H%M%S`"
 BACKUP_FILE_PATH="$HOME/.old_rcfiles/$BACKUP_DIR_NAME"
 
-while [ "n$1" != "n" ]; do
-    case $1 in
-        "--quiet" | "-q")
-            QUIET=1
-            ;;
-
-        *)
-            echo "Unknown option: $1, ignore"
-            ;;
-
-    esac
-    shift
-done
-
-install_folder () {
-    echo "install folder $1"
-}
-
-install_file () {
-    echo "install file $1"
-}
-
 get_file_name () {
     f=$1
     if [ "${f##*/}" = $f ]; then   # normal position
@@ -69,6 +47,43 @@ backup_old_file () {
     mv "$1" "$BACKUP_FILE_PATH"
 }
 
+ask_user () {
+    # usage: ask_user [Options] [error_msg]
+    # first option character will be the default option
+    options=$(echo $1 | tr '[:upper:]' '[:lower:]')
+    error_msg=$2
+    ret=""
+
+    while [ 1 ]; do
+        read user_input
+        user_input=$(echo $user_input | tr '[:upper:]' '[:lower:]')
+        if [ "=$user_input" = "=" ]; then
+            # user input empty string (an newline char), use the default option
+            ret=${options:0:1}
+
+        else
+            # user input something, check it out
+            for i in $(echo $options | grep -o .); do
+                if [ "=$i" = "=$user_input" ]; then
+                    ret=$i
+                    break
+                fi
+            done
+
+        fi
+
+        if [ -z $ret ]; then
+            # user input didn't match anything, reject!
+            printf "$error_msg" 1>&2
+        else
+            echo $ret
+            break
+        fi
+
+    done
+
+}
+
 for f in $files; do
 
     filename=`get_file_name $f`
@@ -77,61 +92,52 @@ for f in $files; do
 
     INSTALL=1
 
-    if [ -h "$filepath" ]; then
+    if [ -L "$filepath" ]; then
         rm "$filepath"
         printf "${not_sure_color}$filepath@ symbolic link removed${end_color}\n"
 
     elif [ -f "$filepath" ]; then
         printf "${error_color}$filepath file exists, remove it? [Y(es) / n(o) / b(ackup)]${end_color} "
-        while [ 1 ]; do
-            read ybn
-            case $ybn in
-                [Yy] | "" )
-                    rm "$HOME/$filename"
-                    printf "${good_color}$filepath removed${end_color}\n"
-                    break ;;
+        answer=$(ask_user ybn "${error_color}Please answer yes ,no, or backup. [Y(es) / n(o) / b(ackup)]${end_color} ")
 
-                [Bb] )
-                    backup_old_file "$filepath"
-                    printf "${good_color}Backup $filename done${end_color}\n"
-                    break;;
+        case $answer in
+            [Yy] )
+                rm "$HOME/$filename"
+                printf "${good_color}$filepath removed${end_color}\n"
+                ;;
 
-                [Nn] )
-                    printf "${not_sure_color}Installation of $filename canceled${end_color}\n"
-                    INSTALL=0
-                    break;;
+            [Bb] )
+                backup_old_file "$filepath"
+                printf "${good_color}Backup $filename done${end_color}\n"
+                ;;
 
-                * )
-                    printf "Please answer yes ,no, or backup. [Y(es) / n(o) / b(ackup)] "
-                    ;;
-            esac
-        done
+            [Nn] )
+                printf "${not_sure_color}Installation of $filename canceled${end_color}\n"
+                INSTALL=0
+                ;;
+
+        esac
 
     elif [ -d "$filepath" ]; then
         printf "${error_color}$filepath/ directory exists, remove it? [Y(es) / n(o) / b(ackup)]${end_color} "
-        while [ 1 ]; do
-            read ybn
-            case $ybn in
-                [Yy] | "" )
-                    rm -r "$HOME/$filename/"
-                    printf "${good_color}$filepath/ removed${end_color}\n"
-                    break ;;
+        answer=$(ask_user ybn "${error_color}Please answer yes ,no, or backup. [Y(es) / n(o) / b(ackup)]${end_color} ")
+        case $answer in
+            [Yy] | "" )
+                rm -r "$HOME/$filename/"
+                printf "${good_color}$filepath/ removed${end_color}\n"
+                ;;
 
-                [Bb] )
-                    backup_old_file "$filepath"
-                    printf "${good_color}Backup $filename done${end_color}\n"
-                    break;;
+            [Bb] )
+                backup_old_file "$filepath"
+                printf "${good_color}Backup $filename done${end_color}\n"
+                ;;
 
-                [Nn] )
-                    printf "${not_sure_color}Installation of $filename canceled${end_color}\n"
-                    INSTALL=0
-                    break;;
+            [Nn] )
+                printf "${not_sure_color}Installation of $filename canceled${end_color}\n"
+                INSTALL=0
+                ;;
 
-                * )
-                    printf "Please answer yes ,no, or backup. [Y(es) / n(o) / b(ackup)] "
-                    ;;
-            esac
-        done
+        esac
 
     fi
 
@@ -151,25 +157,22 @@ if [ -d "$BACKUP_FILE_PATH" ]; then
 fi
 
 printf "Do you want to install all vim plugins now? [Y/n] "
-while [ 1 ]; do
-    read ybn
-    case $ybn in
-        [Yy] | "" )
-            printf "Installing vundle plugin...\n"
-            git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-            printf "Done\n"
-            printf "Installing other plugin...\n"
-            sleep 1
-            vim +PluginInstall +qall
-            break ;;
+answer=$(ask_user yn "${error_color}Please answer yes or no. [Y(es) / n(o)]${end_color} ")
 
-        [Nn] )
-            echo "vim plugin installation canceled"
-            break;;
+case $answer in
+    [Yy] )
+        printf "Installing vundle plugin...\n"
+        git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+        printf "Done\n"
+        printf "Installing other plugin...\n"
+        sleep 1
+        vim +PluginInstall +qall
+        ;;
 
-        * )
-            printf "Please answer yes or no. [Y(es) / n(o)] "
-            ;;
-    esac
-done
+    [Nn] )
+        echo "vim plugin installation canceled"
+        ;;
+
+esac
+
 echo "Vim installation completed"
