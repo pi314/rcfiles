@@ -23379,6 +23379,14 @@ endfunction
 set completefunc=SendKey
 
 let boshiamy_active = 0
+
+function! boshiamy_im#Status ()
+    if g:boshiamy_active
+        return '[嘸]'
+    endif
+    return '[英]'
+endfunction
+
 function! Toggle_im ()
     if g:boshiamy_active
         let g:boshiamy_active = 0
