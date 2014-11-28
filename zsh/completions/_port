@@ -1,0 +1,12 @@
+#compdef port
+
+_arguments  "1:actions:(activate archive archivefetch build cat cd checksum clean configure
+    contents deactivate dependents deps destroot dir distcheck distfiles
+    dmg dpkg echo edit exit extract fetch file gohome help info
+    install installed lint list livecheck load location log logfile
+    mdmg mirror mpkg notes outdated patch pkg platform portpkg
+    provides quit rdependents rdeps rev-upgrade rpm search select
+    selfupdate setrequested space srpm sync test unarchive uninstall
+    unload unsetrequested upgrade url usage variants version work)"\
+    "2:targets:(all current active inactive actinact installed uninstalled outdated obsolete requested unrequested leaves)"
+
