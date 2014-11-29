@@ -105,6 +105,20 @@ nnoremap <C-h> <BS>
 " Do register Q
 nnoremap dq @q
 
+" mappings for iterm2
+cnoremap [A <UP>
+cnoremap [D <LEFT>
+cnoremap [C <RIGHT>
+cnoremap [B <DOWN>
+inoremap [A <UP>
+inoremap [D <LEFT>
+inoremap [C <RIGHT>
+inoremap [B <DOWN>
+nnoremap [A <UP>
+nnoremap [D <LEFT>
+nnoremap [C <RIGHT>
+nnoremap [B <DOWN>
+
 """" My functions!
 
 " brackets
