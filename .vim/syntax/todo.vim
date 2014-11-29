@@ -36,7 +36,7 @@ syn region  squote_string       start=+'+ skip=+\\\\\|\\"+ end=+'+
 hi def link dquote_string       String
 hi def link squote_string       String
 
-syn match   date_string         "[0-9][0-9]/[0-9][0-9]"
+syn match   date_string         "\<[0-9][0-9]/[0-9][0-9]\>"
 hi def      date_string         cterm=underline ctermfg=white
 
 
