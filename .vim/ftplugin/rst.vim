@@ -95,16 +95,20 @@ function! ShiftIndent (direction)
 
     endif
 
-    if l:line_after_space =~# '^[-*+] \+.*$'
-        " bulleted list
-        let bullet = "*-+"[(l:pspace / &shiftwidth) % 3]
-        let pure_data = matchstr(l:line_after_space[1:], '\(^ \+\)\@<=[^ ].*$')
-        let bullet_space = repeat(' ', &softtabstop - ((l:pspace + 1) % (&softtabstop)) )
-        let line_after_space = l:bullet . l:bullet_space . l:pure_data
-
-    endif
-
-    call setline('.', repeat(' ', l:pspace) . l:line_after_space)
+    call setline('.', RefreshListSign(repeat(' ', l:pspace) . l:line_after_space) )
     normal! ^
 
 endfunction
+
+function! RefreshListSign (line)
+    let ret = a:line
+    if a:line =~# '^ *[-*+] \+.*$'
+        " bulleted list
+        let pspace = strlen(matchstr(a:line, '^ *'))
+        let text   = a:line[(l:pspace + 1):]
+        let bullet = "*-+"[(l:pspace / &shiftwidth) % 3]
+        let ret = repeat(' ', l:pspace) . l:bullet . l:text
+    endif
+    return l:ret
+endfunction
+
