@@ -67,6 +67,12 @@ set wildmenu
 
 set scrolloff=5
 
+" tell vim not creating {filename}~
+set nobackup
+set nowritebackup
+" tell vim not creating .{filename}.un~
+set noundofile
+
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
