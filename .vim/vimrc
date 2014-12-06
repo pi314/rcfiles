@@ -12,7 +12,7 @@ call vundle#begin()
 " Plugins
 Bundle 'gmarik/Vundle.vim'
 Bundle 'The-NERD-tree'
-Bundle 'Rykka/riv.vim'
+"Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
 
 call vundle#end()           " required
