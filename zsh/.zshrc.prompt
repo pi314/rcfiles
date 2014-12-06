@@ -21,12 +21,8 @@ last_cmd_succ="%(?.${black}.${red})|${end}"
 function dir_stacks () {
     depth=`dirs -p | wc -l | tr -d ' '`
     if [[ $depth -gt 1 ]]; then
-        echo -n "${d_green}"
-        printf '['%.0s {2..${depth}}
-        #for (( i = 1; i < $depth; i += 1))
-        #do 
-        #    echo -n "["
-        #done
+        dir_stack_str=$(printf '%*s' ${depth} | tr ' ' '[')
+        echo "${d_green}${dir_stack_str:1}"
 
     fi
 }
@@ -73,8 +69,8 @@ vim_mode_str="${black}[zsh]${end}"
 
 function zle-line-finish {
     vim_mode_str="${black}[zsh]${end}"
-
 }
+
 function zle-keymap-select {
     case ${KEYMAP} in
     vicmd)
