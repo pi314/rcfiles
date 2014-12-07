@@ -23328,6 +23328,10 @@ function! SendKey (findstart, base)
 
     " input key sequence is a:base
 
+    if g:boshiamy_status == 0
+        return [a:base . ' ']
+    endif
+
     " try chewing
     if a:base[0] == ';'
         let chewing_code = a:base[1:]
