@@ -23395,15 +23395,10 @@ function! Toggle_im ()
         let g:boshiamy_active = 1
 
     endif
-    return ''
-endfunction
-
-function! Leave_im ()
-    let g:boshiamy_active = 0
+    redrawstatus!
+    redraw!
     return ''
 endfunction
 
 inoremap <expr> ,, Toggle_im()
 inoremap <expr> <space> g:boshiamy_active ? "<C-x><C-u>" : " "
-inoremap <expr> <ESC> Leave_im() . "<ESC>"
-"autocmd InsertLeave * let g:boshiamy_active=0
