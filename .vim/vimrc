@@ -123,6 +123,8 @@ nnoremap [D <LEFT>
 nnoremap [C <RIGHT>
 nnoremap [B <DOWN>
 
+nnoremap <leader><C-l> :syntax sync fromstart<CR>
+
 """" My functions!
 
 " brackets
