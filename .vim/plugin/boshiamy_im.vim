@@ -23395,6 +23395,8 @@ function! Toggle_im ()
         let g:boshiamy_active = 1
 
     endif
+    redrawstatus!
+    redraw!
     return ''
 endfunction
 
