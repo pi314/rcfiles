@@ -23354,7 +23354,7 @@ function! SendKey (findstart, base)
         if l:new_char_type != l:char_type
             let l:char_type = l:new_char_type
 
-            if g:boshiamy_active && has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
+            if has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
                 let ret = []
 
                 for i in g:boshiamy_table[ strpart(a:base, l:pointer) ]
@@ -23378,27 +23378,37 @@ endfunction
 
 set completefunc=SendKey
 
-let boshiamy_active = 0
+let boshiamy_status = 0
 
 function! boshiamy_im#Status ()
-    if g:boshiamy_active
+    if g:boshiamy_status
         return '[嘸]'
     endif
     return '[英]'
 endfunction
 
-function! Toggle_im ()
-    if g:boshiamy_active
-        let g:boshiamy_active = 0
-
-    else
-        let g:boshiamy_active = 1
-
-    endif
+function! UpdateIMStatus (new_status)
+    let g:boshiamy_status = a:new_status
     redrawstatus!
     redraw!
+endfunction
+
+function! ToggleIM ()
+    if g:boshiamy_status
+        call UpdateIMStatus(0)
+
+    else
+        call UpdateIMStatus(1)
+
+    endif
     return ''
 endfunction
 
-inoremap <expr> ,, Toggle_im()
-inoremap <expr> <space> g:boshiamy_active ? "<C-x><C-u>" : " "
+function! LeaveIM ()
+    call UpdateIMStatus(0)
+    return ''
+endfunction
+
+inoremap <expr> ,, ToggleIM()
+inoremap <expr> <space> g:boshiamy_status ? "<C-x><C-u>" : " "
+nnoremap <expr> <ESC><ESC> LeaveIM()
