@@ -23306,81 +23306,79 @@ function! CharType (c)
     return 0
 endfunction
 
-function! SendKey (findstart, base)
+function! SendKey ()
 
-    if a:findstart
-        " locate the start of the boshiamy key sequence
-        let line = getline('.')
+    if g:boshiamy_status == 0
+        " IM is not ON, just return a space
+        return ' '
+    endif
 
-        let chewing_str = matchstr(l:line, ';[^;]\+$')
-        if l:chewing_str != ''
-            return strlen(l:line) - strlen(l:chewing_str)
-        endif
-
-        let start = col('.') - 1    " col is 1 indexed
-
+    let line = getline('.')
+    let chewing_str = matchstr(l:line, ';[^;]\+$')
+    if l:chewing_str != ''
+        " Found chewing pattern
+        let l:start = strlen(l:line) - strlen(l:chewing_str)
+    else
+        " Locate the start of the boshiamy key sequence
+        let start = col('.') - 1
         while l:start > 0 && CharType(l:line[l:start-1])
             let start -= 1
         endwhile
-
-        return l:start
     endif
 
-    " input key sequence is a:base
+    let l:base = l:line[(l:start): (col('.')-2)]
+    let l:col  = l:start + 1
 
-    if g:boshiamy_status == 0
-        return [a:base . ' ']
-    endif
+    " Input key start is l:start
+    " Input key col is l:col
+    " Input key sequence is l:base
 
-    " try chewing
-    if a:base[0] == ';'
-        let chewing_code = a:base[1:]
+    " Try chewing
+    if l:base[0] == ';'
+        let chewing_code = l:base[1:]
         if has_key(g:chewing_table, l:chewing_code)
-            return g:chewing_table[l:chewing_code]
+            call complete(l:col, g:chewing_table[l:chewing_code])
+            return ''
         endif
 
-        return [a:base . ' ']
-
+        " It's not chewing, cut off the ';' and try boshiamy
+        let l:col = l:col + 1
+        let l:base = l:base[1:]
     endif
 
-    " try boshiamy
-    if has_key(g:boshiamy_table, a:base)
-        return g:boshiamy_table[a:base]
+    if has_key(g:boshiamy_table, l:base)
+        call complete(l:col, g:boshiamy_table[l:base])
+        return ''
     endif
 
-    let pointer = 0
-    let char_type = CharType(a:base[l:pointer])
-    let buffer = ''
+    let char_type = CharType(l:base[0])
 
-    while l:pointer < strlen(a:base)
-        let new_char_type = CharType(a:base[l:pointer])
+    while strlen(l:base) > 0
+        let new_char_type = CharType(l:base[0])
 
+        " Cut off the string
         if l:new_char_type != l:char_type
-            let l:char_type = l:new_char_type
 
-            if has_key( g:boshiamy_table, strpart(a:base, l:pointer) )
-                let ret = []
-
-                for i in g:boshiamy_table[ strpart(a:base, l:pointer) ]
-                    call add(l:ret, l:buffer . i)
-                endfor
-
-                return l:ret
+            if has_key( g:boshiamy_table, l:base )
+                call complete(l:col, g:boshiamy_table[ (l:base) ])
+                return ''
 
             endif
 
         endif
 
-        let buffer .= a:base[l:pointer]
-        let l:pointer = l:pointer + 1
+        " Boshiamy char not found, cut off one char and keep trying
+        let l:col = l:col + 1
+        let l:base = l:base[1:]
+
+        let l:char_type = l:new_char_type
 
     endwhile
 
-    return [a:base .' ']
+    " There is nothing I can do, just return a space
+    return ' '
 
 endfunction
-
-set completefunc=SendKey
 
 let boshiamy_status = 0
 
@@ -23414,5 +23412,5 @@ function! LeaveIM ()
 endfunction
 
 inoremap <expr> ,, ToggleIM()
-inoremap <expr> <space> g:boshiamy_status ? "<C-x><C-u>" : " "
+inoremap <space> <C-R>=SendKey()<CR>
 nnoremap <expr> <ESC><ESC> LeaveIM()
