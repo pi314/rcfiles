@@ -1,5 +1,24 @@
 " vim:fdm=marker
-" toggle all folding by "zi"
+"
+" =============================================================================
+" File: boshiamy_im.vim
+" Description: A Boshiamy Chinese input method plugin for vim
+" Maintainer: Pi314 <michael66230@gmail.com>
+" Version: Alpha 1
+" =============================================================================
+" Install:
+"   Put this file in ``~/.vim/plugin`` , although gvim under Windows may not
+"   work, you may have to change the file encoding into ``CP950``.
+"
+" Usage:
+"   Press ``,,`` under insert mode toggles the IM status.
+"   Press ``<ESC><ESC>`` under normal mode resets the IM status (to English).
+"   When IM is activated (after ``,,``), press ``<SPACE>`` the send key, just like
+"   boshiamy.
+"
+" This plugin is not ready yet, i.e. it's not Pathogen/Vundle compatiable,
+" after I make it ready, the hot keys will be customizable.
+" =============================================================================
 
 " boshiamy_table
 " {{{
