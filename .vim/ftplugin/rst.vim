@@ -105,9 +105,10 @@ function! RefreshListSign (line)
     if a:line =~# '^ *[-*+] \+.*$'
         " bulleted list
         let pspace = strlen(matchstr(a:line, '^ *'))
-        let text   = a:line[(l:pspace + 1):]
+        let text   = matchstr( a:line[(l:pspace + 1):], '\(^ \+\)\@<=[^ ].*$')
+        let bullet_space = repeat(' ', &softtabstop - ((l:pspace + 1) % (&softtabstop)) )
         let bullet = "*-+"[(l:pspace / &shiftwidth) % 3]
-        let ret = repeat(' ', l:pspace) . l:bullet . l:text
+        let ret = repeat(' ', l:pspace) . l:bullet . l:bullet_space . l:text
     endif
     return l:ret
 endfunction
