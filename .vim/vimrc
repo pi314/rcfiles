@@ -14,6 +14,7 @@ Bundle 'gmarik/Vundle.vim'
 Bundle 'The-NERD-tree'
 "Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
+Bundle 'pi314/BoshiamyIM'
 
 call vundle#end()           " required
 filetype plugin indent on   " required
@@ -79,8 +80,6 @@ hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
-set statusline=%<%{boshiamy_im#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
-
 " ======== "
 " Hot-keys "
 " ======== "
@@ -126,6 +125,12 @@ nnoremap [C <RIGHT>
 nnoremap [B <DOWN>
 
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
+
+" BoshiamyIM
+set statusline=%<%{BoshiamyIM#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+inoremap <expr> ,, BoshiamyIM#ToggleIM()
+inoremap <space> <C-R>=SendKey()<CR>
+nnoremap <expr> <ESC><ESC> BoshiamyIM#LeaveIM()
 
 """" My functions!
 
