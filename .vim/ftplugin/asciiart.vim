@@ -117,17 +117,75 @@ function! CreateFrame () range " {{{
     let minc = l:minc < l:newc ? (l:minc) : (l:newc)
     let maxc = l:maxc > l:newc ? (l:maxc) : (l:newc)
 
-    let i = l:minl + 1
-    while l:i < l:maxl
+    if CheckFrame(l:minl, l:maxl, l:minc, l:maxc)
+        let i = l:minl + 1
+        while l:i < l:maxl
+            let line = getline(l:i)
+            call setline(l:i, strpart(l:line, 0, (l:minc-1)) .' '. l:line[(l:minc):(l:maxc-2)] .' '. l:line[(l:maxc):])
+            let i = l:i + 1
+        endwhile
+
+        let line = getline(l:minl)
+        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .' '. repeat(' ', l:maxc - l:minc - 1) .' '. l:line[(l:maxc):] )
+
+        let line = getline(l:maxl)
+        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ." ". repeat(' ', l:maxc - l:minc - 1) ." ". l:line[(l:maxc):] )
+
+    else
+        let i = l:minl + 1
+        while l:i < l:maxl
+            let line = getline(l:i)
+            call setline(l:i, strpart(l:line, 0, (l:minc-1)) .'|'. l:line[(l:minc):(l:maxc-2)] .'|'. l:line[(l:maxc):])
+            let i = l:i + 1
+        endwhile
+
+        let line = getline(l:minl)
+        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .'.'. repeat('-', l:maxc - l:minc - 1) .'.'. l:line[(l:maxc):] )
+
+        let line = getline(l:maxl)
+        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ."'". repeat('-', l:maxc - l:minc - 1) ."'". l:line[(l:maxc):] )
+
+    endif
+
+endfunction " }}}
+
+function! CheckFrame (minl, maxl, minc, maxc) " {{{
+    let i = a:minl + 1
+    while l:i < a:maxl
         let line = getline(l:i)
-        call setline(l:i, strpart(l:line, 0, (l:minc-1)) .'|'. l:line[(l:minc):(l:maxc-2)] .'|'. l:line[(l:maxc):])
+        if l:line[(a:minc-1)] != '|' || l:line[(a:maxc-1)] != '|'
+            return 0
+
+        endif
         let i = l:i + 1
     endwhile
 
-    let line = getline(l:minl)
-    call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .'.'. repeat('-', l:maxc - l:minc - 1) .'.'. l:line[(l:maxc):] )
+    let line = getline(a:minl)
+    if l:line[(a:minc-1)] != '.' || l:line[(a:maxc-1)] != '.'
+        return 0
+    endif
 
-    let line = getline(l:maxl)
-    call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ."'". repeat('-', l:maxc - l:minc - 1) ."'". l:line[(l:maxc):] )
+    let i = a:minc + 1
+    while l:i < a:maxc
+        if l:line[(l:i-1)] != '-'
+            return 0
+        endif
+        let i = l:i + 1
+    endwhile
+
+    let line = getline(a:maxl)
+    if l:line[(a:minc-1)] != "'" || l:line[(a:maxc-1)] != "'"
+        return 0
+    endif
+
+    let i = a:minc + 1
+    while l:i < a:maxc
+        if l:line[(l:i-1)] != '-'
+            return 0
+        endif
+        let i = l:i + 1
+    endwhile
+
+    return 1
 
 endfunction " }}}
