@@ -74,6 +74,9 @@ set nowritebackup
 " tell vim not creating .{filename}.un~
 set noundofile
 
+" set fold method as marker
+set fdm=marker
+
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
