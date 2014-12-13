@@ -1,7 +1,7 @@
-vnoremap ml :call Move_Block('L')<CR>
-vnoremap mh :call Move_Block('H')<CR>
-vnoremap mk :call Move_Block('K')<CR>
-vnoremap mj :call Move_Block('J')<CR>
+vnoremap L :call Move_Block('L')<CR>
+vnoremap H :call Move_Block('H')<CR>
+vnoremap K :call Move_Block('K')<CR>
+vnoremap J :call Move_Block('J')<CR>
 
 function! Move_Block (direction) range
     normal! gv
