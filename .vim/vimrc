@@ -68,14 +68,17 @@ set wildmenu
 
 set scrolloff=5
 
-" tell vim not creating {filename}~
+" tell vim don't create {filename}~
 set nobackup
 set nowritebackup
-" tell vim not creating .{filename}.un~
+" tell vim don't create .{filename}.un~
 set noundofile
 
 " set fold method as marker
 set fdm=marker
+
+" Funny Setting
+set norightleft
 
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
