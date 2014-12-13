@@ -1,9 +1,9 @@
-vnoremap L :call Move_Block('L')<CR>
-vnoremap H :call Move_Block('H')<CR>
-vnoremap K :call Move_Block('K')<CR>
-vnoremap J :call Move_Block('J')<CR>
+vnoremap L :call MoveBlock('L')<CR>
+vnoremap H :call MoveBlock('H')<CR>
+vnoremap K :call MoveBlock('K')<CR>
+vnoremap J :call MoveBlock('J')<CR>
 
-function! Move_Block (direction) range
+function! MoveBlock (direction) range " {{{
     normal! gv
 
     if mode() != ''
@@ -92,4 +92,42 @@ function! Move_Block (direction) range
 
     endif
 
-endfunction
+endfunction " }}}
+
+vnoremap mf :call CreateFrame()<CR>
+function! CreateFrame () range " {{{
+    normal! gv
+
+    if mode() != ''
+        return
+    endif
+
+    " retrive visual block range
+    let minl = line('.')
+    let maxl = line('.')
+    let minc = col('.')
+    let maxc = col('.')
+
+    normal! o
+    let newl = line('.')
+    let newc = col('.')
+    normal! o
+    let minl = l:minl < l:newl ? (l:minl) : (l:newl)
+    let maxl = l:maxl > l:newl ? (l:maxl) : (l:newl)
+    let minc = l:minc < l:newc ? (l:minc) : (l:newc)
+    let maxc = l:maxc > l:newc ? (l:maxc) : (l:newc)
+
+    let i = l:minl + 1
+    while l:i < l:maxl
+        let line = getline(l:i)
+        call setline(l:i, strpart(l:line, 0, (l:minc-1)) .'|'. l:line[(l:minc):(l:maxc-2)] .'|'. l:line[(l:maxc):])
+        let i = l:i + 1
+    endwhile
+
+    let line = getline(l:minl)
+    call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .'.'. repeat('-', l:maxc - l:minc - 1) .'.'. l:line[(l:maxc):] )
+
+    let line = getline(l:maxl)
+    call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ."'". repeat('-', l:maxc - l:minc - 1) ."'". l:line[(l:maxc):] )
+
+endfunction " }}}
