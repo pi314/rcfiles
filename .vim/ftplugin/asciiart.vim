@@ -8,40 +8,52 @@ function! MoveBlock (direction) range " {{{
 
     if mode() != ''
         return
+    endif
 
-    elseif a:direction ==# 'L'
+    " retrive visual block range
+    let minl = line('.')
+    let maxl = line('.')
+    let minc = col('.')
+    let maxc = col('.')
+    normal! o
+    let newl = line('.')
+    let newc = col('.')
+    normal! o
+    let minl = l:minl < l:newl ? (l:minl) : (l:newl)
+    let maxl = l:maxl > l:newl ? (l:maxl) : (l:newl)
+    let minc = l:minc < l:newc ? (l:minc) : (l:newc)
+    let maxc = l:maxc > l:newc ? (l:maxc) : (l:newc)
+
+    if a:direction ==# 'L'
+        let i = l:minl
+        while l:i <= l:maxl
+            let line = getline(l:i)
+            if strlen(l:line) <= l:maxc
+                call setline(l:i, l:line .' ')
+            endif
+            let l:i = l:i + 1
+        endwhile
         normal! dpgvlolo
 
     elseif a:direction ==# 'H'
-        normal! d
+
         if col('.') == 1
-            normal! Pgv
-
-        else
-            normal! hPgvhoho
-
+            return
         endif
+
+        let i = l:minl
+        while l:i <= l:maxl
+            let line = getline(l:i)
+            call setline(l:i, strpart(l:line, 0, l:minc-2) . l:line[(l:minc-1):(l:maxc-1)] . l:line[(l:minc-2)] . l:line[(l:maxc):])
+            let l:i = l:i + 1
+        endwhile
+        normal! gvhoho
 
     elseif a:direction ==# 'K' || a:direction ==# 'J'
 
-        " retrive visual block range
-        let minl = line('.')
-        let maxl = line('.')
-        let minc = col('.')
-        let maxc = col('.')
-
-        normal! o
-        let newl = line('.')
-        let newc = col('.')
-        normal! o
-        let minl = l:minl < l:newl ? (l:minl) : (l:newl)
-        let maxl = l:maxl > l:newl ? (l:maxl) : (l:newl)
-        let minc = l:minc < l:newc ? (l:minc) : (l:newc)
-        let maxc = l:maxc > l:newc ? (l:maxc) : (l:newc)
-
         " if the block is at the edge of vim buffer, extend it
         if l:minl == 1 && a:direction ==# 'K'
-            call append(0, '')
+            call append(0, repeat(' ', l:maxc))
 
         elseif l:maxl == line('$') && a:direction ==# 'J'
             call append(line('$'), '')
@@ -125,25 +137,34 @@ function! CreateFrame () range " {{{
             let i = l:i + 1
         endwhile
 
+        let t = repeat(' ', l:maxc - l:minc - 1)
         let line = getline(l:minl)
-        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .' '. repeat(' ', l:maxc - l:minc - 1) .' '. l:line[(l:maxc):] )
-
+        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .' '. l:t .' '. l:line[(l:maxc):] )
         let line = getline(l:maxl)
-        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ." ". repeat(' ', l:maxc - l:minc - 1) ." ". l:line[(l:maxc):] )
+        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ." ". l:t ." ". l:line[(l:maxc):] )
 
     else
         let i = l:minl + 1
         while l:i < l:maxl
             let line = getline(l:i)
-            call setline(l:i, strpart(l:line, 0, (l:minc-1)) .'|'. l:line[(l:minc):(l:maxc-2)] .'|'. l:line[(l:maxc):])
+            let s1 = strpart(l:line, 0, (l:minc-1))
+            let markup1 = ''
+            let s2 = l:line[(l:minc):(l:maxc-2)]
+
+            if strlen(l:line) < (l:minc-1)
+                let markup1 = repeat(' ', l:minc - 1 - strlen(l:line))
+                let s2 = repeat(' ', l:maxc - l:minc - 1)
+            endif
+
+            call setline(l:i, l:s1 . l:markup1 .'|'. l:s2 .'|'. l:line[(l:maxc):])
             let i = l:i + 1
         endwhile
 
+        let t = repeat('-', l:maxc - l:minc - 1)
         let line = getline(l:minl)
-        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .'.'. repeat('-', l:maxc - l:minc - 1) .'.'. l:line[(l:maxc):] )
-
+        call setline(l:minl, strpart(l:line, 0, (l:minc-1)) .'.'. l:t .'.'. l:line[(l:maxc):] )
         let line = getline(l:maxl)
-        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ."'". repeat('-', l:maxc - l:minc - 1) ."'". l:line[(l:maxc):] )
+        call setline(l:maxl, strpart(l:line, 0, (l:minc-1)) ."'". l:t ."'". l:line[(l:maxc):] )
 
     endif
 
