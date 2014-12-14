@@ -38,7 +38,11 @@ function! MoveBlock (direction) range " {{{
             call setline(l:i, l:s1 . l:s2 . l:s3 . l:s4)
             let l:i = l:i + 1
         endwhile
-        normal! gvlolo
+        let l:minc = l:minc + 1
+        let l:maxc = l:maxc + 1
+        call cursor(l:minl, l:minc)
+        normal! o
+        call cursor(l:maxl, l:maxc)
 
     elseif a:direction ==# 'H'
         if l:minc == 1
@@ -52,26 +56,29 @@ function! MoveBlock (direction) range " {{{
             let s2 = l:line[(l:minc-1):(l:maxc-1)]
             let s3 = l:line[(l:minc-2)]
             let s4 = l:line[(l:maxc):]
-            if l:s4 =~# ' \+'
-                let l:s4 = ''
+            let sr = l:s3 . l:s4
+            if l:sr =~# ' \+'
+                let l:sr = ''
             endif
-            call setline(l:i, l:s1 . l:s2 . l:s3 . l:s4)
+            call setline(l:i, l:s1 . l:s2 . l:sr)
             let l:i = l:i + 1
         endwhile
-        normal! gvhoho
+
+        let l:minc = l:minc - 1
+        let l:maxc = l:maxc - 1
+        call cursor(l:minl, l:minc)
+        normal! o
+        call cursor(l:maxl, l:maxc)
 
     elseif a:direction ==# 'K' || a:direction ==# 'J'
 
         if l:minl == 1 && a:direction ==# 'K'
-            " Move upper than buffer is not permitted
-            " you can append some space lines first
             call append(0, '')
             let minl = l:minl + 1
             let maxl = l:maxl + 1
             call cursor(l:minl, l:minc)
             normal! o
             call cursor(l:maxl, l:maxc)
-            normal! o
 
         elseif l:maxl == line('$') && a:direction ==# 'J'
             call append(line('$'), '')
@@ -79,46 +86,74 @@ function! MoveBlock (direction) range " {{{
         endif
 
         " scroll line number - sln
-        " tailing line number - fln
-        if a:direction ==# 'K'
+        " .------------------. .------------------.
+        " | &&&&& sln, minll | | .---. minl       |
+        " | .---. minl       | | | v | minll      |
+        " | | ^ |            | | | v |            |
+        " | | ^ |            | | | v |            |
+        " | | ^ | maxll      | | '---' maxl       |
+        " | '---' maxl       | | &&&&& sln, maxll |
+        " '------------------' '------------------'
+
+        let minll = l:minl
+        let maxll = l:maxl
+        if a:direction ==# 'K'  " up
             let sln = l:minl - 1
-            let fln = l:minl - 1
+            let move_dir = 1
+            let minll = l:sln
+            let maxll = l:maxl - 1
             let edge = l:maxl
 
-        elseif a:direction ==# 'J'
+        elseif a:direction ==# 'J' " down
             let sln = l:maxl + 1
-            let fln = l:minl + 1
+            let move_dir = -1
+            let minll = l:minl + 1
+            let maxll = l:sln
             let edge = l:minl
 
         endif
 
-        " scroll line content
+        " back the scroll line first
         let slc = getline(l:sln)
-        let makeup_space = repeat(' ', l:maxc - strlen(l:slc))
-        call setline(l:sln, l:slc . l:makeup_space)
 
-        let slc = getline(l:sln)
-        let cut_content = l:slc[(l:minc-1):(l:maxc-1)]
-        call setline(l:sln, l:slc[:(l:minc-2)] . l:slc[(l:maxc):] )
+        let i = l:sln
+        while l:minll <= l:i && l:i <= l:maxll
+            let thisline = getline(l:i)
+            if strlen(l:thisline) < l:maxc
+                let l:thisline = l:thisline .repeat(' ', l:maxc - strlen(l:thisline))
+            endif
+            let lastline = getline(l:i + l:move_dir)
+            " put lastline onto thisline
+            let s1 = strpart(l:thisline, 0, l:minc - 1)
+            let s2 = l:lastline[ (l:minc-1) : (l:maxc-1)]
+            let s3 = l:thisline[ (l:maxc) : ]
+            call setline(l:i, l:s1 . l:s2 . l:s3)
+            let l:i = l:i + l:move_dir
 
-        " move the text
-        normal! d
-        call cursor(l:fln, l:minc)
-        if strlen(getline(l:fln)) < l:minc
-            normal! p
-        else
-            normal! P
+        endwhile
+
+        if strlen(l:slc) < l:maxc
+            let l:slc = l:slc .repeat(' ', l:maxc - strlen(l:slc) + 1)
         endif
 
-        " remain line content
-        let rlc = getline(l:edge)
-        call setline(l:edge, l:rlc[ : (l:minc-2)] . l:cut_content . l:rlc[(l:minc-1) : ] )
+        let thisline = getline(l:edge)
+        let s1 = strpart(l:thisline, 0, l:minc - 1)
+        let s2 = l:slc[ (l:minc-1) : (l:maxc-1) ]
+        let s3 = l:thisline[ (l:maxc) : ]
+        let content = matchstr(l:s1 . l:s2 . l:s3, '^.*[^ ]\( *$\)\@=')
+        call setline(l:edge, l:content)
 
         if a:direction ==# 'K'
-            normal! gvkoko
+            let l:minl = l:minl - 1
+            let l:maxl = l:maxl - 1
         elseif a:direction ==# 'J'
-            normal! gvjojo
+            let l:minl = l:minl + 1
+            let l:maxl = l:maxl + 1
         endif
+
+        call cursor(l:minl, l:minc)
+        normal! o
+        call cursor(l:maxl, l:maxc)
 
     endif
 
