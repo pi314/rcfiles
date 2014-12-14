@@ -15,6 +15,7 @@ Bundle 'The-NERD-tree'
 "Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'pi314/BoshiamyIM'
+Bundle 'pi314/AsciiArt'
 
 call vundle#end()           " required
 filetype plugin indent on   " required
