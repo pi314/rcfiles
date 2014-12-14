@@ -61,7 +61,13 @@ function! MoveBlock (direction) range " {{{
         if l:minl == 1 && a:direction ==# 'K'
             " Move upper than buffer is not permitted
             " you can append some space lines first
-            return
+            call append(0, '')
+            let minl = l:minl + 1
+            let maxl = l:maxl + 1
+            call cursor(l:minl, l:minc)
+            normal! o
+            call cursor(l:maxl, l:maxc)
+            normal! o
 
         elseif l:maxl == line('$') && a:direction ==# 'J'
             call append(line('$'), '')
