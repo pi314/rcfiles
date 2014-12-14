@@ -58,9 +58,10 @@ function! MoveBlock (direction) range " {{{
 
     elseif a:direction ==# 'K' || a:direction ==# 'J'
 
-        " if the block is at the edge of vim buffer, extend it
         if l:minl == 1 && a:direction ==# 'K'
-            call append(0, repeat(' ', l:maxc))
+            " Move upper than buffer is not permitted
+            " you can append some space lines first
+            return
 
         elseif l:maxl == line('$') && a:direction ==# 'J'
             call append(line('$'), '')
