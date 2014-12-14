@@ -28,16 +28,20 @@ function! MoveBlock (direction) range " {{{
         let i = l:minl
         while l:i <= l:maxl
             let line = getline(l:i)
-            if strlen(l:line) <= l:maxc
-                call setline(l:i, l:line .' ')
+            let s1 = strpart(l:line, 0, l:minc-1)
+            let s2 = l:line[(l:maxc)]
+            if l:s2 == ''
+                let l:s2 = ' '
             endif
+            let s3 = l:line[(l:minc-1):(l:maxc-1)]
+            let s4 = l:line[(l:maxc+1):]
+            call setline(l:i, l:s1 . l:s2 . l:s3 . l:s4)
             let l:i = l:i + 1
         endwhile
-        normal! dpgvlolo
+        normal! gvlolo
 
     elseif a:direction ==# 'H'
-
-        if col('.') == 1
+        if l:minc == 1
             return
         endif
 
