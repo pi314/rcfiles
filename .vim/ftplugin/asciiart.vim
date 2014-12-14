@@ -44,7 +44,14 @@ function! MoveBlock (direction) range " {{{
         let i = l:minl
         while l:i <= l:maxl
             let line = getline(l:i)
-            call setline(l:i, strpart(l:line, 0, l:minc-2) . l:line[(l:minc-1):(l:maxc-1)] . l:line[(l:minc-2)] . l:line[(l:maxc):])
+            let s1 = strpart(l:line, 0, l:minc-2)
+            let s2 = l:line[(l:minc-1):(l:maxc-1)]
+            let s3 = l:line[(l:minc-2)]
+            let s4 = l:line[(l:maxc):]
+            if l:s4 =~# ' \+'
+                let l:s4 = ''
+            endif
+            call setline(l:i, l:s1 . l:s2 . l:s3 . l:s4)
             let l:i = l:i + 1
         endwhile
         normal! gvhoho
