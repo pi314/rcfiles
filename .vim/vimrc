@@ -43,16 +43,18 @@ set bg=dark
 
 " Tab charactor related settings
 set expandtab       " changes user pressed TAB to spaces
+set smarttab
+set nosmartindent
+set autoindent
 set tabstop=4       " changes the width of the TAB character
 set shiftwidth=4    " >>, <<, == width and automatic indent width
 set listchars=tab:>-
 set list
 
-" Auto indent
-set ai
+set wrap
 
 " Ignore case on searching
-set ic
+set ignorecase
 
 " Show the coordinate of cursor
 set ru
