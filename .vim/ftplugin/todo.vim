@@ -1,10 +1,6 @@
 setlocal commentstring=#%s
 setlocal softtabstop=4
 setlocal shiftwidth=4
-setlocal smarttab
-setlocal expandtab
-setlocal nosmartindent
-setlocal wrap
 
 " generate a checkbox at the beginning of line
 nnoremap <buffer> <silent> <C-c> :call Add_checkbox()<CR>
@@ -13,26 +9,29 @@ vnoremap <buffer> <silent> <C-c> :call Add_checkbox()<CR>
 function! Add_checkbox ()
     let l:line = getline('.')
 
-    let l:prefix_space = matchstr(l:line, '^ *')
-    let l:after_space_data = l:line[strlen(l:prefix_space):]
+    let l:pspace = matchstr(l:line, '^ *')
 
-    if l:after_space_data[0:2] == '[ ]'
-        let l:after_space_data = '[v]' . l:after_space_data[3:]
-
-    elseif l:after_space_data[0:2] == '[v]'
-        let l:after_space_data = '[x]' . l:after_space_data[3:]
-
-    elseif l:after_space_data[0:2] == '[x]'
-        let l:after_space_data = '[ ]' . l:after_space_data[3:]
-
-    elseif l:after_space_data[0:2] =~ '^\[.\]$'
-        let l:after_space_data = '[ ]' . l:after_space_data[3:]
-
+    if l:line =~# '^ *[-*+] \+.*$'
+        let l:text = matchstr(l:line, '\(^ *[-*+] \+\)\@<=[^ ].*$')
     else
-        let l:after_space_data = '[ ] ' . l:after_space_data
+        let l:text = l:line[strlen(l:pspace):]
     endif
 
-    call setline('.', l:prefix_space . l:after_space_data)
-    execute "normal ^l"
-    echom ""
+    if l:text[0:2] == '[ ]'
+        let l:text = '[v]' . l:text[3:]
+
+    elseif l:text[0:2] == '[v]'
+        let l:text = '[x]' . l:text[3:]
+
+    elseif l:text[0:2] == '[x]'
+        let l:text = '[ ]' . l:text[3:]
+
+    elseif l:text[0:2] =~ '^\[.\]$'
+        let l:text = '[ ]' . l:text[3:]
+
+    else
+        let l:text = '[ ] ' . l:text
+    endif
+
+    call setline('.', l:pspace . l:text)
 endfunction
