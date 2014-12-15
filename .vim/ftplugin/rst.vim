@@ -112,34 +112,33 @@ endfunction " }}}
 inoremap <buffer> <silent> <leader>b <ESC>:call CreateBullet()<CR>a
 function! CreateBullet () " {{{
     let cln = line('.')
-    if l:cln == 1
-        return ''
+    let clc = getline(l:cln)
 
-    else
-        let clc = getline(l:cln)
+    if l:clc =~# '^ *[-*+] \+.*$'
+        call setline(l:cln, RefreshListSign(l:clc))
 
-        if l:clc =~# '^ *[-*+] \+.*$'
-            call setline(l:cln, RefreshListSign(l:clc))
+    elseif l:clc =~# '^ *$'
+        if l:cln > 1
+            let llc = getline(l:cln - 1)
+        endif
 
-        elseif l:clc =~# '^ *$'
-            let lln = l:cln - 1
-            let llc = getline(l:lln)
-            if l:llc =~# '^ *[-*+] \+.*$'
-                let pspace = strlen(matchstr(l:llc, '^ *'))
-                call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
-                call cursor(l:cln, strlen(getline(l:cln)))
-            else
-                let pspace = strlen(l:clc)
-                call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
-                call cursor(l:cln, strlen(getline(l:cln)))
-            endif
+        if l:cln > 1 && l:llc =~# '^ *[-*+] \+.*$'
+            let pspace = strlen(matchstr(l:llc, '^ *'))
+            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
+            call cursor(l:cln, strlen(getline(l:cln)) + 2)
 
         else
-            let pspace = strlen(matchstr(l:clc, '^ *'))
-            let text = matchstr(l:clc, '\(^ *\)\@<=.*$')
-            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '. l:text))
+            let pspace = strlen(l:clc)
+            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
+            call cursor(l:cln, strlen(getline(l:cln)) + 2)
 
         endif
+
+    else
+        let pspace = strlen(matchstr(l:clc, '^ *'))
+        let text = matchstr(l:clc, '\(^ *\)\@<=.*$')
+        call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '. l:text))
+        call cursor(l:cln, strlen(getline(l:cln)) + 2)
 
     endif
 
