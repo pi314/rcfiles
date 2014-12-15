@@ -10,7 +10,7 @@ nnoremap <buffer> <silent> t4 :call Title('"')<CR>
 nnoremap <buffer> <silent> t5 :call Title("'")<CR>
 nnoremap <buffer> <silent> t6 :call Title("`")<CR>
 
-function! Title(i_title_char)
+function! Title(i_title_char) " {{{
     let title_char = a:i_title_char
     let t0 = 0
 
@@ -69,14 +69,14 @@ function! Title(i_title_char)
         call cursor(l:orig_row, col('.'))
     endif
 
-endfunction
+endfunction " }}}
 
 nnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
 nnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
 vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
 vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
 
-function! ShiftIndent (direction)
+function! ShiftIndent (direction) " {{{
     let line = getline('.')
     let pspace = strlen(matchstr(l:line, '^ *'))
     let line_after_space  = l:line[ (l:pspace) :]
@@ -94,9 +94,9 @@ function! ShiftIndent (direction)
     call setline('.', RefreshListSign(repeat(' ', l:pspace) . l:line_after_space) )
     normal! ^
 
-endfunction
+endfunction " }}}
 
-function! RefreshListSign (line)
+function! RefreshListSign (line) " {{{
     let ret = a:line
     if a:line =~# '^ *[-*+] \+.*$'
         " bulleted list
@@ -107,5 +107,40 @@ function! RefreshListSign (line)
         let ret = repeat(' ', l:pspace) . l:bullet . l:bullet_space . l:text
     endif
     return l:ret
-endfunction
+endfunction " }}}
 
+inoremap <buffer> <silent> <leader>b <ESC>:call CreateBullet()<CR>a
+function! CreateBullet () " {{{
+    let cln = line('.')
+    if l:cln == 1
+        return ''
+
+    else
+        let clc = getline(l:cln)
+
+        if l:clc =~# '^ *[-*+] \+.*$'
+            call setline(l:cln, RefreshListSign(l:clc))
+
+        elseif l:clc =~# '^ *$'
+            let lln = l:cln - 1
+            let llc = getline(l:lln)
+            if l:llc =~# '^ *[-*+] \+.*$'
+                let pspace = strlen(matchstr(l:llc, '^ *'))
+                call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
+                call cursor(l:cln, strlen(getline(l:cln)))
+            else
+                let pspace = strlen(l:clc)
+                call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
+                call cursor(l:cln, strlen(getline(l:cln)))
+            endif
+
+        else
+            let pspace = strlen(matchstr(l:clc, '^ *'))
+            let text = matchstr(l:clc, '\(^ *\)\@<=.*$')
+            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '. l:text))
+
+        endif
+
+    endif
+
+endfunction " }}}
