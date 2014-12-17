@@ -73,8 +73,8 @@ endfunction " }}}
 
 nnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
 nnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
-vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>
-vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
+vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>gv
+vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>gv
 
 function! ShiftIndent (direction) " {{{
     let line = getline('.')
