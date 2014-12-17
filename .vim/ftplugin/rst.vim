@@ -137,7 +137,8 @@ function! CreateBullet () " {{{
     else
         let pspace = strlen(matchstr(l:clc, '^ *'))
         let text = matchstr(l:clc, '\(^ *\)\@<=.*$')
-        call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '. l:text))
+        let back_space = (l:pspace) % (&softtabstop)
+        call setline(l:cln, RefreshListSign(repeat(' ', l:pspace - l:back_space) .'- '. l:text))
         call cursor(l:cln, strlen(getline(l:cln)) + 2)
 
     endif
