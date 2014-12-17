@@ -76,71 +76,156 @@ nnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>
 vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>gv
 vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>gv
 
+let s:blpattern = '^ *[-*+] \+\([^ ].*\)\?$'
+let s:elpattern1 = '^ *\d\+\. \+\([^ ].*\)\?$'
+let s:elpattern2 = '^ *#\. \+\([^ ].*\)\?$'
+
 function! ShiftIndent (direction) " {{{
-    let line = getline('.')
-    let pspace = strlen(matchstr(l:line, '^ *'))
-    let line_after_space  = l:line[ (l:pspace) :]
-    let remain_space = l:pspace % (&shiftwidth)
+    let cln = line('.')
+    let clc = getline(l:cln)
+    let tmp = ParseBullet(l:clc)
+    let clc_pspace = l:tmp[0]
+    let clc_bullet = l:tmp[1]
+    let clc_text   = l:tmp[2]
+    let remain_space = l:clc_pspace % (&shiftwidth)
 
     if a:direction ==# "LEFT"
-        let pspace = l:pspace - ((l:remain_space != 0) ? (l:remain_space) : &shiftwidth)
-        let l:pspace = (l:pspace < 0) ? 0 : (l:pspace)
+        let pspace_num = strlen(l:clc_pspace) - ((l:remain_space != 0) ? (l:remain_space) : &shiftwidth)
+        let l:pspace_num = (l:pspace_num < 0) ? 0 : (l:pspace_num)
 
     else
-        let pspace = l:pspace + ((l:remain_space != 0) ? (&shiftwidth - l:remain_space) : &shiftwidth)
+        let pspace_num = strlen(l:clc_pspace) + ((l:remain_space != 0) ? (&shiftwidth - l:remain_space) : &shiftwidth)
 
     endif
 
-    call setline('.', RefreshListSign(repeat(' ', l:pspace) . l:line_after_space) )
+    let result_line = repeat(' ', l:pspace_num) . l:clc_text
+
+    if l:clc_bullet != ''
+        let llc_pspace = ''
+        let llc_bullet = ''
+        let i = l:cln - 1
+        while l:i > 0
+            let tmp = ParseBullet(getline(l:i))
+            let llc_pspace = l:tmp[0]
+            let llc_bullet = l:tmp[1]
+            let llc_text   = l:tmp[2]
+            if l:llc_text != '' && l:llc_bullet == ''
+                break
+            elseif l:llc_bullet != ''
+                if strlen(l:llc_pspace) < l:pspace_num
+                    let llc_pspace = ''
+                    break
+                elseif strlen(l:llc_pspace) == l:pspace_num
+                    break
+                endif
+            endif
+
+            let l:i = l:i - 1
+        endwhile
+
+        if strlen(l:llc_pspace) != l:pspace_num || l:llc_bullet == ''
+            if l:clc_bullet =~# '^[-*+]$'
+                let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+            else
+                let new_bullet = l:clc_bullet
+            endif
+
+        elseif l:llc_bullet =~# '^[-*+]$'
+            " last line is a bulleted list item
+            let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+
+        elseif l:llc_bullet == '#.'
+            " last line is a (lazy) enumerate list item
+            let new_bullet = '#.'
+
+        elseif l:llc_bullet =~# '^\d\+\.$'
+            " last line is a enumerate list item
+            let new_bullet = (l:llc_bullet + 1) .'.'
+
+        endif
+        let bullet_space = repeat(' ', &softtabstop - ((l:pspace_num + strlen(l:new_bullet)) % (&softtabstop)) )
+        let result_line = repeat(' ', l:pspace_num). l:new_bullet . l:bullet_space . l:clc_text
+
+    endif
+
+    call setline('.', l:result_line)
     normal! ^
 
 endfunction " }}}
 
-function! RefreshListSign (line) " {{{
-    let ret = a:line
-    if a:line =~# '^ *[-*+] \+.*$'
-        " bulleted list
-        let pspace = strlen(matchstr(a:line, '^ *'))
-        let text   = matchstr( a:line[(l:pspace + 1):], '\(^ \+\)\@<=[^ ].*$')
-        let bullet_space = repeat(' ', &softtabstop - ((l:pspace + 1) % (&softtabstop)) )
-        let bullet = "*-+"[(l:pspace / &shiftwidth) % 3]
-        let ret = repeat(' ', l:pspace) . l:bullet . l:bullet_space . l:text
+function! ParseBullet (line) " {{{
+    let pspace = matchstr(a:line, '^ *')
+    let bullet = ''
+    if a:line =~# s:blpattern
+        let bullet = matchstr(a:line, '\(^ *\)\@<=[-*+]\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *[-*+] \+\)\@<=\([^ ].*\)\?$')
+
+    elseif a:line =~# s:elpattern1
+        let bullet = matchstr(a:line, '\(^ *\)\@<=\d\+\.\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *\d\+\. \+\)\@<=\([^ ].*\)\?$')
+
+    elseif a:line =~# s:elpattern2
+        let bullet = matchstr(a:line, '\(^ *\)\@<=#\.\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *#\. \+\)\@<=\([^ ].*\)\?$')
+
+    else
+        let bullet = ''
+        let text = matchstr(a:line, '\(^ *\)\@<=[^ ].*$')
+
     endif
-    return l:ret
+
+    "echom '['. l:pspace .']['. l:bullet .']['. l:text .']'
+    return [l:pspace, l:bullet, l:text]
 endfunction " }}}
 
 inoremap <buffer> <silent> <leader>b <ESC>:call CreateBullet()<CR>a
 function! CreateBullet () " {{{
     let cln = line('.')
     let clc = getline(l:cln)
+    let tmp = ParseBullet(l:clc)
+    let clc_pspace = l:tmp[0]
+    let clc_bullet = l:tmp[1]
+    let clc_text   = l:tmp[2]
+    let pspace_num = strlen(l:clc_pspace)
 
-    if l:clc =~# '^ *[-*+] \+.*$'
-        call setline(l:cln, RefreshListSign(l:clc))
-
-    elseif l:clc =~# '^ *$'
-        if l:cln > 1
-            let llc = getline(l:cln - 1)
+    let i = l:cln - 1
+    while l:i > 0
+        let tmp = ParseBullet(getline(l:i))
+        let llc_pspace = l:tmp[0]
+        let llc_bullet = l:tmp[1]
+        let llc_text   = l:tmp[2]
+        if l:llc_text != '' && l:llc_bullet == ''
+            let llc_pspace = ''
+            break
+        elseif l:llc_bullet != ''
+            break
         endif
 
-        if l:cln > 1 && l:llc =~# '^ *[-*+] \+.*$'
-            let pspace = strlen(matchstr(l:llc, '^ *'))
-            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
-            call cursor(l:cln, strlen(getline(l:cln)) + 2)
+        let l:i = l:i - 1
+    endwhile
 
-        else
-            let pspace = strlen(l:clc)
-            call setline(l:cln, RefreshListSign(repeat(' ', l:pspace) .'- '))
-            call cursor(l:cln, strlen(getline(l:cln)) + 2)
+    let pspace_num = strlen(l:llc_pspace)
 
-        endif
+    if l:llc_bullet == ''
+        let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
 
-    else
-        let pspace = strlen(matchstr(l:clc, '^ *'))
-        let text = matchstr(l:clc, '\(^ *\)\@<=.*$')
-        let back_space = (l:pspace) % (&softtabstop)
-        call setline(l:cln, RefreshListSign(repeat(' ', l:pspace - l:back_space) .'- '. l:text))
-        call cursor(l:cln, strlen(getline(l:cln)) + 2)
+    elseif l:llc_bullet =~# '^[-*+]$'
+        " last line is a bulleted list item
+        let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+
+    elseif l:llc_bullet == '#.'
+        " last line is a (lazy) enumerate list item
+        let new_bullet = '#.'
+
+    elseif l:llc_bullet =~# '^\d\+\.$'
+        " last line is a enumerate list item
+        let new_bullet = (l:llc_bullet + 1) .'.'
 
     endif
+
+    let bullet_space = repeat(' ', &softtabstop - ((l:pspace_num + strlen(l:new_bullet)) % (&softtabstop)) )
+    let result_line = repeat(' ', l:pspace_num). l:new_bullet . l:bullet_space . l:clc_text
+    call setline(l:cln, l:result_line)
+    call cursor(l:cln, strlen(l:result_line))
 
 endfunction " }}}
