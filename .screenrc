@@ -5,7 +5,7 @@ defencoding utf8
 # Caption
 # color setting provided by NCTUCS
 #caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%-09=  %Y %M/%d(%D) %{RW} %C %A"
-caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%=%H%=%Y/%m/%d %c:%s"
+caption always "%{WK}%-w%<%{=B GK}%n %t%{= KW}%+w%=%S%=%Y/%m/%d %c:%s"
 # from Internet
 #caption always "%{bw} %M/%d %D %C%A %{wb} %-w%{y}%n %t%{w}%+w%{k}"
 
