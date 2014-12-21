@@ -77,8 +77,11 @@ vnoremap <buffer> <silent> < :call ShiftIndent("LEFT")<CR>gv
 vnoremap <buffer> <silent> > :call ShiftIndent("RIGHT")<CR>gv
 
 let s:blpattern = '^ *[-*+] \+\([^ ].*\)\?$'
-let s:elpattern1 = '^ *\d\+\. \+\([^ ].*\)\?$'
-let s:elpattern2 = '^ *#\. \+\([^ ].*\)\?$'
+let s:elpattern1 = '^ *\d\+\. \+\([^ ].*\)\?$'          " 1.
+let s:elpattern2 = '^ *#\. \+\([^ ].*\)\?$'             " #.
+let s:elpattern3 = '^ *[a-zA-Z]\. \+\([^ ].*\)\?$'      " a.    A.
+let s:elpattern4 = '^ *(\?\d\+) \+\([^ ].*\)\?$'        " 1)    (2)
+let s:elpattern5 = '^ *(\?[a-zA-Z]) \+\([^ ].*\)\?$'    " a)    (A)
 
 function! ShiftIndent (direction) " {{{
     let cln = line('.')
@@ -142,6 +145,24 @@ function! ShiftIndent (direction) " {{{
             " last line is a enumerate list item
             let new_bullet = (l:llc_bullet + 1) .'.'
 
+        elseif l:llc_bullet =~# '^[a-zA-Z]\.$'
+            let new_bullet = nr2char( char2nr(l:llc_bullet) + 1 ) .'.'
+
+        elseif l:llc_bullet =~# '^\d\+)$'
+            let new_bullet = ( matchstr(l:llc_bullet, '\(^(\?\)\@<=\d\+\()$\)\@=') + 1 ) .')'
+
+        elseif l:llc_bullet =~# '^(\d\+)$'
+            let new_bullet = '('. ( matchstr(l:llc_bullet, '\(^(\?\)\@<=\d\+\()$\)\@=') + 1 ) .')'
+
+        elseif l:llc_bullet =~# '^[a-zA-Z])$'
+            let new_bullet = nr2char( char2nr( matchstr(l:llc_bullet, '\(^(\?\)\@<=[a-zA-Z]\()$\)\@=')) + 1 ) .')'
+
+        elseif l:llc_bullet =~# '^([a-zA-Z])$'
+            let new_bullet = '('. nr2char( char2nr( matchstr(l:llc_bullet, '\(^(\?\)\@<=[a-zA-Z]\()$\)\@=')) + 1 ) .')'
+
+        else
+            let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+
         endif
         let bullet_space = repeat(' ', &softtabstop - ((l:pspace_num + strlen(l:new_bullet)) % (&softtabstop)) )
         let result_line = repeat(' ', l:pspace_num). l:new_bullet . l:bullet_space . l:clc_text
@@ -167,6 +188,18 @@ function! ParseBullet (line) " {{{
     elseif a:line =~# s:elpattern2
         let bullet = matchstr(a:line, '\(^ *\)\@<=#\.\( \+\([^ ].*\)\?$\)\@=')
         let text = matchstr(a:line, '\(^ *#\. \+\)\@<=\([^ ].*\)\?$')
+
+    elseif a:line =~# s:elpattern3
+        let bullet = matchstr(a:line, '\(^ *\)\@<=[a-zA-Z]\.\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *[a-zA-Z]\. \+\)\@<=\([^ ].*\)\?$')
+
+    elseif a:line =~# s:elpattern4
+        let bullet = matchstr(a:line, '\(^ *\)\@<=(\?\d\+)\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *(\?\d\+) \+\)\@<=\([^ ].*\)\?$')
+
+    elseif a:line =~# s:elpattern5
+        let bullet = matchstr(a:line, '\(^ *\)\@<=(\?[a-zA-Z])\( \+\([^ ].*\)\?$\)\@=')
+        let text = matchstr(a:line, '\(^ *(\?[a-zA-Z]) \+\)\@<=\([^ ].*\)\?$')
 
     else
         let bullet = ''
@@ -221,6 +254,24 @@ function! CreateBullet () " {{{
         " last line is a enumerate list item
         let new_bullet = (l:llc_bullet + 1) .'.'
 
+    elseif l:llc_bullet =~# '^[a-zA-Z]\.$'
+        let new_bullet = nr2char( char2nr(l:llc_bullet) + 1 ) .'.'
+
+    elseif l:llc_bullet =~# '^\d\+)$'
+        let new_bullet = ( matchstr(l:llc_bullet, '\(^(\?\)\@<=\d\+\()$\)\@=') + 1 ) .')'
+
+    elseif l:llc_bullet =~# '^(\d\+)$'
+        let new_bullet = '('. ( matchstr(l:llc_bullet, '\(^(\?\)\@<=\d\+\()$\)\@=') + 1 ) .')'
+
+    elseif l:llc_bullet =~# '^[a-zA-Z])$'
+        let new_bullet = nr2char( char2nr( matchstr(l:llc_bullet, '\(^(\?\)\@<=[a-zA-Z]\()$\)\@=')) + 1 ) .')'
+
+    elseif l:llc_bullet =~# '^([a-zA-Z])$'
+        let new_bullet = '('. nr2char( char2nr( matchstr(l:llc_bullet, '\(^(\?\)\@<=[a-zA-Z]\()$\)\@=')) + 1 ) .')'
+
+    else
+        let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+
     endif
 
     let bullet_space = repeat(' ', &softtabstop - ((l:pspace_num + strlen(l:new_bullet)) % (&softtabstop)) )
@@ -229,3 +280,4 @@ function! CreateBullet () " {{{
     call cursor(l:cln, strlen(l:result_line))
 
 endfunction " }}}
+
