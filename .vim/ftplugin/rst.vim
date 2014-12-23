@@ -222,6 +222,8 @@ function! CreateBullet () " {{{
     let pspace_num = strlen(l:clc_pspace)
 
     let i = l:cln - 1
+    let llc_pspace = ''
+    let llc_bullet = '*'
     while l:i > 0
         let tmp = ParseBullet(getline(l:i))
         let llc_pspace = l:tmp[0]
