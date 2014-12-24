@@ -115,40 +115,47 @@ function! GetLastReferenceLine (cln, pspace_num) " {{{
 
 endfunction " }}}
 
-function! GetBulletLeader (bullet) " {{{
+function! GetBulletLeader (bullet, pspace_num) " {{{
     if a:bullet =~# '^[-*+]$'
-        return "*"
+        return "*-+"[(a:pspace_num / &shiftwidth) % 3]
+    endif
 
-    elseif a:bullet == '#.'
-        return '#.'
+    let is_enumerate_list_item = 0
+
+    if a:bullet == '#.'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^\d\+\.$'
-        return '1.'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^[a-z]\.$'
-        return 'a.'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^[A-Z]\.$'
-        return 'A.'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^\d\+)$'
-        return '1)'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^(\d\+)$'
-        return '(1)'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^[a-z])$'
-        return 'a)'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^[A-Z])$'
-        return 'A)'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^([a-z])$'
-        return '(a)'
+        let is_enumerate_list_item = 1
 
     elseif a:bullet =~# '^([A-Z])$'
-        return '(A)'
+        let is_enumerate_list_item = 1
 
+    endif
+
+    if l:is_enumerate_list_item
+        return ['1.', 'A.', 'a.', '1)', 'A)', 'a)', '(1)', '(A)', '(a)'][(a:pspace_num / &shiftwidth) % 9]
     endif
 
     return ''
@@ -184,11 +191,7 @@ function! ShiftIndent (direction) " {{{
         endif
 
         if l:llc_bullet == ''
-            if l:clc_bullet =~# '^[-*+]$'
-                let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
-            else
-                let new_bullet = GetBulletLeader(l:clc_bullet)
-            endif
+            let new_bullet = GetBulletLeader(l:clc_bullet, l:pspace_num)
 
         elseif l:llc_bullet =~# '^[-*+]$'
             " last line is a bulleted list item
@@ -290,11 +293,7 @@ function! CreateBullet () " {{{
     endif
 
     if l:llc_bullet == ''
-        if l:clc_bullet == '' || l:clc_bullet =~# '^[-*+]$'
-            let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
-        else
-            let new_bullet = GetBulletLeader(l:clc_bullet)
-        endif
+        let new_bullet = GetBulletLeader(l:clc_bullet, l:pspace_num)
 
     elseif l:llc_bullet =~# '^[-*+]$'
         " last line is a bulleted list item
