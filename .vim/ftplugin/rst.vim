@@ -264,28 +264,11 @@ function! CreateBullet () " {{{
     let clc_bullet = l:tmp[1]
     let clc_text   = l:tmp[2]
     let pspace_num = strlen(l:clc_pspace)
+    let remain_space = l:pspace_num % (&shiftwidth)
 
-    let i = l:cln - 1
-    let llc_pspace = ''
-    let llc_bullet = '*'
-    while l:i > 0
-        let tmp = ParseBullet(getline(l:i))
-        let llc_pspace = l:tmp[0]
-        let llc_bullet = l:tmp[1]
-        let llc_text   = l:tmp[2]
-        if l:llc_text != '' && l:llc_bullet == ''
-            let llc_pspace = ''
-            break
-        elseif l:llc_bullet != ''
-            break
-        endif
+    let pspace_num = l:pspace_num - l:remain_space
 
-        let l:i = l:i - 1
-    endwhile
-
-    if l:pspace_num == 0 || l:pspace_num % &shiftwidth != 0
-        let pspace_num = strlen(l:llc_pspace)
-    endif
+    let llc_bullet = GetLastBullet(l:cln, l:pspace_num)
 
     if l:llc_bullet == ''
         let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
