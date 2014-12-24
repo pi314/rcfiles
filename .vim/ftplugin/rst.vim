@@ -290,7 +290,7 @@ function! CreateBullet () " {{{
     endif
 
     if l:llc_bullet == ''
-        if l:clc_bullet == ''
+        if l:clc_bullet == '' || l:clc_bullet =~# '^[-*+]$'
             let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
         else
             let new_bullet = GetBulletLeader(l:clc_bullet)
@@ -335,3 +335,40 @@ function! CreateBullet () " {{{
 
 endfunction " }}}
 
+inoremap <buffer> <silent> <CR> <ESC>:call NewLine()<CR>a
+function! NewLine () " {{{
+    let cln = line('.')
+    let clc = getline(l:cln)
+    let tmp = ParseBullet(l:clc)
+    let clc_pspace = l:tmp['pspace']
+    let clc_bullet = l:tmp['bullet']
+    let clc_text   = l:tmp['text']
+    let pspace_num = strlen(l:clc_pspace)
+    let remain_space = l:pspace_num % (&shiftwidth)
+
+    let pspace_num = l:pspace_num - l:remain_space
+
+    if l:clc_bullet == ''
+        call append(l:cln, l:clc_pspace)
+        call cursor(l:cln + 1, strlen(l:clc_pspace))
+
+    elseif l:clc_text == ''
+        call setline(l:cln, '')
+        call append(l:cln, '')
+        call cursor(l:cln + 1, 1)
+
+    else
+        let remain_content = l:clc[ : (col('.') - 1) ]
+        let move_content = l:clc[ col('.') : ]
+        call setline(l:cln, l:remain_content)
+        call append(l:cln, l:move_content)
+        call cursor(l:cln + 1, 1)
+        call CreateBullet()
+        if l:move_content == ''
+            normal! $
+        else
+            normal! ^Wh
+        endif
+    endif
+
+endfunction " }}}
