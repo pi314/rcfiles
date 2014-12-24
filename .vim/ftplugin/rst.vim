@@ -83,28 +83,35 @@ let s:elpattern3 = '^ *[a-zA-Z]\. \+\([^ ].*\)\?$'      " a.    A.
 let s:elpattern4 = '^ *(\?\d\+) \+\([^ ].*\)\?$'        " 1)    (2)
 let s:elpattern5 = '^ *(\?[a-zA-Z]) \+\([^ ].*\)\?$'    " a)    (A)
 
-function! GetLastBullet (cln, pspace_num) " {{{
+function! GetLastReferenceLine (cln, pspace_num) " {{{
     if a:cln > 1
         let tmp = ParseBullet(getline(a:cln - 1))
-        let llc_pspace = l:tmp[0]
-        let llc_bullet = l:tmp[1]
-        let llc_text   = l:tmp[2]
+        let llc_pspace = l:tmp['pspace']
+        let llc_bullet = l:tmp['bullet']
+        let llc_text   = l:tmp['text']
         if l:llc_text == '' && l:llc_bullet == '' && a:cln > 2
             let tmp = ParseBullet(getline(a:cln - 2))
-            let llc_pspace = l:tmp[0]
-            let llc_bullet = l:tmp[1]
-            let llc_text   = l:tmp[2]
-            if l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num
+            let llc_pspace = l:tmp['pspace']
+            let llc_bullet = l:tmp['bullet']
+            let llc_text   = l:tmp['text']
+            if l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num && a:pspace_num > 0
                 let llc_bullet = ''
+                let llc_pspace = ''
             endif
 
-        elseif l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num
+        elseif l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num && a:pspace_num > 0
             let llc_bullet = ''
+            let llc_pspace = ''
 
         endif
 
+    else
+        let l:llc_bullet = ''
+        let llc_pspace = ''
+
     endif
-    return l:llc_bullet
+
+    return {'bullet': l:llc_bullet, 'pspace': l:llc_pspace}
 
 endfunction " }}}
 
@@ -151,9 +158,9 @@ function! ShiftIndent (direction) " {{{
     let cln = line('.')
     let clc = getline(l:cln)
     let tmp = ParseBullet(l:clc)
-    let clc_pspace = l:tmp[0]
-    let clc_bullet = l:tmp[1]
-    let clc_text   = l:tmp[2]
+    let clc_pspace = l:tmp['pspace']
+    let clc_bullet = l:tmp['bullet']
+    let clc_text   = l:tmp['text']
     let remain_space = strlen(l:clc_pspace) % (&shiftwidth)
 
     if a:direction ==# "LEFT"
@@ -168,7 +175,13 @@ function! ShiftIndent (direction) " {{{
     let result_line = repeat(' ', l:pspace_num) . l:clc_text
 
     if l:clc_bullet != ''
-        let llc_bullet = GetLastBullet(l:cln, l:pspace_num)
+        let tmp = GetLastReferenceLine(l:cln, l:pspace_num)
+        let llc_bullet = l:tmp['bullet']
+        let llc_pspace = l:tmp['pspace']
+
+        if l:pspace_num == 0 && strlen(l:llc_pspace) > 0
+            let l:llc_bullet = ''
+        endif
 
         if l:llc_bullet == ''
             if l:clc_bullet =~# '^[-*+]$'
@@ -252,7 +265,7 @@ function! ParseBullet (line) " {{{
     endif
 
     "echom '['. l:pspace .']['. l:bullet .']['. l:text .']'
-    return [l:pspace, l:bullet, l:text]
+    return {'pspace': (l:pspace), 'bullet': (l:bullet), 'text': (l:text)}
 endfunction " }}}
 
 inoremap <buffer> <silent> <leader>b <ESC>:call CreateBullet()<CR>a
@@ -260,18 +273,28 @@ function! CreateBullet () " {{{
     let cln = line('.')
     let clc = getline(l:cln)
     let tmp = ParseBullet(l:clc)
-    let clc_pspace = l:tmp[0]
-    let clc_bullet = l:tmp[1]
-    let clc_text   = l:tmp[2]
+    let clc_pspace = l:tmp['pspace']
+    let clc_bullet = l:tmp['bullet']
+    let clc_text   = l:tmp['text']
     let pspace_num = strlen(l:clc_pspace)
     let remain_space = l:pspace_num % (&shiftwidth)
 
     let pspace_num = l:pspace_num - l:remain_space
 
-    let llc_bullet = GetLastBullet(l:cln, l:pspace_num)
+    let tmp = GetLastReferenceLine(l:cln, l:pspace_num)
+    let llc_bullet = l:tmp['bullet']
+    let llc_pspace = l:tmp['pspace']
+
+    if l:llc_bullet != ''
+        let l:pspace_num = strlen(l:llc_pspace)
+    endif
 
     if l:llc_bullet == ''
-        let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+        if l:clc_bullet == ''
+            let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
+        else
+            let new_bullet = GetBulletLeader(l:clc_bullet)
+        endif
 
     elseif l:llc_bullet =~# '^[-*+]$'
         " last line is a bulleted list item
