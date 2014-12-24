@@ -83,6 +83,70 @@ let s:elpattern3 = '^ *[a-zA-Z]\. \+\([^ ].*\)\?$'      " a.    A.
 let s:elpattern4 = '^ *(\?\d\+) \+\([^ ].*\)\?$'        " 1)    (2)
 let s:elpattern5 = '^ *(\?[a-zA-Z]) \+\([^ ].*\)\?$'    " a)    (A)
 
+function! GetLastBullet (cln, pspace_num) " {{{
+    if a:cln > 1
+        let tmp = ParseBullet(getline(a:cln - 1))
+        let llc_pspace = l:tmp[0]
+        let llc_bullet = l:tmp[1]
+        let llc_text   = l:tmp[2]
+        if l:llc_text == '' && l:llc_bullet == '' && a:cln > 2
+            let tmp = ParseBullet(getline(a:cln - 2))
+            let llc_pspace = l:tmp[0]
+            let llc_bullet = l:tmp[1]
+            let llc_text   = l:tmp[2]
+            if l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num
+                let llc_bullet = ''
+            endif
+
+        elseif l:llc_bullet != '' && strlen(l:llc_pspace) != a:pspace_num
+            let llc_bullet = ''
+
+        endif
+
+    endif
+    return l:llc_bullet
+
+endfunction " }}}
+
+function! GetBulletLeader (bullet) " {{{
+    if a:bullet =~# '^[-*+]$'
+        return "*"
+
+    elseif a:bullet == '#.'
+        return '#.'
+
+    elseif a:bullet =~# '^\d\+\.$'
+        return '1.'
+
+    elseif a:bullet =~# '^[a-z]\.$'
+        return 'a.'
+
+    elseif a:bullet =~# '^[A-Z]\.$'
+        return 'A.'
+
+    elseif a:bullet =~# '^\d\+)$'
+        return '1)'
+
+    elseif a:bullet =~# '^(\d\+)$'
+        return '(1)'
+
+    elseif a:bullet =~# '^[a-z])$'
+        return 'a)'
+
+    elseif a:bullet =~# '^[A-Z])$'
+        return 'A)'
+
+    elseif a:bullet =~# '^([a-z])$'
+        return '(a)'
+
+    elseif a:bullet =~# '^([A-Z])$'
+        return '(A)'
+
+    endif
+
+    return ''
+endfunction " }}}
+
 function! ShiftIndent (direction) " {{{
     let cln = line('.')
     let clc = getline(l:cln)
@@ -104,33 +168,13 @@ function! ShiftIndent (direction) " {{{
     let result_line = repeat(' ', l:pspace_num) . l:clc_text
 
     if l:clc_bullet != ''
-        let llc_pspace = ''
-        let llc_bullet = ''
-        let i = l:cln - 1
-        while l:i > 0
-            let tmp = ParseBullet(getline(l:i))
-            let llc_pspace = l:tmp[0]
-            let llc_bullet = l:tmp[1]
-            let llc_text   = l:tmp[2]
-            if l:llc_text != '' && l:llc_bullet == ''
-                break
-            elseif l:llc_bullet != ''
-                if strlen(l:llc_pspace) < l:pspace_num
-                    let llc_pspace = ''
-                    break
-                elseif strlen(l:llc_pspace) == l:pspace_num
-                    break
-                endif
-            endif
+        let llc_bullet = GetLastBullet(l:cln, l:pspace_num)
 
-            let l:i = l:i - 1
-        endwhile
-
-        if strlen(l:llc_pspace) != l:pspace_num || l:llc_bullet == ''
+        if l:llc_bullet == ''
             if l:clc_bullet =~# '^[-*+]$'
                 let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
             else
-                let new_bullet = l:clc_bullet
+                let new_bullet = GetBulletLeader(l:clc_bullet)
             endif
 
         elseif l:llc_bullet =~# '^[-*+]$'
@@ -239,7 +283,9 @@ function! CreateBullet () " {{{
         let l:i = l:i - 1
     endwhile
 
-    let pspace_num = strlen(l:llc_pspace)
+    if l:pspace_num == 0 || l:pspace_num % &shiftwidth != 0
+        let pspace_num = strlen(l:llc_pspace)
+    endif
 
     if l:llc_bullet == ''
         let new_bullet = "*-+"[(l:pspace_num / &shiftwidth) % 3]
