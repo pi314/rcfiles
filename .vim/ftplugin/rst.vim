@@ -351,7 +351,10 @@ function! NewLine () " {{{
     let pspace_num = l:pspace_num - l:remain_space
 
     if l:clc_bullet == ''
-        call append(l:cln, l:clc_pspace)
+        let remain_content = l:clc[ : (col('.') - 1) ]
+        let move_content = l:clc[ col('.') : ]
+        call setline(l:cln, l:remain_content)
+        call append(l:cln, l:clc_pspace . l:move_content)
         call cursor(l:cln + 1, strlen(l:clc_pspace))
 
     elseif l:clc_text == ''
