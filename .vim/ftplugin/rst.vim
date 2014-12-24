@@ -293,6 +293,9 @@ function! CreateBullet () " {{{
     endif
 
     if l:llc_bullet == ''
+        if l:clc_bullet == ''
+            let l:clc_bullet = '*'
+        endif
         let new_bullet = GetBulletLeader(l:clc_bullet, l:pspace_num)
 
     elseif l:llc_bullet =~# '^[-*+]$'
