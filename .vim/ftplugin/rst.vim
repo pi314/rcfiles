@@ -337,7 +337,7 @@ function! CreateBullet () " {{{
 
 endfunction " }}}
 
-inoremap <buffer> <silent> <CR> <ESC>:call NewLine()<CR>a
+inoremap <buffer> <silent> <CR> <C-r>=NewLine()<CR>
 function! NewLine () " {{{
     let cln = line('.')
     let clc = getline(l:cln)
@@ -351,29 +351,15 @@ function! NewLine () " {{{
     let pspace_num = l:pspace_num - l:remain_space
 
     if l:clc_bullet == ''
-        let remain_content = l:clc[ : (col('.') - 1) ]
-        let move_content = l:clc[ col('.') : ]
-        call setline(l:cln, l:remain_content)
-        call append(l:cln, l:clc_pspace . l:move_content)
-        call cursor(l:cln + 1, strlen(l:clc_pspace))
+        return "\<CR>"
 
     elseif l:clc_text == ''
         call setline(l:cln, '')
-        call append(l:cln, '')
-        call cursor(l:cln + 1, 1)
+        return "\<CR>\<ESC>i"
 
     else
-        let remain_content = l:clc[ : (col('.') - 1) ]
-        let move_content = l:clc[ col('.') : ]
-        call setline(l:cln, l:remain_content)
-        call append(l:cln, l:move_content)
-        call cursor(l:cln + 1, 1)
-        call CreateBullet()
-        if l:move_content == ''
-            normal! $
-        else
-            normal! ^Wh
-        endif
+        return "\<CR>\<ESC>d0:call CreateBullet()\<CR>a"
+
     endif
 
 endfunction " }}}
