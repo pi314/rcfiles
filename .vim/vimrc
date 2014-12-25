@@ -102,8 +102,8 @@ hi VIMlogo     ctermfg=white ctermbg=blue
 nnoremap k gk
 nnoremap j gj
 
-nnoremap tj :tabp<CR>
-nnoremap tk :tabn<CR>
+nnoremap th :tabp<CR>
+nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
 nnoremap tp :tabm -1<CR>
 nnoremap tn :tabm +1<CR>
