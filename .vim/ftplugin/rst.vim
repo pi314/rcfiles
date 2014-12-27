@@ -356,7 +356,7 @@ function! NewLine () " {{{
     let pspace_num = l:pspace_num - l:remain_space
 
     if l:clc_bullet == '' && strpart(l:clc_text, 0, col('.')-1) =~# '^.*:: *$'
-        return "\<CR>\<CR>". repeat(' ', &shiftwidth)
+        return "\<CR>\<CR>\<ESC>i". l:clc_pspace . repeat(' ', &shiftwidth)
 
     elseif l:clc_bullet == ''
         return "\<CR>"
