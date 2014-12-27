@@ -347,15 +347,22 @@ function! NewLine () " {{{
     let clc_text   = l:tmp['text']
     let pspace_num = strlen(l:clc_pspace)
     let remain_space = l:pspace_num % (&shiftwidth)
+    echom '['. l:clc_pspace .']'
 
     let pspace_num = l:pspace_num - l:remain_space
 
-    if l:clc_bullet == ''
+    if l:clc_bullet == '' && strpart(l:clc_text, 0, col('.')-1) =~# '^.*:: *$'
+        return "\<CR>\<CR>". repeat(' ', &shiftwidth)
+
+    elseif l:clc_bullet == ''
         return "\<CR>"
 
     elseif l:clc_text == ''
         call setline(l:cln, '')
         return "\<CR>\<ESC>i"
+
+    elseif strpart(l:clc_text, 0, col('.')-1) =~# '^.*:: *$'
+        return "\<CR>\<CR>\<ESC>i". l:clc_pspace . repeat(' ', &shiftwidth * 2)
 
     else
         return "\<CR>\<ESC>d0:call CreateBullet()\<CR>a"
