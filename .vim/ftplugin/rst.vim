@@ -295,6 +295,10 @@ function! CreateBullet () " {{{
     if l:llc_bullet == ''
         if l:clc_bullet == ''
             let l:clc_bullet = '*'
+        elseif l:clc_bullet =~# '^[-*+]$'
+            let l:clc_bullet = '1.'
+        elseif l:clc_bullet =~# '^\(\(\d\+\|[a-zA-Z]\|#\)\.\|(\?\(\d\+\|[a-zA-Z]\))\)$'
+            let l:clc_bullet = '*'
         endif
         let new_bullet = GetBulletLeader(l:clc_bullet, l:pspace_num)
 
