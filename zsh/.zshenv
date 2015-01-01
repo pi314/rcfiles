@@ -12,6 +12,7 @@ fi
 folders=(
     "/opt/local/bin"
     "/opt/local/sbin"
+    "/opt/local/share/java/android-sdk-macosx/platform-tools"
     "$HOME/.cabal/bin"
     "$HOME/bin"
 )
