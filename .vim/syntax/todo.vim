@@ -68,3 +68,9 @@ hi def      Line                cterm=bold ctermfg=white   ctermbg=green
 syn match   FileZilla           '\<Fz\>'
 syn match   FileZilla           '\<FileZilla\>'
 hi def      FileZilla           cterm=bold ctermfg=white   ctermbg=red
+syn match   UNIQLO_UNI          '^UNI\(.*\nQLO.*\)\@='
+syn match   UNIQLO_UNI          '^ユニ\(.*\nクロ.*\)\@='
+hi def      UNIQLO_UNI          cterm=bold ctermfg=white   ctermbg=red
+syn match   UNIQLO_QLO          '\(^UNI.*\n\)\@<=QLO\(.*$\)\@='
+syn match   UNIQLO_QLO          '\(^ユニ.*\n\)\@<=クロ\(.*$\)\@='
+hi def      UNIQLO_QLO          cterm=bold ctermfg=white   ctermbg=red
