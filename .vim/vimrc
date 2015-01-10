@@ -20,7 +20,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
 
 call vundle#end()           " required
-filetype plugin indent on   " required
+filetype plugin on          " required
 " ============================================================================ "
 " Vundle ok "
 " ============================================================================ "
