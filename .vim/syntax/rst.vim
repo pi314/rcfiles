@@ -1,5 +1,6 @@
 syn match   rstSection          /.*\n([=`'"~^_*+#-])\1*/
 syn match   rstBulletList       /\(^\ *\)\@<=[-*+]\(\ \)\@=/
+syn match   rstSimpleTableLines /^ *=\+\( \+=\+\)\+$/
 
 " 1.
 syn match   rstEnumeratedList   /\(^\ *\)\@<=\d\+\.\(\ \)\@=/
