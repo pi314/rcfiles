@@ -60,3 +60,4 @@ colors
 
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' special-dirs true
