@@ -1,17 +1,22 @@
 ##########################
 # Prompt
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/.zshrc.prompt ]]
-then
+if [[ -f $HOME/.rcfiles/zsh/.zshrc.prompt ]]; then
     source $HOME/.rcfiles/zsh/.zshrc.prompt
 fi
 
 ##########################
 # Aliases
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/.zshrc.aliases ]]
-then
+if [[ -f $HOME/.rcfiles/zsh/.zshrc.aliases ]]; then
     source $HOME/.rcfiles/zsh/.zshrc.aliases
+fi
+
+##########################
+# Local Files
+##########################
+if [[ -f $HOME/.zshlocal ]]; then
+    source $HOME/.zshlocal
 fi
 
 ##########################
@@ -53,7 +58,7 @@ bindkey "\e[3~"     delete-char
 fpath=($HOME/.rcfiles/zsh/completions $fpath)
 
 autoload -Uz compinit
-compinit
+compinit -u
 
 autoload -U colors
 colors
