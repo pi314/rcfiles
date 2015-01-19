@@ -1,0 +1,3 @@
+#compdef up
+
+_arguments "1:Parent directories:(($(get_parent_folders)))"
