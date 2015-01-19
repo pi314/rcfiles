@@ -3,7 +3,7 @@ My rcfiles collection
 
 Thanks to Pellaeon_, now I used github to manage my rcfiles.
 
-..  Pellaeon_: https://github.com/pellaeon
+..  _Pellaeon: https://github.com/pellaeon
 
 I am trying to make it portable on every UNIX-like machine (Linux, FreeBSD, Cygwin, Mac OS X, etc.)
 
@@ -31,31 +31,29 @@ referencing the environment variable ``LS_COLOR``.
 BSD ``ls`` command uses ``-G`` option to encoloring the output,
 referencing the environment variable ``LSCOLORS``.
 
-Of course the format of ``LS_COLOR`` and ``LSCOLORS`` is different.
-
-So I added ``if ( `uname` == "FreeBSD" )`` to check operating system type.
+Of course the format of ``LS_COLOR`` and ``LSCOLORS`` is different, so I added ``if ( `uname` == "FreeBSD" )`` to check operating system type.
 
 .vim
 ====
 Thanks to Iblis_, he introduced me the ``Vundle`` plugin.
 
-..  Iblis_: https://github.com/iblis17
+..  _Iblis: https://github.com/iblis17
 
 Currently I am using
 
-- Vundle
-- NERD-tree
-- riv.vim
-- tcomment_vim
+* Vundle
+* NERD-tree
+* riv.vim
+* tcomment_vim
 
 These are my hot-key settings
 
-- ``tj`` switch to previous tab.
-- ``tk`` switch to next tab.
-- ``tt`` Add a new tab.
-- ``tp`` move current tab to previous position.
-- ``tn`` move current tab to next position.
-- ``<C-n>`` toggle NERD-tree.
+* ``tj`` switch to previous tab.
+* ``tk`` switch to next tab.
+* ``tt`` Add a new tab.
+* ``tp`` move current tab to previous position.
+* ``tn`` move current tab to next position.
+* ``<C-n>`` toggle NERD-tree.
 
 My ``.vim`` folder also contains a boshiamy input method in ``.vim/plugin``.
 
@@ -72,20 +70,21 @@ Similar to ``.tcshrc``, some color settings adjusted.
 zsh
 ===
 
-After failure on adjusting tcsh two line prompt, I switched to ``zsh``.
+After failure on adjusting ``tcsh`` two line prompt, I switched to ``zsh``.
 
 I love my zsh prompt, I placed many infomations in it: (of course it may be slower, I don't care)
 
-- last command return code
-- directory stack depth (``pushd`` and ``popd``)
-- current path
-- current git branch name
-- current git branch status (clean, dirty, or very dirty)
-- suspend jobs
-- zsh vim mode (insert or command mode)
-- time (not automatically update)
-- username
-- hostname
-- current user privilege
+* Last command return code
+* Directory stack depth (``pushd`` and ``popd``)
+* Current path
+* Current git branch name
+* Current git branch status (clean, dirty, or very dirty)
+* Suspended jobs
+* Zsh vim mode (insert or command mode)
+* Python virtualenv name
+* Time (not automatically update)
+* Username
+* Hostname
+* Current user privilege
 
 All information in two lines, I love it ~
