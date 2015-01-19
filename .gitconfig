@@ -9,7 +9,6 @@
     ls = ls-files
     ci = commit -v
     co = checkout
-    brco = checkout -b
 
 [push]
     default = current
