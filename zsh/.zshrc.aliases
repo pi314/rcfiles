@@ -39,3 +39,7 @@ fi
 
 alias -s py=python
 alias -s sh=sh
+
+function up () {
+    cd $1
+}
