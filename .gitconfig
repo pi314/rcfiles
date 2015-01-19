@@ -9,6 +9,7 @@
     ls = ls-files
     ci = commit -v
     co = checkout
+    st = status
 
 [push]
     default = current
