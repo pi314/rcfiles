@@ -18,7 +18,7 @@ end="%{$reset_color%}"
 
 last_cmd_succ="%(?.${black}.${red})|${end}"
 
-function dir_stacks () {
+function dir_stacks {
     depth=$(dirs -p | wc -l | tr -d ' ')
     if [[ $depth -gt 1 ]]; then
         dir_stack_str=$(printf '%*s' ${depth} | tr ' ' '[')
@@ -27,7 +27,7 @@ function dir_stacks () {
     fi
 }
 
-function current_path () {
+function current_path {
     echo "$(dir_stacks)${green}[%~]${end}"
 }
 
@@ -75,30 +75,6 @@ suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
 
 vim_mode_str="${black}[zsh]${end}"
 
-function zle-line-finish {
-    vim_mode_str="${black}[zsh]${end}"
-    set_prompt
-    zle reset-prompt
-}
-
-function zle-keymap-select {
-    case ${KEYMAP} in
-    vicmd)
-        vim_mode_str="${cyan}:zsh:${end}"
-        ;;
-
-    viins|main)
-        vim_mode_str="${black}[zsh]${end}"
-        ;;
-
-    esac
-    set_prompt
-    zle reset-prompt
-
-}
-# zle -N zle-line-finish
-zle -N zle-keymap-select
-
 time_str="${cyan}%T${end}"
 user_name_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
@@ -121,6 +97,17 @@ fi
 uid_str="%(!.#.>)"
 
 function set_prompt {
+    case ${KEYMAP} in
+    vicmd)
+        vim_mode_str="${cyan}:zsh:${end}"
+        ;;
+
+    viins|main)
+        vim_mode_str="${black}[zsh]${end}"
+        ;;
+
+    esac
+
     local venv_str
     if [[ -n $VIRTUAL_ENV ]]; then
         venv_str="${blue}(${VIRTUAL_ENV##*/})${end}"
@@ -131,10 +118,13 @@ function set_prompt {
 ${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${screen_str}${uid_str} "
 }
 
-function zle-line-init {
+function zle-keymap-select zle-line-finish zle-line-init {
     set_prompt
     zle reset-prompt
+
 }
+zle -N zle-line-finish
+zle -N zle-keymap-select
 zle -N zle-line-init
 
 set_prompt
