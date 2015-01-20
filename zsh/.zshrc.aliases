@@ -21,10 +21,6 @@ if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]; then
     alias startx=startxwin
 fi
 
-alias cd..='cd ..'
-alias cd...='cd ../..'
-alias cd....='cd ../../..'
-
 function mkcd () {
     mkdir $1 && cd $1
 }
