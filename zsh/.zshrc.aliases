@@ -37,5 +37,9 @@ alias -s py=python
 alias -s sh=sh
 
 function up () {
-    cd $1
+    if [[ $# -eq 0 ]]; then
+        cd ..
+    else
+        cd $1
+    fi
 }
