@@ -43,7 +43,7 @@ if [ $LS_TYPE == "BSD" ]; then
     # 11.  directory writable to others, without sticky
     #      bit
     #               1 2 3 4 5 6 7 8 9 1011
-    export LSCOLORS GxFxcxDxCxegedabagacad
+    export LSCOLORS="GxFxcxDxCxegedabagacad"
 
 else
     alias ls='ls --color=auto'
