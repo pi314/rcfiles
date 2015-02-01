@@ -15,6 +15,7 @@ fi
 
 if [ $LS_TYPE == "BSD" ]; then
     alias ls='ls -G'
+    alias l='ls -aClG'
     alias ll='ls -aClG'
     alias lsl='ls -ClG'
 
@@ -46,6 +47,7 @@ if [ $LS_TYPE == "BSD" ]; then
 
 else
     alias ls='ls --color=auto'
+    alias l='ls -aCl --color=auto'
     alias ll='ls -aCl --color=auto'
     alias lsl='ls -Cl --color=auto'
     # Let "ls" has pretty color
