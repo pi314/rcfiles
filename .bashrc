@@ -42,7 +42,7 @@ if [ $LS_TYPE == "BSD" ]; then
     # 10.  directory writable to others, with sticky bit
     # 11.  directory writable to others, without sticky
     #      bit
-    #               1 2 3 4 5 6 7 8 9 1011
+    #                1 2 3 4 5 6 7 8 9 1011
     export LSCOLORS="GxFxcxDxCxegedabagacad"
 
 else
