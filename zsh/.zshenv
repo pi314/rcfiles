@@ -92,7 +92,6 @@ export PAGER=less
 
 encode=zh_TW.UTF-8
 export LANG=$encode
-export LANG=$encode
 export LANGUAGE=$encode
 export LC_CTYPE=$encode
 export LC_NUMERIC=$encode
