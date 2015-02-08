@@ -14,6 +14,13 @@ hardstatus alwaysignore
 bindkey \033[1;5D prev  # for cygwin
 bindkey \033[1;5C next
 
+bind = resize =
+bind + resize +1
+bind - resize -1
+bind _ resize max
+bind P number -1
+bind N number +1
+
 # switching encoding
 bind b encoding big5 utf8
 bind u encoding utf8 utf8
