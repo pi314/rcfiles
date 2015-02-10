@@ -3,6 +3,7 @@ defutf8 on
 defencoding utf8
 
 # Caption
+backtick 0 0 0 sh -c 'screen -ls | grep --color=no -o "$PPID[^[:space:]]*" | sed "s/^[0-9]*\.//g"'
 caption always "%{= kw} %-w%{= mw}[%n] %t%{= kw}%+w%{= kw} %= %` %=%Y/%m/%d %c:%s"
 
 # Hardstatus
