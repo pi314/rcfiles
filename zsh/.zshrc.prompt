@@ -88,8 +88,8 @@ if [[ "$TERM" == 'screen'* ]]; then
         screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
 
     elif [[ -n "$STY" ]]; then
-        session_name="`echo $STY | cut -d '.' -f2`"
-        screen_str="%{[1;35m[$session_name S$WINDOW][m%}"
+        session_name="`echo $STY | sed 's/^[0-9]*\.//'`"
+        screen_str="%{[1;35m[$session_name][m%}"
 
     fi
 fi
