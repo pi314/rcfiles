@@ -143,6 +143,10 @@ nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
 set pastetoggle=<leader>p
 
+" change completion menu color
+highlight Pmenu    ctermfg=7 ctermbg=4 gui=bold
+highlight PmenuSel ctermfg=0 ctermbg=6 gui=bold
+
 " BoshiamyIM
 set statusline=%<%{BoshiamyIM#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 inoremap <expr> ,, BoshiamyIM#ToggleIM()
