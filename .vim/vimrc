@@ -141,6 +141,8 @@ nnoremap <ESC>[B <DOWN>
 
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
+set pastetoggle=<leader>p
+
 " BoshiamyIM
 set statusline=%<%{BoshiamyIM#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 inoremap <expr> ,, BoshiamyIM#ToggleIM()

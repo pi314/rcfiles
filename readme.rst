@@ -48,12 +48,21 @@ Currently I am using
 
 These are my hot-key settings
 
-* ``tj`` switch to previous tab.
-* ``tk`` switch to next tab.
-* ``tt`` Add a new tab.
-* ``tp`` move current tab to previous position.
-* ``tn`` move current tab to next position.
-* ``<C-n>`` toggle NERD-tree.
+* Normal Mode
+
+  - ``tj`` switch to previous tab.
+  - ``tk`` switch to next tab.
+  - ``tt`` Add a new tab.
+  - ``tp`` move current tab to previous position.
+  - ``tn`` move current tab to next position.
+  - ``<CR>`` insert a new line.
+  - ``<C-n>`` toggle NERD-tree.
+  - ``dq`` do movements in register ``"q``.
+  - ``dz`` do movements in register ``"z``.
+
+* Insert Mode
+
+  - ``<leader>p`` toggle paste mode
 
 My ``.vim`` folder also contains a boshiamy input method in ``.vim/plugin``.
 
