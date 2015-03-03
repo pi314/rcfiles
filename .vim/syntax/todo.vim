@@ -16,18 +16,18 @@ hi def      question_checkbox   cterm=bold ctermfg=yellow
 syn match   C_comment           "#.*$"
 hi def link C_comment           Comment
 
-syn match   regex_r_quote       'r/\([^/]*/\)\@='
-syn match   regex_r_quote       "r'\([^']*'\)\@="
-syn match   regex_r_quote       'r"\([^"]*"\)\@='
-syn match   regex_r_quote       '\(r/[^/]*\)\@<=/'
-syn match   regex_r_quote       "\(r'[^']*\)\@<='"
-syn match   regex_r_quote       '\(r"[^"]*\)\@<="'
-syn match   regex_r_quote       'r//'
-syn match   regex_r_quote       "r''"
-syn match   regex_r_quote       'r""'
-syn match   regex_pattern       '\(r/\)\@<=[^/]*\(/\)\@='
-syn match   regex_pattern       "\(r'\)\@<=[^']*\('\)\@="
-syn match   regex_pattern       '\(r"\)\@<=[^"]*\("\)\@='
+syn match   regex_r_quote       '\<r/\([^/]*/\)\@='
+syn match   regex_r_quote       "\<r'\([^']*'\)\@="
+syn match   regex_r_quote       '\<r"\([^"]*"\)\@='
+syn match   regex_r_quote       '\(\<r/[^/]*\)\@<=/'
+syn match   regex_r_quote       "\(\<r'[^']*\)\@<='"
+syn match   regex_r_quote       '\(\<r"[^"]*\)\@<="'
+syn match   regex_r_quote       '\<r//'
+syn match   regex_r_quote       "\<r''"
+syn match   regex_r_quote       '\<r""'
+syn match   regex_pattern       '\(\<r/\)\@<=[^/]*\(/\)\@='
+syn match   regex_pattern       "\(\<r'\)\@<=[^']*\('\)\@="
+syn match   regex_pattern       '\(\<r"\)\@<=[^"]*\("\)\@='
 hi def      regex_r_quote                  ctermfg=darkmagenta
 hi def      regex_pattern       cterm=bold ctermfg=magenta
 
