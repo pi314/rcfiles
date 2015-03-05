@@ -114,7 +114,7 @@ nnoremap <C-n> :NERDTreeToggle<CR>
 inoremap <C-n> <ESC>:NERDTreeToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
-nnoremap <CR> o<ESC>
+nnoremap <CR> o<ESC>0D
 
 " map these by hand
 inoremap <C-h> <BS>
