@@ -111,7 +111,6 @@ nnoremap tn :tabm +1<CR>
 
 " toggle the nerd tree
 nnoremap <C-n> :NERDTreeToggle<CR>
-inoremap <C-n> <ESC>:NERDTreeToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>0D
