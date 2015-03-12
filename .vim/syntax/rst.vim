@@ -13,6 +13,6 @@ syn match   rstEnumeratedList   /\(^\ *\)\@<=(\?\d\+)\(\ \)\@=/
 " a)    A)  (a) (A)
 syn match   rstEnumeratedList   /\(^\ *\)\@<=(\?[a-zA-Z])\(\ \)\@=/
 
-hi def link rstSections         Label       " yellow
+hi def link rstSection          Label       " yellow
 hi def link rstBulletList       Comment     " cyan
 hi def link rstEnumeratedList   Comment     " cyan
