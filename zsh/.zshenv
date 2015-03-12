@@ -101,8 +101,6 @@ export LC_MONETARY=$encode
 export LC_MESSAGES=$encode
 export LC_ALL=$encode
 
-export DISPLAY=localhost:0
-
 function get_parent_folders () {
     local pwd_str="$(pwd)"
     local climber="$(dirname $pwd_str)"
