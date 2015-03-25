@@ -30,7 +30,8 @@ set encoding=utf-8
 set langmenu=zh_TW.UTF-8
 language message zh_TW.UTF-8
 set fileformat=unix
-set ambiwidth=double
+
+set ambiwidth=single
 
 " Show mode on bottom-left
 set showmode
