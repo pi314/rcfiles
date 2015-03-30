@@ -80,19 +80,18 @@ user_name_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
 host_name_str="${white}%m${end}"
 
-screen_str=""
-if [[ "$TERM" == 'screen'* ]]; then
-    if [[ -n "$TMUX" ]]; then
-        session_name=`tmux display-message -p '#S'`
-        WINDOW=`tmux display-message -p '#I'`
-        screen_str="%{[1;35m[$session_name T$WINDOW][m%}"
-
-    elif [[ -n "$STY" ]]; then
-        session_name="`echo $STY | sed 's/^[0-9]*\.//'`"
-        screen_str="%{[1;35m[$session_name][m%}"
-
-    fi
-fi
+# screen_str=""
+# if [[ "$TERM" == 'screen'* ]]; then
+#     if [[ -n "$TMUX" ]]; then
+#         session_name=`tmux display-message -p '#S'`
+#         screen_str="${purple}[T $session_name]${end}"
+#
+#     elif [[ -n "$STY" ]]; then
+#         session_name="`echo $STY | sed 's/^[0-9]*\.//'`"
+#         screen_str="${purple}[S $session_name]${end}"
+#
+#     fi
+# fi
 
 uid_str="%(!.#.>)"
 
@@ -115,7 +114,7 @@ function set_prompt {
         venv_str=""
     fi
     prompt="${last_cmd_succ}$(current_path)$(git_branch_name)${suspend_jobs}${vim_mode_str}${venv_str}
-${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${screen_str}${uid_str} "
+${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${uid_str} "
 }
 
 function zle-keymap-select zle-line-finish zle-line-init {
