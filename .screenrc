@@ -4,7 +4,8 @@ defencoding utf8
 
 # Caption
 backtick 0 0 0 sh -c 'screen -ls | grep --color=no -o "$PPID[^ 	]*" | sed "s/^[0-9]*\.//g"'
-caption always "%{= kw} %-w%{= mw}[%n] %t%{= kw}%+w%{= kw} %= %` %=%Y/%m/%d %c:%s"
+# caption always "%{= kw} %-w%{= mw}[%n] %t%{= kw}%+w%{= kw} %= %` %=%Y/%m/%d %c:%s"
+caption always "%{= mk} %-w%{=u kM}[%n] %t%{= mk}%+w%{= mk} %= %` %=%Y/%m/%d %c:%s"
 
 # Hardstatus
 hardstatus alwaysignore
