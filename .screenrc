@@ -10,10 +10,10 @@ caption always "%{= kw} %-w%{= mw}[%n] %t%{= kw}%+w%{= kw} %= %` %=%Y/%m/%d %c:%
 hardstatus alwaysignore
 
 # switching window
-#bindkey \033[D prev     # for putty/pietty
-#bindkey \033[C next
-bindkey \033[1;5D prev  # for cygwin
-bindkey \033[1;5C next
+# bindkey \033[D prev     # for putty/pietty
+# bindkey \033[C next
+bindkey \033[1;5D prev  # ctrl-left
+bindkey \033[1;5C next  # ctrl-right
 
 bind = resize =
 bind + resize +1
@@ -21,6 +21,7 @@ bind - resize -1
 bind _ resize max
 bind P number -1
 bind N number +1
+bind r source ~/.screenrc
 
 # switching encoding
 bind b encoding big5 utf8
@@ -29,4 +30,3 @@ bind u encoding utf8 utf8
 # default title of new window
 shelltitle "-"
 
-defencoding utf8
