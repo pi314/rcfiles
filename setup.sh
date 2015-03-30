@@ -6,7 +6,8 @@ zsh/.zshenv
 .screenrc
 .tcshrc
 .bashrc
-.gitconfig"
+.gitconfig
+.tmux.conf"
 
 good_color="\033[1;32m"
 not_sure_color="\033[1;33m"
@@ -143,7 +144,7 @@ for f in $files; do
 
     if [ $INSTALL -eq 1 ]; then
         ln -s "$HOME/.rcfiles/$f" "$HOME/$filename"
-        echo "Install $HOME/$filename done"
+        echo "${good_color}Install $HOME/$filename done${end_color}"
     fi
 
     echo ""
