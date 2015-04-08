@@ -13,6 +13,15 @@ if [[ -f $HOME/.rcfiles/zsh/.zshrc.aliases ]]; then
 fi
 
 ##########################
+# Functions
+##########################
+if [[ -d $HOME/.rcfiles/zsh/functions ]]; then
+    for i in $(ls $HOME/.rcfiles/zsh/functions/); do
+        source $HOME/.rcfiles/zsh/functions/$i
+    done
+fi
+
+##########################
 # Local Files
 ##########################
 if [[ -f $HOME/.zshlocal ]]; then
