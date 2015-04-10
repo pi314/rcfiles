@@ -147,6 +147,9 @@ vnoremap Y "*y
 " QUIT!
 cnoremap Q q!
 
+" WRITE!
+cnoremap w!! w !sudo tee %
+
 " automatically purge trailing space on save
 autocmd BufWritePre * :%s/\s\+$//e
 
