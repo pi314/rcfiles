@@ -141,6 +141,15 @@ nnoremap <ESC>[B <DOWN>
 
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
+" convenient copy to system clipboard
+vnoremap Y "*y
+
+" QUIT!
+cnoremap Q q!
+
+" automatically purge trailing space on save
+autocmd BufWritePre * :%s/\s\+$//e
+
 set pastetoggle=<leader>p
 
 " change completion menu color
