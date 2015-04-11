@@ -144,7 +144,7 @@ for f in $files; do
 
     if [ $INSTALL -eq 1 ]; then
         ln -s "$HOME/.rcfiles/$f" "$HOME/$filename"
-        echo "${good_color}Install $HOME/$filename done${end_color}"
+        printf "${good_color}Install $HOME/$filename done${end_color}\n"
     fi
 
     echo ""
@@ -168,6 +168,10 @@ case $answer in
         printf "Installing other plugin...\n"
         sleep 1
         vim +PluginInstall +qall
+        printf "${good_color}Vim plugin installation completed${end_color}\n"
+        printf "Updating...\n"
+        vim +PluginUpdate +qall
+        printf "${good_color}Vim plugin update completed${end_color}\n"
         ;;
 
     [Nn] )
@@ -176,4 +180,4 @@ case $answer in
 
 esac
 
-echo "Vim installation completed"
+echo "Vim plugin installation completed"
