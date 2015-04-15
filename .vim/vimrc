@@ -145,7 +145,7 @@ nnoremap <leader><C-l> :syntax sync fromstart<CR>
 vnoremap Y "*y
 
 " QUIT!
-cnoremap Q q!
+command Q execute "q!"
 
 " WRITE!
 cnoremap w!! w !sudo tee %
