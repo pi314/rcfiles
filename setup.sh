@@ -157,27 +157,32 @@ if [ -d "$BACKUP_FILE_PATH" ]; then
     echo "Old configuration files are now in $HOME/.old_rcfiles/$BACKUP_DIR"
 fi
 
-printf "Do you want to install all vim plugins now? [Y/n] "
-answer=$(ask_user yn "${error_color}Please answer yes or no. [Y(es) / n(o)]${end_color} ")
+if [ -n "$(command -v git)" ] && [ -n "$(command -v vim)" ]; then
+    printf "Do you want to install all vim plugins now? [Y/n] "
+    answer=$(ask_user yn "${error_color}Please answer yes or no. [Y(es) / n(o)]${end_color} ")
 
-case $answer in
-    [Yy] )
-        printf "Installing vundle plugin...\n"
-        git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-        printf "Done\n"
-        printf "Installing other plugin...\n"
-        sleep 1
-        vim +PluginInstall +qall
-        printf "${good_color}Vim plugin installation completed${end_color}\n"
-        printf "Updating...\n"
-        vim +PluginUpdate +qall
-        printf "${good_color}Vim plugin update completed${end_color}\n"
-        ;;
+    case $answer in
+        [Yy] )
+            printf "Installing vundle plugin...\n"
+            git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+            printf "Done\n"
+            printf "Installing other plugin...\n"
+            sleep 1
+            vim +PluginInstall +qall
+            printf "${good_color}vim plugin installation completed${end_color}\n"
+            printf "Updating...\n"
+            vim +PluginUpdate +qall
+            printf "${good_color}vim plugin update completed${end_color}\n"
+            ;;
 
-    [Nn] )
-        echo "vim plugin installation canceled"
-        ;;
+        [Nn] )
+            echo "vim plugin installation canceled"
+            ;;
 
-esac
+    esac
 
-echo "Vim plugin installation completed"
+else
+    printf "${error_color}git or vim does not exist, vim plugin installation canceled${end_color}"
+
+fi
+
