@@ -1,4 +1,4 @@
 title () {
-    echo -ne "\e]1;$1\a"
+    echo -ne "\e]1;$@\a"
 }
 
