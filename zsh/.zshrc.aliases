@@ -32,3 +32,7 @@ fi
 alias -s py=python
 alias -s sh=sh
 
+if [[ "$ZSH_KERNEL_TYPE" == "FreeBSD" ]]; then
+    alias nc='nc -N'
+fi
+
