@@ -1,0 +1,6 @@
+#compdef make gmake
+
+if [ -f Makefile ]; then
+    _arguments "*:targets:($(cat Makefile | grep ':' | sed 's/:.*$//'))"
+fi
+
