@@ -65,7 +65,9 @@ unpack () {
     fi
     while [ $# -gt 0 ]; do
         local filename=$1
-        if [ -f "$filename" ]; then
+        if [ "$filename-" = "--" ]
+            tar xvf -
+        elif [ -f "$filename" ]; then
             case $filename in
                 *.tar)      tar     xvf     "$filename" ;;
                 *.tar.bz2)  tar     xvf     "$filename" ;;
@@ -83,7 +85,6 @@ unpack () {
                 *.xz)       unxz    -kv     "$filename" ;;
                 *.rar)      unrar   x       "$filename" ;;
                 *.Z)        uncompress      "$filename" ;;
-                -)          tar     xvf     -           ;;
                 *) echo "Don't know how to unpack $filename" >&2 ;;
             esac
             if [ "$clean" = "1" ]; then
