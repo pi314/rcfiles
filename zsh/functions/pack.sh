@@ -65,7 +65,7 @@ unpack () {
     fi
     while [ $# -gt 0 ]; do
         local filename=$1
-        if [ "$filename-" = "--" ]
+        if [ "$filename-" = "--" ]; then
             tar xvf -
         elif [ -f "$filename" ]; then
             case $filename in
