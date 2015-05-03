@@ -145,10 +145,13 @@ nnoremap <leader><C-l> :syntax sync fromstart<CR>
 vnoremap Y "*y
 
 " QUIT!
-command Q execute "q!"
+command! Q execute "q!"
 
 " WRITE!
 cnoremap w!! w !sudo tee %
+
+" open file in new tab
+nnoremap gF <C-w>gf
 
 " automatically purge trailing space on save
 autocmd BufWritePre * :%s/\s\+$//e
