@@ -51,6 +51,7 @@ set nosmartindent
 set autoindent
 set tabstop=4       " changes the width of the TAB character
 set shiftwidth=4    " >>, <<, == width and automatic indent width
+set softtabstop=4
 set listchars=tab:>-
 set list
 
