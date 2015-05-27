@@ -21,3 +21,5 @@ syn match   rstFieldList        /^:[^:]\+: \+.*$/
 syn match   rstFieldList        /^:[^:]\+:\( \+.*\)\?\n\( \+\).*\(\n\2.*\)*/
 hi def link rstFieldList        Function
 
+syn match   rstExplicitMarkup   /\(^\ *\)\@<=\.\.\_s/ nextgroup=@rstDirectives,rstComment,rstSubstitutionDefinition
+
