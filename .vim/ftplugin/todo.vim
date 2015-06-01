@@ -1,4 +1,4 @@
-setlocal commentstring=#%s
+setlocal commentstring=..%s
 setlocal softtabstop=4
 setlocal shiftwidth=4
 
@@ -32,13 +32,19 @@ function! Add_checkbox ()
         let l:text = '[x]' . l:text[3:]
 
     elseif l:text[0:2] == '[x]'
-        let l:text = '[ ]' . l:text[3:]
+        let l:text = l:text[4:]
+        if exists('*CreateBullet')
+            call setline('.', l:pspace . l:text)
+            call CreateBullet()
+            return
+        endif
 
     elseif l:text[0:2] =~ '^\[.\]$'
         let l:text = '[ ]' . l:text[3:]
 
     else
         let l:text = '[ ] ' . l:text
+
     endif
 
     call setline('.', l:pspace . l:text)
