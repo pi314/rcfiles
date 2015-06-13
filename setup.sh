@@ -6,6 +6,7 @@ zsh/.zshenv
 .screenrc
 .tcshrc
 .bashrc
+.bash_profile
 .gitconfig
 .tmux.conf"
 
@@ -164,7 +165,9 @@ if [ -n "$(command -v git)" ] && [ -n "$(command -v vim)" ]; then
     case $answer in
         [Yy] )
             printf "Installing vundle plugin...\n"
-            git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+            if [ ! ~/.vim/bundle/Vundle.vim ]; then
+                git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+            fi
             printf "Done\n"
             printf "Installing other plugin...\n"
             sleep 1
