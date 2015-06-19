@@ -4,7 +4,7 @@
 #     "2:Countries:(France Germany Italy)"\
 #     "*:Cities:((Paris\:France Berlin:\Germany Rome:\Italy))"
 
-_hello() {
+_hello () {
     local curcontext="$curcontext" state line
     typeset -A opt_args
 
@@ -12,7 +12,7 @@ _hello() {
         '1: :->country'\
         '*: :->city'
 
-    echo '[' $curcontext '][' $state '][' $line '][' $words ']' 1>&2
+    # echo '[' $curcontext '][' $state '][' $line '][' $words ']' 1>&2
     # $state: ``country`` / ``city``
     # line: France Paris Lyon
     # words: hello France Paris Lyon
@@ -24,13 +24,19 @@ _hello() {
     *)
         case $words[2] in
         France)
-            compadd "$@" Paris Lyon Marseille
+            _arguments '*:Cities:((Paris:France Berlin:Germany Rome:Italy))'
         ;;
         Germany)
             compadd "$@" Berlin Munich Dresden
         ;;
         Italy)
-            compadd "$@" Rome Napoli Palermo
+            local t
+            t=(
+                '-aa[argument a]'
+                '-ab[argument b]'
+                '*:filename: _files'
+            )
+            _arguments -s $t
         ;;
         *)
             _files
