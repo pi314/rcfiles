@@ -104,6 +104,8 @@ hi VIMlogo     ctermfg=white ctermbg=blue
 " must use nnoremap = no recursive map
 nnoremap k gk
 nnoremap j gj
+vnoremap k gk
+vnoremap j gj
 
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
