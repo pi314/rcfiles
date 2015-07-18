@@ -18,6 +18,7 @@ Bundle 'pi314/BoshiamyIM'
 Bundle 'pi314/AsciiArt'
 Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
+Bundle 'dhruvasagar/vim-table-mode'
 
 call vundle#end()           " required
 filetype plugin on          " required
@@ -169,8 +170,20 @@ set pastetoggle=<leader>p
 highlight Pmenu    ctermfg=7 ctermbg=4 gui=bold
 highlight PmenuSel ctermfg=0 ctermbg=6 gui=bold
 
+" status line, show plugin modes
+function! VimTableModeStatusString ()
+    if tablemode#IsActive()
+        return '[table]'
+    endif
+    return ''
+endfunction
+set statusline=%<%{BoshiamyIM#Status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+
 " BoshiamyIM
-set statusline=%<%{BoshiamyIM#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 inoremap <expr> ,, BoshiamyIM#ToggleIM()
 inoremap <space> <C-R>=BoshiamyIM#SendKey()<CR>
 nnoremap <expr> <ESC><ESC> BoshiamyIM#LeaveIM()
+
+" vim-table-mode settings
+let g:table_mode_corner_corner="+"
+let g:table_mode_header_fillchar="="
