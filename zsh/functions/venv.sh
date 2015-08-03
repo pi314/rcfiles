@@ -1,7 +1,10 @@
 venv () {
     if [ -z "$1" ]; then
-        exit
+        echo "Apply default venv: ${HOME}/.venv"
+        target="${HOME}/.venv"
+    else
+        target="$1"
     fi
-    source $1/bin/activate
+    source "${target}/bin/activate"
 }
 
