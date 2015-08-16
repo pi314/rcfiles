@@ -12,6 +12,7 @@ call vundle#begin()
 " Plugins
 Bundle 'gmarik/Vundle.vim'
 Bundle 'The-NERD-tree'
+Bundle 'jistr/vim-nerdtree-tabs'
 "Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'pi314/BoshiamyIM'
@@ -119,7 +120,7 @@ nnoremap tp :tabm -1<CR>
 nnoremap tn :tabm +1<CR>
 
 " toggle the nerd tree
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-n> :NERDTreeTabsToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>0D
