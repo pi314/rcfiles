@@ -118,6 +118,7 @@ nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
 nnoremap tp :tabm -1<CR>
 nnoremap tn :tabm +1<CR>
+let g:NERDTreeMapOpenInTab='tt'
 
 " toggle the nerd tree
 nnoremap <C-n> :NERDTreeTabsToggle<CR>
