@@ -12,12 +12,14 @@ call vundle#begin()
 " Plugins
 Bundle 'gmarik/Vundle.vim'
 Bundle 'The-NERD-tree'
+Bundle 'jistr/vim-nerdtree-tabs'
 "Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'pi314/BoshiamyIM'
 Bundle 'pi314/AsciiArt'
 Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
+Bundle 'dhruvasagar/vim-table-mode'
 
 call vundle#end()           " required
 filetype plugin on          " required
@@ -90,6 +92,10 @@ set norightleft
 " Disable X11 clipboard, it help vim not hanging on start
 set clipboard=exclude:.*
 
+" put a blue line on column 80
+set cc=80
+hi ColorColumn ctermbg=4
+
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
@@ -104,15 +110,18 @@ hi VIMlogo     ctermfg=white ctermbg=blue
 " must use nnoremap = no recursive map
 nnoremap k gk
 nnoremap j gj
+vnoremap k gk
+vnoremap j gj
 
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
 nnoremap tp :tabm -1<CR>
 nnoremap tn :tabm +1<CR>
+let g:NERDTreeMapOpenInTab='tt'
 
 " toggle the nerd tree
-nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-n> :NERDTreeTabsToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <CR> o<ESC>0D
@@ -163,8 +172,20 @@ set pastetoggle=<leader>p
 highlight Pmenu    ctermfg=7 ctermbg=4 gui=bold
 highlight PmenuSel ctermfg=0 ctermbg=6 gui=bold
 
+" status line, show plugin modes
+function! VimTableModeStatusString ()
+    if tablemode#IsActive()
+        return '[table]'
+    endif
+    return ''
+endfunction
+set statusline=%<%{BoshiamyIM#Status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+
 " BoshiamyIM
-set statusline=%<%{BoshiamyIM#Status()}%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 inoremap <expr> ,, BoshiamyIM#ToggleIM()
 inoremap <space> <C-R>=BoshiamyIM#SendKey()<CR>
 nnoremap <expr> <ESC><ESC> BoshiamyIM#LeaveIM()
+
+" vim-table-mode settings
+let g:table_mode_corner_corner="+"
+let g:table_mode_header_fillchar="="
