@@ -55,6 +55,7 @@ setenv LS_COLORS "di=01;36:ln=01;35"
 
 alias grep 'grep --color=auto'
 alias v 'vim -p'
+alias up 'cd ..'
 
 # CYGWIN-only aliases
 if (`uname | cut -b 1-6` == "CYGWIN") then
