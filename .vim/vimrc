@@ -180,12 +180,12 @@ function! VimTableModeStatusString ()
     endif
     return ''
 endfunction
-set statusline=%<%{BoshiamyIM#Status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
 
 " BoshiamyIM
-inoremap <expr> ,, BoshiamyIM#ToggleIM()
-inoremap <space> <C-R>=BoshiamyIM#SendKey()<CR>
-nnoremap <expr> <ESC><ESC> BoshiamyIM#LeaveIM()
+inoremap <expr> ,, boshiamy#toggle()
+inoremap <space> <C-R>=boshiamy#send_key()<CR>
+nnoremap <expr> <ESC><ESC> boshiamy#leave()
 
 " vim-table-mode settings
 let g:table_mode_corner_corner="+"
