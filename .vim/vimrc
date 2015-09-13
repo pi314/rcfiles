@@ -20,6 +20,7 @@ Bundle 'pi314/pi314.asciiart.vim'
 Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
 Bundle 'dhruvasagar/vim-table-mode'
+Bundle 'pi314/todo-or-not-todo.vim'
 
 call vundle#end()           " required
 filetype plugin on          " required
