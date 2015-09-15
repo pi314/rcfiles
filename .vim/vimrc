@@ -95,7 +95,7 @@ set clipboard=exclude:.*
 
 " put a blue line on column 80
 set cc=80
-hi ColorColumn ctermbg=4
+hi ColorColumn ctermbg=Blue
 
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
@@ -175,8 +175,8 @@ autocmd BufWritePre * :%s/\s\+$//e
 set pastetoggle=<leader>p
 
 " change completion menu color
-highlight Pmenu    ctermfg=7 ctermbg=4 gui=bold
-highlight PmenuSel ctermfg=0 ctermbg=6 gui=bold
+highlight Pmenu    ctermfg=White ctermbg=Blue gui=bold
+highlight PmenuSel ctermfg=Black ctermbg=Cyan gui=bold
 
 " status line, show plugin modes
 function! VimTableModeStatusString ()
