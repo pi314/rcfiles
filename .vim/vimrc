@@ -104,7 +104,7 @@ hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
 " ======== "
-" Hot-keys "
+" Mappings "
 " ======== "
 
 " move moving between long wrapped lines
@@ -150,6 +150,7 @@ nnoremap <ESC>[D <LEFT>
 nnoremap <ESC>[C <RIGHT>
 nnoremap <ESC>[B <DOWN>
 
+" redraw syntax highlighting
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
 " convenient copy to system clipboard
@@ -163,6 +164,10 @@ cnoremap w!! w !sudo tee %
 
 " open file in new tab
 nnoremap gF <C-w>gf
+
+" indenting in visual mode
+vnoremap > >gv
+vnoremap < <gv
 
 " automatically purge trailing space on save
 autocmd BufWritePre * :%s/\s\+$//e
@@ -187,6 +192,6 @@ inoremap <expr> ,, boshiamy#toggle()
 inoremap <space> <C-R>=boshiamy#send_key()<CR>
 nnoremap <expr> <ESC><ESC> boshiamy#leave()
 
-" vim-table-mode settings
+" vim-table-mode settings ([normal] <leader>tm to enable table mode)
 let g:table_mode_corner_corner="+"
 let g:table_mode_header_fillchar="="
