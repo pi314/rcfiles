@@ -103,6 +103,10 @@ hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
 
+" new vertical split appear on right hand side
+set splitright
+set splitbelow
+
 " ======== "
 " Mappings "
 " ======== "
