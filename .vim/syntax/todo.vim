@@ -1,8 +1,5 @@
 syntax case match
 
-syn match   C_comment           _#.*$_
-hi def link C_comment           Comment
-
 syn match   regex_r_quote       _\v<r'(([^\\']|\\.)*')@=_
 syn match   regex_r_quote       _\v(<r'([^\\']|\\.)*)@<='_
 syn match   regex_r_quote       _\v<r"(([^\\"]|\\.)*")@=_
