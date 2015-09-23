@@ -26,6 +26,22 @@ install_tmux () { #{{{
     install .tmux.conf
 } #}}}
 
+install_git () { #{{{
+    printf '  Acquiring information for ".gitconfig".\n'
+    printf '  Input your user name: '
+    read username
+    printf '  Input your user email: '
+    read useremail
+    echo '[user]' > $source_dir/.gitconfig.user
+    echo "    name = $username" >> $source_dir/.gitconfig.user
+    echo "    email = $useremail" >> $source_dir/.gitconfig.user
+    echo '' >> $source_dir/.gitconfig.user
+
+    cat $source_dir/.gitconfig.user > $source_dir/.gitconfig.local
+    cat $source_dir/.gitconfig >> $source_dir/.gitconfig.local
+    install .gitconfig.local .gitconfig
+} #}}}
+
 install_all () { #{{{
     install_zsh
     install_tcsh
@@ -60,7 +76,7 @@ BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        all | zsh | tcsh | bash | vim | screen)
+        all | zsh | tcsh | bash | vim | screen | tmux | git)
             message_install_start $1
             install_${1}
             message_install_complete $1
@@ -73,4 +89,6 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-printf "Old files is in $BACKUP_FILE_PATH\n"
+if [ -d $BACKUP_FILE_PATH ]; then
+    printf "Old files is in $BACKUP_FILE_PATH\n"
+fi

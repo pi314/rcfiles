@@ -5,3 +5,5 @@
 
 *.swp
 *.swo
+.gitconfig.user
+.gitconfig.local
