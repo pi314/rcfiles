@@ -49,6 +49,7 @@ install_all () { #{{{
     install_vim
     install_screen
     install_tmux
+    install_git
 } #}}}
 
 
@@ -61,6 +62,7 @@ if [ $# -eq 0 ]; then
     echo '    vim'
     echo '    screen'
     echo '    tmux'
+    echo '    git'
     exit
 fi
 
