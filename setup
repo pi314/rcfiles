@@ -5,6 +5,15 @@ install_zsh () { #{{{
     install zsh/.zshenv .zshenv
 } #}}}
 
+install_tcsh () { #{{{
+    install .tcshrc
+} #}}}
+
+install_bash () { #{{{
+    install .bashrc
+    install .bash_profile
+} #}}}
+
 install_vim () { #{{{
     install .vim
 } #}}}
@@ -13,16 +22,29 @@ install_screen () { #{{{
     install .screenrc
 } #}}}
 
+install_tmux () { #{{{
+    install .tmux.conf
+} #}}}
+
 install_all () { #{{{
     install_zsh
+    install_tcsh
+    install_bash
     install_vim
     install_screen
+    install_tmux
 } #}}}
 
 
 if [ $# -eq 0 ]; then
     echo 'Available targets:'
-    echo '    -working-'
+    echo '    all'
+    echo '    zsh'
+    echo '    tcsh'
+    echo '    bash'
+    echo '    vim'
+    echo '    screen'
+    echo '    tmux'
     exit
 fi
 
@@ -38,10 +60,11 @@ BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        zsh|vim|screen|all)
+        all | zsh | tcsh | bash | vim | screen)
             message_install_start $1
             install_${1}
             message_install_complete $1
+            echo ''
             ;;
         *)
             message_unknown_target $1
@@ -49,3 +72,5 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+printf "Old files is in $BACKUP_FILE_PATH\n"
