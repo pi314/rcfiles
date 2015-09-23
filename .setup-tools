@@ -1,27 +1,27 @@
 #!/bin/sh
 
-good_color="\033[1;32m"
-not_sure_color="\033[1;33m"
-error_color="\033[1;31m"
-end_color="\033[m"
+color_good="\033[1;32m"
+color_not_sure="\033[1;33m"
+color_error="\033[1;31m"
+color_end="\033[m"
 
 message_install_start () { #{{{
     if [ "_$1" = "_" ]; then
         return 64   # man sysexits
     fi
-    printf "${end}Target $1 started${end}\n"
+    printf "${color_end}Target '$1' started${color_end}\n"
 } #}}}
 
 message_install_complete () { #{{{
     if [ "_$1" = "_" ]; then
         return 64   # man sysexits
     fi
-    printf "${good_color}Target $1 completed${end}\n"
+    printf "${color_good}Target '$1' completed${color_end}\n"
     echo ''
 } #}}}
 
 message_unknown_target () { #{{{
-    printf "${error_color}Unknown target: $1\n"
+    printf "${color_error}Unknown target: '$1'\n"
 } #}}}
 
 install () { #{{{
@@ -33,12 +33,12 @@ install () { #{{{
 
     if [ -L $HOME/$dst ]; then
         rm $HOME/$dst
-        printf "${not_sure_color}Symbolic link $HOME/$dst@ removed${end_color}\n"
+        printf "${color_not_sure}Symbolic link $HOME/$dst@ removed${color_end}\n"
     elif [ -f $HOME/$dst ]; then
-        echo "File $HOME/$dst exists, please remove it first."
+        printf "${color_error}File $HOME/$dst exists, please remove it first.${color_end}\n"
         return
     elif [ -d $HOME/$dst ]; then
-        echo "Folder $HOME/$dst/ exists, please remove it first."
+        printf "${color_error}Folder $HOME/$dst/ exists, please remove it first.${color_end}\n"
         return
     fi
 

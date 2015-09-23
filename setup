@@ -10,11 +10,13 @@ install_vim () { #{{{
 } #}}}
 
 install_screen () { #{{{
-    echo install_screen
+    install .screenrc
 } #}}}
 
 install_all () { #{{{
-    echo install_all
+    install_zsh
+    install_vim
+    install_screen
 } #}}}
 
 
