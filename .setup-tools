@@ -9,7 +9,7 @@ message_install_start () { #{{{
     if [ "_$1" = "_" ]; then
         return 64   # man sysexits
     fi
-    printf "${good_color}Target $1 started${end}\n"
+    printf "${end}Target $1 started${end}\n"
 } #}}}
 
 message_install_complete () { #{{{
@@ -17,6 +17,7 @@ message_install_complete () { #{{{
         return 64   # man sysexits
     fi
     printf "${good_color}Target $1 completed${end}\n"
+    echo ''
 } #}}}
 
 message_unknown_target () { #{{{
