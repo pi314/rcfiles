@@ -32,6 +32,10 @@ popd > /dev/null
 
 source $source_dir/.setup-tools
 
+BACKUP_TOP_FOLDER=".old_rcfiles"
+BACKUP_DIR_NAME="`date +%Y%m%d_%H%M%S`"
+BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
+
 while [ $# -gt 0 ]; do
     case "$1" in
         zsh|vim|screen|all)

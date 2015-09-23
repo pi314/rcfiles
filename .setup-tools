@@ -17,7 +17,6 @@ message_install_complete () { #{{{
         return 64   # man sysexits
     fi
     printf "${color_good}Target '$1' completed${color_end}\n"
-    echo ''
 } #}}}
 
 message_unknown_target () { #{{{
@@ -33,14 +32,32 @@ install () { #{{{
 
     if [ -L $HOME/$dst ]; then
         rm $HOME/$dst
-        printf "${color_not_sure}Symbolic link $HOME/$dst@ removed${color_end}\n"
+        printf "Symbolic link $HOME/$dst@ removed\n"
     elif [ -f $HOME/$dst ]; then
-        printf "${color_error}File $HOME/$dst exists, please remove it first.${color_end}\n"
-        return
+        printf "${color_not_sure}File $HOME/$dst exists, backing up ... "
+        backup $HOME/$dst
     elif [ -d $HOME/$dst ]; then
-        printf "${color_error}Folder $HOME/$dst/ exists, please remove it first.${color_end}\n"
-        return
+        printf "${color_not_sure}Folder $HOME/$dst/ exists, backing up ... "
+        backup $HOME/$dst
     fi
 
+    printf "${good_color}Installing $dst ... "
     ln -s $source_dir/$src $HOME/$dst
+    printf "Done${color_end}\n"
+    echo ''
 } #}}}
+
+backup () {
+    if [ ! -d "$HOME/.old_rcfiles" ]; then
+        mkdir "$HOME/.old_rcfiles"
+
+    fi
+
+    if [ ! -d "$BACKUP_FILE_PATH" ]; then
+        mkdir "$BACKUP_FILE_PATH"
+
+    fi
+
+    mv $1 $BACKUP_FILE_PATH
+    printf "Done${color_end}\n"
+}
