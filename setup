@@ -1,0 +1,45 @@
+#!/bin/sh
+
+install_zsh () { #{{{
+    install zsh/.zshrc .zshrc
+    install zsh/.zshenv .zshenv
+} #}}}
+
+install_vim () { #{{{
+    install .vim
+} #}}}
+
+install_screen () { #{{{
+    echo install_screen
+} #}}}
+
+install_all () { #{{{
+    echo install_all
+} #}}}
+
+
+if [ $# -eq 0 ]; then
+    echo 'Available targets:'
+    echo '    -working-'
+    exit
+fi
+
+source .setup-tools
+
+pushd $(dirname $0) > /dev/null
+source_dir=$(pwd -P)
+popd > /dev/null
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        zsh|vim|screen|all)
+            message_install_start $1
+            install_${1}
+            message_install_complete $1
+            ;;
+        *)
+            message_unknown_target $1
+            ;;
+    esac
+    shift
+done

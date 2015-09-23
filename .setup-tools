@@ -1,0 +1,45 @@
+#!/bin/sh
+
+good_color="\033[1;32m"
+not_sure_color="\033[1;33m"
+error_color="\033[1;31m"
+end_color="\033[m"
+
+message_install_start () { #{{{
+    if [ "_$1" = "_" ]; then
+        return 64   # man sysexits
+    fi
+    printf "${good_color}Target $1 started${end}\n"
+} #}}}
+
+message_install_complete () { #{{{
+    if [ "_$1" = "_" ]; then
+        return 64   # man sysexits
+    fi
+    printf "${good_color}Target $1 completed${end}\n"
+} #}}}
+
+message_unknown_target () { #{{{
+    printf "${error_color}Unknown target: $1\n"
+} #}}}
+
+install () { #{{{
+    src=$1
+    dst=$2
+    if [ "_$dst" = "_" ];then
+        dst=$1
+    fi
+
+    if [ -L $HOME/$dst ]; then
+        rm $HOME/$dst
+        printf "${not_sure_color}Symbolic link $HOME/$dst@ removed${end_color}\n"
+    elif [ -f $HOME/$dst ]; then
+        echo "File $HOME/$dst exists, please remove it first."
+        return
+    elif [ -d $HOME/$dst ]; then
+        echo "Folder $HOME/$dst/ exists, please remove it first."
+        return
+    fi
+
+    ln -s $source_dir/$src $HOME/$dst
+} #}}}
