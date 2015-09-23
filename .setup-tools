@@ -1,0 +1,63 @@
+#!/bin/sh
+
+color_good="\033[1;32m"
+color_not_sure="\033[1;33m"
+color_error="\033[1;31m"
+color_end="\033[m"
+
+message_install_start () { #{{{
+    if [ "_$1" = "_" ]; then
+        return 64   # man sysexits
+    fi
+    printf "${color_end}Target '$1' started${color_end}\n"
+} #}}}
+
+message_install_complete () { #{{{
+    if [ "_$1" = "_" ]; then
+        return 64   # man sysexits
+    fi
+    printf "  ${color_good}Target '$1' completed${color_end}\n"
+} #}}}
+
+message_unknown_target () { #{{{
+    printf "${color_error}Unknown target: '$1'\n"
+} #}}}
+
+install () { #{{{
+    src=$1
+    dst=$2
+    if [ "_$dst" = "_" ];then
+        dst=$1
+    fi
+
+    if [ -L $HOME/$dst ]; then
+        rm $HOME/$dst
+        printf "  Symbolic link $HOME/$dst@ removed\n"
+    elif [ -f $HOME/$dst ]; then
+        printf "  ${color_not_sure}File $HOME/$dst exists, backing up ... "
+        backup $HOME/$dst
+        printf "Done${color_end}\n"
+    elif [ -d $HOME/$dst ]; then
+        printf "  ${color_not_sure}Folder $HOME/$dst/ exists, backing up ... "
+        backup $HOME/$dst
+        printf "Done${color_end}\n"
+    fi
+
+    printf "  ${good_color}Installing $dst ... "
+    ln -s $source_dir/$src $HOME/$dst
+    printf "Done${color_end}\n"
+} #}}}
+
+backup () {
+    if [ ! -d "$HOME/.old_rcfiles" ]; then
+        mkdir "$HOME/.old_rcfiles"
+
+    fi
+
+    if [ ! -d "$BACKUP_FILE_PATH" ]; then
+        mkdir "$BACKUP_FILE_PATH"
+
+    fi
+
+    mv $1 $BACKUP_FILE_PATH
+}

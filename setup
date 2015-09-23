@@ -1,0 +1,94 @@
+#!/bin/sh
+
+install_zsh () { #{{{
+    install zsh/.zshrc .zshrc
+    install zsh/.zshenv .zshenv
+} #}}}
+
+install_tcsh () { #{{{
+    install .tcshrc
+} #}}}
+
+install_bash () { #{{{
+    install .bashrc
+    install .bash_profile
+} #}}}
+
+install_vim () { #{{{
+    install .vim
+} #}}}
+
+install_screen () { #{{{
+    install .screenrc
+} #}}}
+
+install_tmux () { #{{{
+    install .tmux.conf
+} #}}}
+
+install_git () { #{{{
+    printf '  Acquiring information for ".gitconfig".\n'
+    printf '  Input your user name: '
+    read username
+    printf '  Input your user email: '
+    read useremail
+    echo '[user]' > $source_dir/.gitconfig.user
+    echo "    name = $username" >> $source_dir/.gitconfig.user
+    echo "    email = $useremail" >> $source_dir/.gitconfig.user
+    echo '' >> $source_dir/.gitconfig.user
+
+    cat $source_dir/.gitconfig.user > $source_dir/.gitconfig.local
+    cat $source_dir/.gitconfig >> $source_dir/.gitconfig.local
+    install .gitconfig.local .gitconfig
+} #}}}
+
+install_all () { #{{{
+    install_zsh
+    install_tcsh
+    install_bash
+    install_vim
+    install_screen
+    install_tmux
+} #}}}
+
+
+if [ $# -eq 0 ]; then
+    echo 'Available targets:'
+    echo '    all'
+    echo '    zsh'
+    echo '    tcsh'
+    echo '    bash'
+    echo '    vim'
+    echo '    screen'
+    echo '    tmux'
+    exit
+fi
+
+pushd $(dirname $0) > /dev/null
+source_dir=$(pwd -P)
+popd > /dev/null
+
+source $source_dir/.setup-tools
+
+BACKUP_TOP_FOLDER=".old_rcfiles"
+BACKUP_DIR_NAME="`date +%Y%m%d_%H%M%S`"
+BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        all | zsh | tcsh | bash | vim | screen | tmux | git)
+            message_install_start $1
+            install_${1}
+            message_install_complete $1
+            echo ''
+            ;;
+        *)
+            message_unknown_target $1
+            ;;
+    esac
+    shift
+done
+
+if [ -d $BACKUP_FILE_PATH ]; then
+    printf "Old files is in $BACKUP_FILE_PATH\n"
+fi
