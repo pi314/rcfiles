@@ -1,10 +1,9 @@
 title () {
     case $ZSH_KERNEL_TYPE in
         "CYGWIN")
-            printf "\033]0;$@\007"
+            printf "\033]0;$(echo $@)\007"
             ;;
         *)
-            printf "\033]1;$@\a"
+            printf "\033]1;$(echo $@)\a"
     esac
 }
-
