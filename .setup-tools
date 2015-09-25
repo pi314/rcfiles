@@ -48,7 +48,7 @@ install () { #{{{
     printf "Done${color_end}\n"
 } #}}}
 
-backup () {
+backup () { #{{{
     if [ ! -d "$HOME/.old_rcfiles" ]; then
         mkdir "$HOME/.old_rcfiles"
 
@@ -60,4 +60,4 @@ backup () {
     fi
 
     mv $1 $BACKUP_FILE_PATH
-}
+} #}}}
