@@ -14,10 +14,6 @@ install_bash () { #{{{
     install .bash_profile
 } #}}}
 
-install_vim () { #{{{
-    install .vim
-} #}}}
-
 install_screen () { #{{{
     install .screenrc
 } #}}}
@@ -42,14 +38,37 @@ install_git () { #{{{
     install .gitconfig.local .gitconfig
 } #}}}
 
+install_vim () { #{{{
+    install .vim
+    cd $HOME/.vim
+    if [ ! -d bundle ]; then
+        mkdir bundle
+    fi
+
+    cd bundle
+    printf '  Installing vundle plugin ... '
+    git clone https://github.com/VundleVim/Vundle.vim >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo 'Done'
+    else
+        echo 'Already installed'
+        printf '  Updating vundle ... '
+        cd Vundle.vim && git pull >/dev/null 2>&1
+        echo 'Done'
+    fi
+    printf '  Installing plugins ... '
+    vim +PluginInstall +qall
+    echo 'Done'
+} #}}}
+
 install_all () { #{{{
     install_zsh
     install_tcsh
     install_bash
-    install_vim
     install_screen
     install_tmux
     install_git
+    install_vim
 } #}}}
 
 
@@ -59,10 +78,10 @@ if [ $# -eq 0 ]; then
     echo '    zsh'
     echo '    tcsh'
     echo '    bash'
-    echo '    vim'
     echo '    screen'
     echo '    tmux'
     echo '    git'
+    echo '    vim'
     exit
 fi
 
@@ -78,7 +97,7 @@ BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        all | zsh | tcsh | bash | vim | screen | tmux | git)
+        all | zsh | tcsh | bash | screen | tmux | git | vim)
             message_install_start $1
             install_${1}
             message_install_complete $1
