@@ -23,21 +23,30 @@ install_tmux () { #{{{
 } #}}}
 
 install_git () { #{{{
-    printf '  Acquiring information from .gitconfig.user ... '
-    if [ -f $source_dir/.gitconfig.user ]; then
-        # ``read`` and pipe together creates a subshell,
-        # so here comes the dirty work
-        if [ $(cat $source_dir/.gitconfig.user | wc -l) -eq 2 ]; then
-            echo 'Found'
-            default_name=$(head -n 1 $source_dir/.gitconfig.user)
-            default_email=$(head -n 2 $source_dir/.gitconfig.user | tail -n 1)
-        else
-            echo 'Broken'
-            default_name=''
-            default_email=''
-        fi
+    cd $source_dir
+    printf '  Acquiring information from .gitconfig ... '
+    default_name=$(git config user.name)
+    default_email=$(git config user.email)
+    if [ -n "$default_name" ] || [ -n "$default_email" ]; then
+        echo 'Found'
     else
         echo 'Not found'
+        printf "  Try $source_dir/.gitconfig.user instead ... "
+        if [ -f $source_dir/.gitconfig.user ]; then
+            # ``read`` and pipe together creates a subshell,
+            # so here comes the dirty work
+            if [ $(cat $source_dir/.gitconfig.user | wc -l) -eq 2 ]; then
+                echo 'Found'
+                default_name=$(head -n 1 $source_dir/.gitconfig.user)
+                default_email=$(head -n 2 $source_dir/.gitconfig.user | tail -n 1)
+            else
+                echo 'Broken'
+                default_name=''
+                default_email=''
+            fi
+        else
+            echo 'Not found'
+        fi
     fi
 
     while [ 1 ]; do
