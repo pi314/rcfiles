@@ -88,8 +88,8 @@ install_git () { #{{{
 
     printf '  Generating .girconfig.local ... '
     echo '[user]' > $source_dir/.gitconfig.local
-    echo "    name = $username" >> $source_dir/.gitconfig.local
-    echo "    email = $useremail" >> $source_dir/.gitconfig.local
+    echo "    name = $user_name" >> $source_dir/.gitconfig.local
+    echo "    email = $user_email" >> $source_dir/.gitconfig.local
     echo '' >> $source_dir/.gitconfig.local
     cat $source_dir/.gitconfig >> $source_dir/.gitconfig.local
     echo 'Done'
