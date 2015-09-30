@@ -21,6 +21,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
 Bundle 'dhruvasagar/vim-table-mode'
 Bundle 'pi314/todo-or-not-todo.vim'
+Bundle 'file:///Users/cychih/.vim/bundle/zdict.vim'
 
 call vundle#end()           " required
 filetype plugin on          " required
@@ -162,6 +163,8 @@ vnoremap Y "*y
 
 " QUIT!
 command! Q execute "q!"
+command! Qa execute "qa!"
+command! QA execute "qa!"
 
 " WRITE!
 cnoremap w!! w !sudo tee %
