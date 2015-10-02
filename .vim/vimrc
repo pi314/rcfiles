@@ -194,11 +194,9 @@ function! VimTableModeStatusString ()
 endfunction
 set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
 
-" BoshiamyIM
-inoremap <expr> ,, boshiamy#toggle()
-inoremap <space> <C-R>=boshiamy#send_key()<CR>
-nnoremap <expr> <ESC><ESC> boshiamy#leave()
-
 " vim-table-mode settings ([normal] <leader>tm to enable table mode)
 let g:table_mode_corner_corner="+"
 let g:table_mode_header_fillchar="="
+
+let g:zdict_query_key = '<leader>z'
+let g:zdict_close_window_key = '<leader><leader>z'
