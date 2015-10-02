@@ -153,11 +153,11 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-pushd $(dirname $0) > /dev/null
+cd $(dirname $0)
 source_dir=$(pwd -P)
-popd > /dev/null
+cd -
 
-source $source_dir/.setup-tools
+. $source_dir/.setup-tools
 
 BACKUP_TOP_FOLDER=".old_rcfiles"
 BACKUP_DIR_NAME="`date +%Y%m%d_%H%M%S`"
