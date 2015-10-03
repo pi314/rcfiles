@@ -21,7 +21,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
 Bundle 'dhruvasagar/vim-table-mode'
 Bundle 'pi314/todo-or-not-todo.vim'
-Bundle 'file:///Users/cychih/.vim/bundle/zdict.vim'
+Bundle 'zdict/zdict.vim'
 
 call vundle#end()           " required
 filetype plugin on          " required
@@ -197,6 +197,3 @@ set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y
 " vim-table-mode settings ([normal] <leader>tm to enable table mode)
 let g:table_mode_corner_corner="+"
 let g:table_mode_header_fillchar="="
-
-let g:zdict_query_key = '<leader>z'
-let g:zdict_close_window_key = '<leader><leader>z'
