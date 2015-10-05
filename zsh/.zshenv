@@ -13,6 +13,7 @@ folders=(
     "/opt/local/bin"
     "/opt/local/sbin"
     "/opt/local/share/java/android-sdk-macosx/platform-tools"
+    "/opt/local/Library/Frameworks/Python.framework/Versions/3.5/bin"
     "$HOME/.cabal/bin"
     "$HOME/bin"
 )
@@ -84,7 +85,7 @@ export LSCOLORS='GxFxcxDxCxegedabagacad'
 
 # di: directories
 # ln: symbolic links
-# pi: 
+# pi:
 export LS_COLORS="di=01;36:ln=01;35:pi=01;33:ex=01;32"
 
 export EDITOR=vim
