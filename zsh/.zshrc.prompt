@@ -78,52 +78,28 @@ time_str="${cyan}%T${end}"
 user_name_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
 host_name_str="${white}%m${end}"
-
-# screen_str=""
-# if [[ "$TERM" == 'screen'* ]]; then
-#     if [[ -n "$TMUX" ]]; then
-#         session_name=`tmux display-message -p '#S'`
-#         screen_str="${purple}[T $session_name]${end}"
-#
-#     elif [[ -n "$STY" ]]; then
-#         session_name="`echo $STY | sed 's/^[0-9]*\.//'`"
-#         screen_str="${purple}[S $session_name]${end}"
-#
-#     fi
-# fi
-
 uid_str="%(!.#.>)"
 
 function _set_prompt {
     case ${KEYMAP} in
-    vicmd)
-        local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}"
-        ;;
-
-    viins|main)
-        local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
-        ;;
-
+        vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
+        viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
     esac
 
-    local venv_str
-    if [[ -n $VIRTUAL_ENV ]]; then
-        venv_str="${blue}(${VIRTUAL_ENV##*/})${end}"
-    else
-        venv_str=""
-    fi
-    prompt="${last_cmd_succ}$(_current_path)$(_git_branch_name)${suspend_jobs}${vim_mode_str}${venv_str}
+    prompt="${last_cmd_succ}$(_current_path)$(_git_branch_name)${suspend_jobs}${vim_mode_str}
 ${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${uid_str} "
+    if [[ -n $VIRTUAL_ENV ]]; then
+        prompt="${last_cmd_succ}${blue}(${VIRTUAL_ENV##*/})${end}
+${prompt}"
+    fi
 }
 
 function zle-keymap-select zle-line-finish zle-line-init {
     _set_prompt
     zle reset-prompt
-
 }
 zle -N zle-line-finish
 zle -N zle-keymap-select
 zle -N zle-line-init
 
 _set_prompt
-
