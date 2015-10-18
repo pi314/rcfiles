@@ -23,7 +23,6 @@ function _dir_stacks {
     if [[ $depth -gt 1 ]]; then
         dir_stack_str=$(printf '%*s' ${depth} | tr ' ' '[')
         echo "${d_green}${dir_stack_str:1}"
-
     fi
 }
 
@@ -71,10 +70,8 @@ else
 fi
 
 suspend_jobs="%1(j.${blue}jobs:%j${end}.)"
-
 vim_mode_str="${black}[zsh]${end}"
-
-time_str="${cyan}%T${end}"
+time_str="${cyan}%D{%H:%M}${end}"   # %D{...} man strftime
 user_name_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
 host_name_str="${white}%m${end}"
@@ -85,7 +82,6 @@ function _set_prompt {
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
         viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
     esac
-
     prompt="${last_cmd_succ}$(_current_path)$(_git_branch_name)${suspend_jobs}${vim_mode_str}
 ${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${uid_str} "
     if [[ -n $VIRTUAL_ENV ]]; then

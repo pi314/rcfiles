@@ -68,6 +68,9 @@ if (-f .host_aliases.sh) then
     source .host_aliases.sh
 endif
 
+# make hour number 2 digits
+set padhour
+
 if ($?prompt) then
   if(! $?WINDOW ) then
     set prompt="%{^[[1;36m%}%T%{^[[m%}%{^[[1;33m%}%n%{^[[m%}@%{^[[1;37m%}%m%{^[[1;32m%}[%~]%{^[[m%}> "
