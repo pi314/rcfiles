@@ -158,6 +158,9 @@ nnoremap <ESC>[B <DOWN>
 " redraw syntax highlighting
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
+" redraw, also wipe search highlighting
+nnoremap <C-l> :noh<CR><C-l>
+
 " convenient copy to system clipboard
 vnoremap Y "*y
 
