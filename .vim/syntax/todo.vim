@@ -50,3 +50,11 @@ hi def      UNIQLO_UNI          cterm=bold ctermfg=white   ctermbg=red
 syn match   UNIQLO_QLO          _\v(^UNI.*\n)@<=QLO(.*$)@=_
 syn match   UNIQLO_QLO          _\v(^ユニ.*\n)@<=クロ(.*$)@=_
 hi def      UNIQLO_QLO          cterm=bold ctermfg=white   ctermbg=red
+syn match   Microsoft_Mi        _\v^Mi(crosoft\nWindows>)@=_
+syn match   Microsoft_cr        _\v(^Mi)@<=cr(osoft\nWindows>)@=_
+syn match   Microsoft_Wi        _\v(^Microsoft\n)@<=Wi(ndows>)@=_
+syn match   Microsoft_nd        _\v(^Microsoft\nWi)@<=nd(ows>)@=_
+hi def      Microsoft_Mi        ctermfg=white ctermbg=red
+hi def      Microsoft_cr        ctermfg=white ctermbg=green
+hi def      Microsoft_Wi        ctermfg=white ctermbg=blue
+hi def      Microsoft_nd        ctermfg=white ctermbg=yellow
