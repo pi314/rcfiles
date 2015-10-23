@@ -111,7 +111,7 @@ $prompt"
 
 function zle-keymap-select zle-line-init {
     _set_prompt
-    today=$(date +"%Y%m%d")
+    today=$(date "+%Y%m%d")
     zle reset-prompt
 }
 zle -N zle-line-init

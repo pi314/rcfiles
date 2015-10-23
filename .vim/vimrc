@@ -10,16 +10,15 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " Plugins
-Bundle 'gmarik/Vundle.vim'
-Bundle 'The-NERD-tree'
+Bundle 'VundleVim/Vundle.vim'
+Bundle 'scrooloose/nerdtree'
 Bundle 'jistr/vim-nerdtree-tabs'
-"Bundle 'Rykka/riv.vim'
 Bundle 'tomtom/tcomment_vim'
+Bundle 'tpope/vim-surround'
+Bundle 'dhruvasagar/vim-table-mode'
 Bundle 'pi314/pi314.boshiamy.vim'
 Bundle 'pi314/pi314.asciiart.vim'
-Bundle 'tpope/vim-surround'
 Bundle 'pi314/pi314.rst.vim'
-Bundle 'dhruvasagar/vim-table-mode'
 Bundle 'pi314/todo-or-not-todo.vim'
 Bundle 'zdict/zdict.vim'
 
