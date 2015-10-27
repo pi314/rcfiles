@@ -1,3 +1,6 @@
+# force source .zshenv to prevent system modify it
+source .zshenv
+
 ##########################
 # Prompt
 ##########################
