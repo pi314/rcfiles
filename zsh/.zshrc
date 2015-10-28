@@ -1,5 +1,5 @@
 # force source .zshenv to prevent system modify it
-source .zshenv
+source $HOME/.rcfiles/zsh/.zshenv
 
 ##########################
 # Prompt
