@@ -1,7 +1,7 @@
 # force source .zshenv to prevent system modify it
-source $HOME/.rcfiles/zsh/.zshenv
+source $HOME/.zsh/.zshenv
 
-source $HOME/.rcfiles/zsh/antigen.zsh
+source $HOME/.zsh/antigen.zsh
 # antigen bundle /Users/cychih/chambers/zdict.zsh --no-local-clone
 antigen bundle zdict/zdict.sh
 antigen apply
@@ -9,23 +9,23 @@ antigen apply
 ##########################
 # Prompt
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/.zshrc.prompt ]]; then
-    source $HOME/.rcfiles/zsh/.zshrc.prompt
+if [[ -f $HOME/.zsh/.zshrc.prompt ]]; then
+    source $HOME/.zsh/.zshrc.prompt
 fi
 
 ##########################
 # Aliases
 ##########################
-if [[ -f $HOME/.rcfiles/zsh/.zshrc.aliases ]]; then
-    source $HOME/.rcfiles/zsh/.zshrc.aliases
+if [[ -f $HOME/.zsh/.zshrc.aliases ]]; then
+    source $HOME/.zsh/.zshrc.aliases
 fi
 
 ##########################
 # Functions
 ##########################
-if [[ -d $HOME/.rcfiles/zsh/functions ]]; then
-    for i in $(ls $HOME/.rcfiles/zsh/functions/); do
-        source $HOME/.rcfiles/zsh/functions/$i
+if [[ -d $HOME/.zsh/functions ]]; then
+    for i in $(ls $HOME/.zsh/functions/); do
+        source $HOME/.zsh/functions/$i
     done
 fi
 
@@ -72,7 +72,7 @@ bindkey "\e[3~"     delete-char
 ##########################
 # Completions
 ##########################
-fpath=($HOME/.rcfiles/zsh/completions $fpath)
+fpath=($HOME/.zsh/completions $fpath)
 
 autoload -Uz compinit
 compinit -u

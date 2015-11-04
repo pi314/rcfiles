@@ -48,6 +48,24 @@ install () { #{{{
     printf "Done${color_end}\n"
 } #}}}
 
+create_folder () {
+    folder=$1
+    if [ -L $HOME/$folder ]; then
+        rm $HOME/$folder
+        printf "  Symbolic link $HOME/$folder@ removed\n"
+    elif [ -f $HOME/$folder ]; then
+        printf "  ${color_not_sure}File $HOME/$folder exists, backing up ... "
+        backup $HOME/$folder
+        printf "Done${color_end}\n"
+    elif [ -d $HOME/$folder ]; then
+        printf "  ${color_not_sure}Folder $HOME/$folder/ exists, backing up ... "
+        backup $HOME/$folder
+        printf "Done${color_end}\n"
+    fi
+
+    mkdir $HOME/$folder
+}
+
 backup () { #{{{
     if [ ! -d "$HOME/.old_rcfiles" ]; then
         mkdir "$HOME/.old_rcfiles"

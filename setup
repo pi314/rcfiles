@@ -3,6 +3,7 @@
 install_zsh () { #{{{
     install zsh/.zshrc .zshrc
     install zsh/.zshenv .zshenv
+    install zsh .zsh
 } #}}}
 
 install_tcsh () { #{{{
