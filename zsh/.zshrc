@@ -1,6 +1,11 @@
 # force source .zshenv to prevent system modify it
 source $HOME/.rcfiles/zsh/.zshenv
 
+source $HOME/.rcfiles/zsh/antigen.zsh
+# antigen bundle /Users/cychih/chambers/zdict.zsh --no-local-clone
+antigen bundle zdict/zdict.sh
+antigen apply
+
 ##########################
 # Prompt
 ##########################
@@ -78,4 +83,3 @@ colors
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' special-dirs true
-
