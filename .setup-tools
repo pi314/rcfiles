@@ -48,7 +48,7 @@ install () { #{{{
     printf "Done${color_end}\n"
 } #}}}
 
-create_folder () {
+create_folder () { # {{{
     folder=$1
     if [ -L $HOME/$folder ]; then
         rm $HOME/$folder
@@ -64,7 +64,7 @@ create_folder () {
     fi
 
     mkdir $HOME/$folder
-}
+} # }}}
 
 backup () { #{{{
     if [ ! -d "$HOME/.old_rcfiles" ]; then

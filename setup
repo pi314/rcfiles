@@ -130,6 +130,10 @@ install_vim () { #{{{
     echo 'Done'
 } #}}}
 
+install_xonsh () { # {{{
+    install .xonshrc
+} # }}}
+
 install_all () { #{{{
     install_zsh
     install_tcsh
@@ -138,6 +142,7 @@ install_all () { #{{{
     install_tmux
     install_git
     install_vim
+    install_xonsh
 } #}}}
 
 
@@ -151,12 +156,13 @@ if [ $# -eq 0 ]; then
     echo '    tmux'
     echo '    git'
     echo '    vim'
+    echo '    xonsh'
     exit
 fi
 
 cd $(dirname $0)
 source_dir=$(pwd -P)
-cd -
+cd - 1>/dev/null
 
 . $source_dir/.setup-tools
 
@@ -166,7 +172,7 @@ BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        all | zsh | tcsh | bash | screen | tmux | git | vim)
+        all | zsh | tcsh | bash | screen | tmux | git | vim | xonsh)
             message_install_start $1
             install_${1}
             message_install_complete $1
