@@ -25,7 +25,7 @@ Bundle 'zdict/zdict.vim'
 call vundle#end()           " required
 filetype plugin on          " required
 " ============================================================================ "
-" Vundle ok "
+" Vundle ok
 " ============================================================================ "
 
 " Encoding settings
@@ -42,10 +42,20 @@ set showmode
 " Show command on bottom-right
 set showcmd
 
-" Color settings
+" ============== "
+" Color settings "
+" ============== "
 syntax on
 set hlsearch
-set bg=dark
+set background=dark
+set colorcolumn=80  " put a blue line on column 80
+hi ColorColumn ctermbg=Blue
+
+" Tabline setting in .vim/plugin/tabline.vim
+hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
+hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
+hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
+hi VIMlogo     ctermfg=white ctermbg=blue
 
 " Tab charactor related settings
 set expandtab       " changes user pressed TAB to spaces
@@ -64,13 +74,13 @@ set wrap
 set ignorecase
 
 " Show the coordinate of cursor
-set ru
+set ruler
 
 " Enable backspace
-set bs=2
+set backspace=indent,eol,start
 
 " Show line numbers
-set nu
+set number
 
 " Status line
 set laststatus=2
@@ -85,7 +95,7 @@ set nowritebackup
 set noundofile
 
 " set fold method as marker
-set fdm=marker
+set foldmethod=marker
 
 " Funny Setting
 set norightleft
@@ -93,19 +103,11 @@ set norightleft
 " Disable X11 clipboard, it help vim not hanging on start
 set clipboard=exclude:.*
 
-" put a blue line on column 80
-set cc=80
-hi ColorColumn ctermbg=Blue
-
-" Tabline setting in .vim/plugin/tabline.vim
-hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
-hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
-hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
-hi VIMlogo     ctermfg=white ctermbg=blue
-
 " new vertical split appear on right hand side
 set splitright
 set splitbelow
+
+set pastetoggle=<leader>p
 
 " ======== "
 " Mappings "
@@ -181,8 +183,6 @@ vnoremap < <gv
 " automatically purge trailing space on save
 autocmd BufWritePre * :%s/\s\+$//e
 
-set pastetoggle=<leader>p
-
 " change completion menu color
 highlight Pmenu    ctermfg=White ctermbg=Blue gui=bold
 highlight PmenuSel ctermfg=Black ctermbg=Cyan gui=bold
@@ -195,6 +195,10 @@ function! VimTableModeStatusString ()
     return ''
 endfunction
 set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+
+" =============== "
+" Plugin settings "
+" =============== "
 
 " vim-table-mode settings ([normal] <leader>tm to enable table mode)
 let g:table_mode_corner_corner="+"
