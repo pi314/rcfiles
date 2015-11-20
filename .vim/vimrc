@@ -50,12 +50,18 @@ set hlsearch
 set background=dark
 set colorcolumn=80  " put a blue line on column 80
 hi ColorColumn ctermbg=Blue
+" change completion menu color
+highlight Pmenu    ctermfg=White ctermbg=Blue gui=bold
+highlight PmenuSel ctermfg=Black ctermbg=Cyan gui=bold
 
 " Tabline setting in .vim/plugin/tabline.vim
 hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
 hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
 hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
 hi VIMlogo     ctermfg=white ctermbg=blue
+
+colorscheme pi314
+
 
 " Tab charactor related settings
 set expandtab       " changes user pressed TAB to spaces
@@ -184,10 +190,6 @@ vnoremap < <gv
 
 " automatically purge trailing space on save
 autocmd BufWritePre * :%s/\s\+$//e
-
-" change completion menu color
-highlight Pmenu    ctermfg=White ctermbg=Blue gui=bold
-highlight PmenuSel ctermfg=Black ctermbg=Cyan gui=bold
 
 " status line, show plugin modes
 function! VimTableModeStatusString ()
