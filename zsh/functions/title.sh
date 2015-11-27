@@ -1,4 +1,7 @@
+ZSH_TITLE=""
 title () {
+    ZSH_TITLE="$*"
+
     if [ -n "$TMUX" ]; then
         tmux rename-window "$*"
         return
@@ -11,4 +14,11 @@ title () {
         *)
             printf "\033]1;$*\a"
     esac
+}
+
+chpwd () {
+    if [[ -z "$ZSH_TITLE" ]]; then
+        ZSH_TITLE=$(basename $PWD)
+        title $ZSH_TITLE
+    fi
 }
