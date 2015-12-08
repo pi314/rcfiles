@@ -2,6 +2,12 @@ ZSH_TITLE=""
 title () {
     ZSH_TITLE="$*"
 
+    if grep "$ZSH_TITLE" $HOME/.titles >/dev/null 2>&1; then
+        true
+    else
+        echo "$ZSH_TITLE" >> $HOME/.titles 2>/dev/null
+    fi
+
     if [ -n "$TMUX" ]; then
         tmux rename-window "$*"
         return

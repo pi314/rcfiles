@@ -1,0 +1,3 @@
+#compdef title
+
+_arguments '1: :(($(cat $HOME/.titles 2>/dev/null)))'
