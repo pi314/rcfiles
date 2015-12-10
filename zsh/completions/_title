@@ -1,3 +1,5 @@
 #compdef title
 
-_arguments '1: :(($(cat $HOME/.titles 2>/dev/null | sed "s/ /_/g")))'
+# _arguments '1: :(${(@)$(cat $HOME/.titles 2>/dev/null)})'
+local titles=(${(f)"$(cat $HOME/.titles 2>/dev/null)"})
+compadd -a titles
