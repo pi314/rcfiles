@@ -1,8 +1,15 @@
 ZSH_TITLE=""
 title () {
+    if [ "$1" = "-d" ]; then
+        save_to_file=0
+        shift
+    else
+        save_to_file=1
+    fi
+
     ZSH_TITLE="$*"
 
-    if grep "$ZSH_TITLE" $HOME/.titles >/dev/null 2>&1; then
+    if [ $save_to_file -eq 0 ] || grep "$ZSH_TITLE" $HOME/.titles >/dev/null 2>&1; then
         true
     else
         echo "$ZSH_TITLE" >> $HOME/.titles 2>/dev/null
@@ -25,6 +32,6 @@ title () {
 chpwd () {
     if [[ -z "$ZSH_TITLE" ]]; then
         ZSH_TITLE=$(basename $PWD)
-        title $ZSH_TITLE
+        title -d $ZSH_TITLE
     fi
 }
