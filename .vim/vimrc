@@ -205,5 +205,8 @@ set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y
 " =============== "
 
 " vim-table-mode settings ([normal] <leader>tm to enable table mode)
-let g:table_mode_corner_corner="+"
-let g:table_mode_header_fillchar="="
+let g:table_mode_corner_corner = '+'
+let g:table_mode_header_fillchar = '='
+
+let g:todo_loop_checkbox = '<C-c>'
+let g:todo_select_checkbox = '<C-k>'
