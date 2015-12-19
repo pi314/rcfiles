@@ -2,7 +2,7 @@
 source $HOME/.zsh/.zshenv
 
 source $HOME/.zsh/antigen.zsh
-# antigen bundle /Users/cychih/chambers/zdict.zsh --no-local-clone
+# antigen bundle /Users/cychih/chambers/zdict.sh --no-local-clone
 antigen bundle zdict/zdict.sh --branch=zsh
 # antigen bundle /Users/cychih/chambers/android.zsh --no-local-clone
 antigen bundle pi314/android.zsh
