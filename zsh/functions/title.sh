@@ -1,20 +1,5 @@
-ZSH_TITLE=""
-title () {
-    if [ "$1" = "-t" ]; then    # -t: temporary
-        save_to_file=0
-        shift
-    else
-        save_to_file=1
-    fi
-
-    ZSH_TITLE="$*"
-
-    if [ $save_to_file -eq 0 ] || grep "^$ZSH_TITLE$" $HOME/.titles >/dev/null 2>&1; then
-        true
-    else
-        echo "$ZSH_TITLE" >> $HOME/.titles 2>/dev/null
-    fi
-
+TITLE_FILE="$HOME/.titles"
+set_title () {
     if [ -n "$TMUX" ]; then
         tmux rename-window "$*"
         return
@@ -27,6 +12,30 @@ title () {
         *)
             printf "\033]1;$*\a"
     esac
+}
+
+save_title () {
+    ZSH_TITLE="$*"
+    if [ -z "$ZSH_TITLE" ]; then
+        true
+    elif grep "^$ZSH_TITLE$" $TITLE_FILE >/dev/null 2>&1; then
+        true
+    else
+        echo "$ZSH_TITLE" >>$TITLE_FILE 2>/dev/null
+    fi
+}
+
+title () {
+    case "$1" in
+        -d) # delete a title from .titles
+            shift
+            backup=$(cat $TITLE_FILE | grep -v "^$*$")
+            echo $backup >$TITLE_FILE 2>/dev/null
+            ;;
+        -*) shift ;;
+        *)  save_title $@
+    esac
+    set_title $@
 }
 
 chpwd () {
