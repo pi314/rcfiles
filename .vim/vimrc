@@ -150,20 +150,6 @@ nnoremap <C-h> <BS>
 nnoremap dq @q
 nnoremap dz @z
 
-" mappings for iterm2
-cnoremap <ESC>[A <UP>
-cnoremap <ESC>[D <LEFT>
-cnoremap <ESC>[C <RIGHT>
-cnoremap <ESC>[B <DOWN>
-inoremap <ESC>[A <UP>
-inoremap <ESC>[D <LEFT>
-inoremap <ESC>[C <RIGHT>
-inoremap <ESC>[B <DOWN>
-nnoremap <ESC>[A <UP>
-nnoremap <ESC>[D <LEFT>
-nnoremap <ESC>[C <RIGHT>
-nnoremap <ESC>[B <DOWN>
-
 " redraw syntax highlighting
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
 
