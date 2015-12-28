@@ -74,7 +74,7 @@ bindkey "\e[3~"     delete-char
 ##########################
 # Completions
 ##########################
-fpath=($HOME/.zsh/completions $fpath)
+fpath=($fpath $HOME/.zsh/completions)
 
 autoload -Uz compinit
 compinit -u

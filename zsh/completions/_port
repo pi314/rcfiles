@@ -9,4 +9,3 @@ _arguments  "1:actions:(activate archive archivefetch build cat cd checksum clea
     selfupdate setrequested space srpm sync test unarchive uninstall
     unload unsetrequested upgrade url usage variants version work)"\
     "2:targets:(all current active inactive actinact installed uninstalled outdated obsolete requested unrequested leaves)"
-
