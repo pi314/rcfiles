@@ -76,11 +76,9 @@ bindkey "\e[3~"     delete-char
 ##########################
 fpath=($fpath $HOME/.zsh/completions)
 
-autoload -Uz compinit
-compinit -u
-
-autoload -U colors
-colors
+# antigen already did it
+# autoload -Uz compinit
+# compinit -u
 
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
