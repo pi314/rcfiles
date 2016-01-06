@@ -1,12 +1,31 @@
 # force source .zshenv to prevent system modify it
 source $HOME/.zsh/.zshenv
 
+
+##########################
+# Completions
+##########################
+fpath=($fpath $HOME/.zsh/completions)
+
+# ``antigen apply`` would do it
+# autoload -Uz compinit
+# compinit -u
+
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' special-dirs true
+
+
+##########################
+# antigen plugins
+##########################
 source $HOME/.zsh/antigen.zsh
 # antigen bundle /Users/cychih/chambers/zdict.sh --no-local-clone
 antigen bundle zdict/zdict.sh --branch=zsh
 # antigen bundle /Users/cychih/chambers/android.zsh --no-local-clone
 antigen bundle pi314/android.zsh
 antigen apply
+
 
 ##########################
 # Prompt
@@ -15,12 +34,14 @@ if [[ -f $HOME/.zsh/.zshrc.prompt ]]; then
     source $HOME/.zsh/.zshrc.prompt
 fi
 
+
 ##########################
 # Aliases
 ##########################
 if [[ -f $HOME/.zsh/.zshrc.aliases ]]; then
     source $HOME/.zsh/.zshrc.aliases
 fi
+
 
 ##########################
 # Functions
@@ -31,6 +52,7 @@ if [[ -d $HOME/.zsh/functions ]]; then
     done
 fi
 
+
 ##########################
 # Local Files
 ##########################
@@ -38,12 +60,14 @@ if [[ -f $HOME/.zshlocal ]]; then
     source $HOME/.zshlocal
 fi
 
+
 ##########################
 # History
 ##########################
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
+
 
 ##########################
 # Bindkeys
@@ -69,17 +93,3 @@ bindkey "\e[B"      down-line-or-search
 bindkey '^R'        history-incremental-search-backward
 
 bindkey "\e[3~"     delete-char
-
-
-##########################
-# Completions
-##########################
-fpath=($fpath $HOME/.zsh/completions)
-
-# antigen already did it
-# autoload -Uz compinit
-# compinit -u
-
-zstyle ':completion:*' menu select=2
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' special-dirs true
