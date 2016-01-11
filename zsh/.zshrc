@@ -20,7 +20,9 @@ zstyle ':completion:*' special-dirs true
 # antigen plugins
 ##########################
 source $HOME/.zsh/antigen.zsh
-antigen bundle /Users/cychih/chambers/zdict.sh --no-local-clone
+if [ -d /Users/cychih/chambers/zdict.sh ]; then
+    antigen bundle /Users/cychih/chambers/zdict.sh --no-local-clone
+fi
 # antigen bundle zdict/zdict.sh --branch=zsh
 # antigen bundle /Users/cychih/chambers/android.zsh --no-local-clone
 antigen bundle pi314/android.zsh
