@@ -5,6 +5,10 @@ set_title () {
         return
     fi
 
+    if [ "$TERM" = "screen" ]; then
+        printf "\033k$*\033\\"
+    fi
+
     case $ZSH_KERNEL_TYPE in
         "CYGWIN")
             printf "\033]0;$*\007"
