@@ -1,7 +1,8 @@
 #compdef title
 
 local titles=(${(f)"$(cat $HOME/.titles 2>/dev/null)"})
+
 _arguments \
-    '-d[Delete a title]'\
-    '-t[Temporary set a title, not save to ~/.titles]'\
-    '1: :((${titles}))'
+    - '(del)' {-d,--delete}'[Delete a title from ~/.titles]: :((${titles}))'\
+    - '(tem)' {-t,--temporary}'[Temporary set a title, not save to ~/.titles]: :((${titles} $(basename $(basename $PWD)\:"Current directory")))'\
+    '1: :((${titles} $(basename $PWD)\:"Current directory"))'

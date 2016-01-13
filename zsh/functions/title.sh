@@ -1,4 +1,5 @@
 TITLE_FILE="$HOME/.titles"
+
 set_title () {
     if [ -n "$TMUX" ]; then
         tmux rename-window "$*"
@@ -29,16 +30,20 @@ save_title () {
     fi
 }
 
+delete_title () {
+    backup=$(cat $TITLE_FILE | grep -v "^$*$")
+    echo $backup >$TITLE_FILE 2>/dev/null
+}
+
 title () {
     case "$1" in
-        -d) # delete a title from .titles
-            shift
-            backup=$(cat $TITLE_FILE | grep -v "^$*$")
-            echo $backup >$TITLE_FILE 2>/dev/null
+        -d) shift
+            delete_title $@
             ;;
         -*) shift ;;
         *)  save_title $@
     esac
+
     set_title $@
 }
 
