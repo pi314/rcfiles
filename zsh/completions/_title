@@ -4,5 +4,5 @@ local titles=(${(f)"$(cat $HOME/.titles 2>/dev/null)"})
 
 _arguments \
     - '(del)' {-d,--delete}'[Delete a title from ~/.titles]: :((${titles}))'\
-    - '(tem)' {-t,--temporary}'[Temporary set a title, not save to ~/.titles]: :((${titles} $(basename $(basename $PWD)\:"Current directory")))'\
+    - '(tem)' {-t,--temporary}'[Temporary set a title, not save to ~/.titles]: :((${titles} $(basename $PWD)\:"Current directory"))'\
     '1: :((${titles} $(basename $PWD)\:"Current directory"))'
