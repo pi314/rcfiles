@@ -92,6 +92,7 @@ export LS_COLORS="di=01;36:ln=01;35:pi=01;33:ex=01;32"
 
 export EDITOR=vim
 export PAGER=less
+export LESS=-r
 
 encode=zh_TW.UTF-8
 export LANG=$encode
