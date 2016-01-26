@@ -20,7 +20,7 @@ zstyle ':completion:*' special-dirs true
 # antigen plugins
 ##########################
 source $HOME/.zsh/antigen.zsh
-if [ -f .local-plugins.zsh ]; then
+if [ -f $HOME/.local-plugins.zsh ]; then
     source $HOME/.local-plugins.zsh
 fi
 antigen apply
