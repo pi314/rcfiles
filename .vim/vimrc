@@ -167,6 +167,7 @@ nnoremap <C-l> :noh<CR><C-l>
 
 " convenient copy to system clipboard
 vnoremap Y "*y
+nnoremap Y "*y
 
 " QUIT!
 command! Q execute "q!"
