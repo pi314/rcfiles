@@ -39,6 +39,7 @@ title () {
     case "$1" in
         -d) shift
             delete_title $@
+            return
             ;;
         -*) shift ;;
         *)  save_title $@
