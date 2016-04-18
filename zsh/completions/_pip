@@ -1,55 +1,52 @@
-# Copyright (c) 2014 Srijan R Shetty <srijan.shetty+code@gmail.com>
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-# the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#compdef pip pip2 pip3
 
-#compdef pip
+_pip () {
+    _arguments\
+        '1: :->subcommand'\
+        '2: :->subcommand-options'\
+        {-h,--help}'[show help]'\
+        {-v,--verbose}'[give more output]'\
+        {-V,--version}'[show version and exit]'\
+        {-q,--quiet}'[give less output]'\
+        '--isolated[ignoring environment variables and user configuration]'\
+        '--no-cache-dir[disable the cache]'\
+        "--disable-pip-version-check[don\'t periodically check new version of pip]"\
+        '--log[path to a verbose appending log]:'\
+        '--proxy[specify a proxy]:'\
+        '--retries[maximum number of retries each connection should attempt]:'\
+        '--timeout[set the socket timeout]:'\
+        '--exists-action[default action when a path already exists]:'\
+        '--trusted-host[mark this host as trusted]:'\
+        '--cert[path to alternate CA bundle]:'\
+        '--client-cert[path to SSL client certificate]:'\
+        '--cache-dir[store the cache data]:'
 
-local subcmds
+    case $state in
+        subcommand)
+            _arguments\
+                '*: :((install\:"install packages"
+                download\:"download packages"
+                uninstall\:"uninstall packages"
+                freeze\:"output installed packages in requirements format"
+                list\:"list installed packages"
+                show\:"show information about installed packages"
+                search\:"search PyPI for packages"
+                wheel\:"build wheels from your requirements"
+                hash\:"compute hashes of package archives"
+                completion\:"a helper command used for command completion"
+                help\:"show help for commands"))'
+            ;;
 
-_arguments -C '*::command:->command' && return 0
+        subcommand-options)
+            local tmp
+            tmp=("${(@)words:1}")
+            while [[ "${tmp[1]}" == '-'* ]]; do
+                tmp=("${(@)tmp:1}")
+            done
+            subcommand="${tmp[1]}"
+            _arguments "*: :((a_$subcommand b_$subcommand c_$subcommand))"
+            ;;
+    esac
+}
 
-case $state in
-	command)
-	if [[ $CURRENT != 1 && $words[$CURRENT] != -* && $words[$CURRENT-1] != "-r" ]]; then
-		state=packages
-	elif [[ $words[$CURRENT-1] == "-r" ]]; then
-		state=files
-	else
-	    state=subcommands
-	fi
-	;;
-esac
-
-case $state in
-	subcommands)
-	reply=($( COMP_WORDS="$service $words[*]" \
-			COMP_CWORD=0 \
-			PIP_AUTO_COMPLETE=1 $service ))
-	_describe -t commands 'pip commands' reply
-	;;
-	packages)
-	if [[ -n $words[CURRENT] ]]; then
-		packages=($( pip search "$words[CURRENT]" | \
-					grep -i "^$words[CURRENT]" | \
-					cut -d ' ' -f 1 | tr '[A-Z]' '[a-z]' ))
-		_describe -t commands 'packages' packages
-	fi
-	;;
-	files)
-	_arguments -C '*:input file:_files' && return 0
-esac
+_pip "$@"
