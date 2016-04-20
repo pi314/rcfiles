@@ -11,22 +11,22 @@ _package_list_menu () {
 
 local -a general_opts
 general_opts=(
-    {-h,--help}"[show help]"
+    "--cache-dir=[store the cache data]:"
+    "--cert=[path to alternate CA bundle]:"
+    "--client-cert=[path to SSL client certificate]:"
+    "--disable-pip-version-check[don\'t periodically check new version of pip]"
+    "--exists-action=[default action when a path already exists]:"
     "--isolated[ignoring environment variables and user configuration]"
-    {-v,--verbose}"[give more output]"
-    {-V,--version}"[show version and exit]"
-    {-q,--quiet}"[give less output]"
     "--log=[path to a verbose appending log]:"
+    "--no-cache-dir[disable the cache]"
     "--proxy=[specify a proxy]:"
     "--retries=[maximum number of retries each connection should attempt]:"
     "--timeout=[set the socket timeout]:"
-    "--exists-action=[default action when a path already exists]:"
     "--trusted-host=[mark this host as trusted]:"
-    "--cert=[path to alternate CA bundle]:"
-    "--client-cert=[path to SSL client certificate]:"
-    "--cache-dir=[store the cache data]:"
-    "--no-cache-dir[disable the cache]"
-    "--disable-pip-version-check[don\'t periodically check new version of pip]"
+    {-V,--version}"[show version and exit]"
+    {-h,--help}"[show help]"
+    {-q,--quiet}"[give less output]"
+    {-v,--verbose}"[give more output]"
 )
 
 local -a subcommands
@@ -42,6 +42,15 @@ subcommands=(
     "hash:compute hashes of package archives"
     "completion:a helper command used for command completion"
     "help:show help for commands"
+)
+
+local -a pi_opts
+pi_opts=(
+    "--extra-index-url=[extra URLs of package indexes to use in addition to --index-url]:"
+    "--no-index[ignore package index]"
+    "--process-dependency-links[enable the processing of dependency links]"
+    {-f,--find-links}="[parse for links to archives if a url or path to an html file]:"
+    {-i,--index-url}="[base URL of Python Package Index]:"
 )
 
 typeset -A opt_args
@@ -73,30 +82,52 @@ case $state in
             install)
                 subcmd_opts+=(
                     "*: :_package_list_menu"
-                    {-c,--constraint}="[Constrain versions using the given constraints file]:"
-                    {-e,--editable}="[Install a project in editable mode]:"
-                    {-r,--requirement}="[Install from the given requirements file]:"
-                    {-b,--build}="[Directory to unpack packages into and build in]:"
-                    {-t,--target}="[Install packages into <dir>]:"
-                    {-d,--download}="[Download packages into <dir> instead of installing them]:"
-                    --src="[Directory to check out editable projects into]:"
-                    {-U,--upgrade}"[Upgrade all specified packages to the newest available version]"
+                    --compile"[compile py files to pyc]"
+                    --egg"[install packages as eggs like pip normally does. This option is not about installing]"
                     --force-reinstall"[reinstall all packages even if they are already up-to-date]"
-                    {-I,--ignore-installed}"[Ignore the installed packages]"
-                    --no-deps"[Don't install package dependencies]"
-                    --install-option="[Extra arguments to be supplied to the setup.py install command]:"
-                    --global-option="[Extra global options to be supplied to the setup.py call before the install command]:"
-                    --user"[Install to the Python user install directory for your platform]"
-                    --egg"[Install packages as eggs like pip normally does. This option is not about installing]"
-                    --root="[Install everything relative to this alternate root directory]:"
-                    --prefix="[Installation prefix where lib, bin and other top-level folders are placed]:"
-                    --compile"[Compile py files to pyc]"
-                    --no-compile"[Do not compile py files to pyc]"
-                    --no-binary="[Do not use binary packages]:"
-                    --only-binary="[Do not use source packages]:"
-                    --pre"[Include pre-release and development versions]"
-                    --no-clean"[Don't clean up build directories]"
-                    --require-hashes"[Require a hash to check each requirement]"
+                    --global-option="[extra global options to be supplied to the setup.py call before the install command]:"
+                    --install-option="[extra arguments to be supplied to the setup.py install command]:"
+                    --no-binary="[do not use binary packages]:"
+                    --no-clean"[don't clean up build directories]"
+                    --no-compile"[do not compile py files to pyc]"
+                    --no-deps"[don't install package dependencies]"
+                    --only-binary="[do not use source packages]:"
+                    --pre"[include pre-release and development versions]"
+                    --prefix="[installation prefix where lib, bin and other top-level folders are placed]:"
+                    --require-hashes"[require a hash to check each requirement]"
+                    --root="[install everything relative to this alternate root directory]:"
+                    --src="[directory to check out editable projects into]:"
+                    --user"[install to the Python user install directory for your platform]"
+                    {-I,--ignore-installed}"[ignore the installed packages]"
+                    {-U,--upgrade}"[upgrade all specified packages to the newest available version]"
+                    {-b,--build}="[directory to unpack packages into and build in]:"
+                    {-c,--constraint}="[constrain versions using the given constraints file]:"
+                    {-d,--download}="[download packages into <dir> instead of installing them]:"
+                    {-e,--editable}="[install a project in editable mode]:"
+                    {-r,--requirement}="[install from the given requirements file]:"
+                    {-t,--target}="[install packages into <dir>]:"
+
+                    $pi_opts
+                )
+                ;;
+
+            download)
+                subcmd_opts+=(
+                    --global-option="[extra global options to be supplied to the setup.py call before the install command]:"
+                    --no-binary="[do not use binary packages]:"
+                    --no-clean"[don't clean up build directories]"
+                    --no-deps"[don't install package dependencies]"
+                    --only-binary="[do not use source packages]:"
+                    --pre"[include pre-release and development versions]"
+                    --require-hashes"[require a hash to check each requirement]"
+                    --src="[directory to check out editable projects into]:"
+                    {-b,--build}="[directory to unpack packages into and build in]:"
+                    {-c,--constraint}="[constrain versions using the given constraints file]:"
+                    {-d,--dest}="[install packages into <dir>]:"
+                    {-e,--editable}="[install a project in editable mode]:"
+                    {-r,--requirement}="[install from the given requirements file]:"
+
+                    $pi_opts
                 )
                 ;;
 
