@@ -139,6 +139,16 @@ case $state in
                 )
                 ;;
 
+            freeze)
+                subcmd_opts+=(
+                    "--all[do not skip these packages in the output: pip, setuptools, distribute, wheel]"
+                    "--user[only output packages installed in user-site]"
+                    {-f,--find-links}="[URL for finding packages, which will be added to the output]"
+                    {-l,--local}"[do not output globally-installed packages if in a virtualenv that has global access]"
+                    {-r,--requirement}="[use the order in the given requirements file when generating output]"
+                )
+                ;;
+
             help)
                 _describe 'subcommands' subcommands && return 0
                 ;;
