@@ -44,9 +44,21 @@ _pip () {
                 tmp=("${(@)tmp:1}")
             done
             subcommand="${tmp[1]}"
-            _arguments "*: :((a_$subcommand b_$subcommand c_$subcommand))"
+            _pip-${subcommand}
             ;;
     esac
+}
+
+_pip-uninstall () {
+    _arguments\
+        '*: :comp_package_list_menu'\
+        {-r,--requirement}'[uninstall all the packages listed in the given requirements file]:'\
+        {-y,--yes}"[don\'t ask for confirmation of uninstall deletions]"
+}
+
+comp_package_list_menu () {
+    _arguments\
+        "*: :(($(pip list | sed 's/^\([^ ]*\) \(.*\)$/\1:"\1 \2"/')))"
 }
 
 _pip "$@"
