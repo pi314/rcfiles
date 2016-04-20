@@ -29,6 +29,21 @@ general_opts=(
     "--disable-pip-version-check[don\'t periodically check new version of pip]"
 )
 
+local -a subcommands
+subcommands=(
+    "install:install packages"
+    "download:download packages"
+    "uninstall:uninstall packages"
+    "freeze:output installed packages in requirements format"
+    "list:list installed packages"
+    "show:show information about installed packages"
+    "search:search PyPI for packages"
+    "wheel:build wheels from your requirements"
+    "hash:compute hashes of package archives"
+    "completion:a helper command used for command completion"
+    "help:show help for commands"
+)
+
 typeset -A opt_args
 local curcontext="$curcontext" state line ret=1
 
@@ -39,20 +54,6 @@ _arguments -C \
 
 case $state in
     subcmd)
-        local -a subcommands
-        subcommands=(
-            "install:install packages"
-            "download:download packages"
-            "uninstall:uninstall packages"
-            "freeze:output installed packages in requirements format"
-            "list:list installed packages"
-            "show:show information about installed packages"
-            "search:search PyPI for packages"
-            "wheel:build wheels from your requirements"
-            "hash:compute hashes of package archives"
-            "completion:a helper command used for command completion"
-            "help:show help for commands"
-        )
         _describe 'subcommands' subcommands
         ;;
 
@@ -69,13 +70,6 @@ case $state in
         subcmd="${tmp[1]}"
 
         case $subcmd in
-            uninstall)
-                subcmd_opts+=(
-                    "*: :_package_list_menu"
-                    {-r,--requirement}"=[uninstall packages in the given requirements file]:_files"
-                    {-y,--yes}"[don\'t ask for confirmation of uninstall deletions]"
-                )
-                ;;
             install)
                 subcmd_opts+=(
                     "*: :_package_list_menu"
@@ -104,7 +98,19 @@ case $state in
                     --no-clean"[Don't clean up build directories]"
                     --require-hashes"[Require a hash to check each requirement]"
                 )
-            ;;
+                ;;
+
+            uninstall)
+                subcmd_opts+=(
+                    "*: :_package_list_menu"
+                    {-r,--requirement}"=[uninstall packages in the given requirements file]:_files"
+                    {-y,--yes}"[don\'t ask for confirmation of uninstall deletions]"
+                )
+                ;;
+
+            help)
+                _describe 'subcommands' subcommands && return 0
+                ;;
         esac
         _arguments $subcmd_opts
         ;;
