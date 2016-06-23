@@ -6,7 +6,7 @@ _pip-uninstall () {
 
 _package_list_menu () {
     _arguments \
-        "*: :(($(pip list | sed 's/^\([^ ]*\) \(.*\)$/\1:"\1 \2"/')))"
+        "*: :(($(pip list 2>/dev/null | sed 's/^\([^ ]*\) \(.*\)$/\1:"\1 \2"/')))"
 }
 
 local -a general_opts
