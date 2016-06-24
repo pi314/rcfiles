@@ -34,7 +34,8 @@ function _dir_stacks {
 }
 
 function _current_path {
-    echo "$(_dir_stacks)${green}[%~]${end}"
+    # show first and last 3 folders if path is deeper than 5 layers
+    echo "$(_dir_stacks)${green}[%5(~:%^~/.../%3~:%~)]${end}"
 }
 
 if [[ -n "$(command -v git)" ]]; then
