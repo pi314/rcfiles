@@ -29,16 +29,16 @@ antigen apply
 ##########################
 # Prompt
 ##########################
-if [[ -f $HOME/.zsh/.zshrc.prompt ]]; then
-    source $HOME/.zsh/.zshrc.prompt
+if [[ -f $HOME/.zsh/zsh.prompt ]]; then
+    source $HOME/.zsh/zsh.prompt
 fi
 
 
 ##########################
 # Aliases
 ##########################
-if [[ -f $HOME/.zsh/.zshrc.aliases ]]; then
-    source $HOME/.zsh/.zshrc.aliases
+if [[ -f $HOME/.zsh/zsh.aliases ]]; then
+    source $HOME/.zsh/zsh.aliases
 fi
 
 
