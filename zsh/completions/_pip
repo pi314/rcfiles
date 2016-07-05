@@ -80,6 +80,7 @@ case $state in
 
         case $subcmd in
             install)
+                _arguments "*: :($(ls -1 *.whl *.tar.gz))"
                 subcmd_opts+=(
                     "*: :_package_list_menu"
                     --compile"[compile py files to pyc]"
