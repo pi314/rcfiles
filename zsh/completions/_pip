@@ -107,7 +107,6 @@ case $state in
                     {-e,--editable}="[install a project in editable mode]:"
                     {-r,--requirement}="[install from the given requirements file]:"
                     {-t,--target}="[install packages into <dir>]:"
-
                     $pi_opts
                 )
                 ;;
@@ -127,7 +126,6 @@ case $state in
                     {-d,--dest}="[install packages into <dir>]:"
                     {-e,--editable}="[install a project in editable mode]:"
                     {-r,--requirement}="[install from the given requirements file]:"
-
                     $pi_opts
                 )
                 ;;
@@ -147,6 +145,18 @@ case $state in
                     {-f,--find-links}="[URL for finding packages, which will be added to the output]"
                     {-l,--local}"[do not output globally-installed packages if in a virtualenv that has global access]"
                     {-r,--requirement}="[use the order in the given requirements file when generating output]"
+                )
+                ;;
+
+            list)
+                subcmd_opts+=(
+                    {-o,--outdated}"[List outdated packages]"
+                    {-u,--uptodate}"[List uptodate packages]"
+                    {-e,--editable}"[List editable projects]"
+                    {-l,--local}"[do not list globally-installed packages if in a virtualenv that has global access]"
+                    "--user[only output packages installed in user-site]"
+                    "--pre[include pre-release and development versions]"
+                    $pi_opts
                 )
                 ;;
 
