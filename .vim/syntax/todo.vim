@@ -58,3 +58,9 @@ hi def      Microsoft_Mi        ctermfg=white ctermbg=red
 hi def      Microsoft_cr        ctermfg=white ctermbg=green
 hi def      Microsoft_Wi        ctermfg=white ctermbg=blue
 hi def      Microsoft_nd        ctermfg=white ctermbg=yellow
+syn match   FamilyMart_topline  _\v^\V==========\v\n(FamilyMart\n\V==========\v)@=_
+syn match   FamilyMart_text     _\v(^\V==========\v\n)@<=FamilyMart\n(\V==========\v)@=_
+syn match   FamilyMart_botline  _\v(^FamilyMart\n)@<=\V==========_
+hi def      FamilyMart_topline  ctermfg=green
+hi def      FamilyMart_text     ctermfg=blue  ctermbg=white
+hi def      FamilyMart_botline  ctermfg=blue
