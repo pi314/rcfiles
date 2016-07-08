@@ -45,3 +45,4 @@ if [[ "$ZSH_KERNEL_TYPE" == "FreeBSD" ]]; then
     alias nc='nc -N'
 fi
 
+alias tor-ssh='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
