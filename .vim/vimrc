@@ -166,8 +166,9 @@ nnoremap <leader><C-l> :syntax sync fromstart<CR>
 nnoremap <C-l> :noh<CR><C-l>
 
 " convenient copy to system clipboard
-vnoremap Y "*y
-nnoremap Y "*y
+vnoremap Y "*ygv<ESC>
+nnoremap Y "*ygv<ESC>
+vnoremap y ygv<ESC>
 
 " QUIT!
 command! Q execute "q!"
