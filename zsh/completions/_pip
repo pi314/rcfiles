@@ -1,55 +1,188 @@
-# Copyright (c) 2014 Srijan R Shetty <srijan.shetty+code@gmail.com>
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-# the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#compdef pip pip2 pip3
 
-#compdef pip
+_package_list_menu () {
+    _arguments \
+        "*: :(($(pip list 2>/dev/null | sed 's/^\([^ ]*\) \(.*\)$/\1:"\1 \2"/')))"
+}
 
-local subcmds
+local -a general_opts
+general_opts=(
+    "--cache-dir=[store the cache data]:"
+    "--cert=[path to alternate CA bundle]:"
+    "--client-cert=[path to SSL client certificate]:"
+    "--disable-pip-version-check[don\'t periodically check new version of pip]"
+    "--exists-action=[default action when a path already exists]:"
+    "--isolated[ignoring environment variables and user configuration]"
+    "--log=[path to a verbose appending log]:"
+    "--no-cache-dir[disable the cache]"
+    "--proxy=[specify a proxy]:"
+    "--retries=[maximum number of retries each connection should attempt]:"
+    "--timeout=[set the socket timeout]:"
+    "--trusted-host=[mark this host as trusted]:"
+    {-V,--version}"[show version and exit]"
+    {-h,--help}"[show help]"
+    {-q,--quiet}"[give less output]"
+    {-v,--verbose}"[give more output]"
+)
 
-_arguments -C '*::command:->command' && return 0
+local -a subcommands
+subcommands=(
+    "install:install packages"
+    "download:download packages"
+    "uninstall:uninstall packages"
+    "freeze:output installed packages in requirements format"
+    "list:list installed packages"
+    "show:show information about installed packages"
+    "search:search PyPI for packages"
+    "wheel:build wheels from your requirements"
+    "hash:compute hashes of package archives"
+    "completion:a helper command used for command completion"
+    "help:show help for commands"
+)
+
+local -a pi_opts
+pi_opts=(
+    "--extra-index-url=[extra URLs of package indexes to use in addition to --index-url]:"
+    "--no-index[ignore package index]"
+    "--process-dependency-links[enable the processing of dependency links]"
+    {-f,--find-links}="[parse for links to archives if a url or path to an html file]:"
+    {-i,--index-url}="[base URL of Python Package Index]:"
+)
+
+typeset -A opt_args
+local curcontext="$curcontext" state line ret=1
+
+_arguments -C \
+    ':Subcommands:->subcmd'\
+    $general_opts \
+    '*::Options:->options'
 
 case $state in
-	command)
-	if [[ $CURRENT != 1 && $words[$CURRENT] != -* && $words[$CURRENT-1] != "-r" ]]; then
-		state=packages
-	elif [[ $words[$CURRENT-1] == "-r" ]]; then
-		state=files
-	else
-	    state=subcommands
-	fi
-	;;
-esac
+    subcmd)
+        _describe 'subcommands' subcommands
+        ;;
 
-case $state in
-	subcommands)
-	reply=($( COMP_WORDS="$service $words[*]" \
-			COMP_CWORD=0 \
-			PIP_AUTO_COMPLETE=1 $service ))
-	_describe -t commands 'pip commands' reply
-	;;
-	packages)
-	if [[ -n $words[CURRENT] ]]; then
-		packages=($( pip search "$words[CURRENT]" | \
-					grep -i "^$words[CURRENT]" | \
-					cut -d ' ' -f 1 | tr '[A-Z]' '[a-z]' ))
-		_describe -t commands 'packages' packages
-	fi
-	;;
-	files)
-	_arguments -C '*:input file:_files' && return 0
+    options)
+        local -a subcmd_opts
+        subcmd_opts=( $general_opts )
+
+        local tmp subcmd
+        tmp=("${(@)${(z)LBUFFER}:1}")   # ignore "pip"
+        while [[ "${tmp[1]}" == '-'* ]]; do
+            # remove leading options
+            tmp=("${(@)tmp:1}")
+        done
+        subcmd="${tmp[1]}"
+
+        case $subcmd in
+            install)
+                _arguments "*: :($(ls -1 *.whl *.tar.gz))"
+                subcmd_opts+=(
+                    "*: :_package_list_menu"
+                    --compile"[compile py files to pyc]"
+                    --egg"[install packages as eggs like pip normally does. This option is not about installing]"
+                    --force-reinstall"[reinstall all packages even if they are already up-to-date]"
+                    --global-option="[extra global options to be supplied to the setup.py call before the install command]:"
+                    --install-option="[extra arguments to be supplied to the setup.py install command]:"
+                    --no-binary="[do not use binary packages]:"
+                    --no-clean"[don't clean up build directories]"
+                    --no-compile"[do not compile py files to pyc]"
+                    --no-deps"[don't install package dependencies]"
+                    --only-binary="[do not use source packages]:"
+                    --pre"[include pre-release and development versions]"
+                    --prefix="[installation prefix where lib, bin and other top-level folders are placed]:"
+                    --require-hashes"[require a hash to check each requirement]"
+                    --root="[install everything relative to this alternate root directory]:"
+                    --src="[directory to check out editable projects into]:"
+                    --user"[install to the Python user install directory for your platform]"
+                    {-I,--ignore-installed}"[ignore the installed packages]"
+                    {-U,--upgrade}"[upgrade all specified packages to the newest available version]"
+                    {-b,--build}="[directory to unpack packages into and build in]:"
+                    {-c,--constraint}="[constrain versions using the given constraints file]:"
+                    {-d,--download}="[download packages into <dir> instead of installing them]:"
+                    {-e,--editable}="[install a project in editable mode]:"
+                    {-r,--requirement}="[install from the given requirements file]:"
+                    {-t,--target}="[install packages into <dir>]:"
+                    $pi_opts
+                )
+                ;;
+
+            download)
+                subcmd_opts+=(
+                    --global-option="[extra global options to be supplied to the setup.py call before the install command]:"
+                    --no-binary="[do not use binary packages]:"
+                    --no-clean"[don't clean up build directories]"
+                    --no-deps"[don't install package dependencies]"
+                    --only-binary="[do not use source packages]:"
+                    --pre"[include pre-release and development versions]"
+                    --require-hashes"[require a hash to check each requirement]"
+                    --src="[directory to check out editable projects into]:"
+                    {-b,--build}="[directory to unpack packages into and build in]:"
+                    {-c,--constraint}="[constrain versions using the given constraints file]:"
+                    {-d,--dest}="[install packages into <dir>]:"
+                    {-e,--editable}="[install a project in editable mode]:"
+                    {-r,--requirement}="[install from the given requirements file]:"
+                    $pi_opts
+                )
+                ;;
+
+            uninstall)
+                subcmd_opts+=(
+                    "*: :_package_list_menu"
+                    {-r,--requirement}"=[uninstall packages in the given requirements file]:_files"
+                    {-y,--yes}"[don\'t ask for confirmation of uninstall deletions]"
+                )
+                ;;
+
+            freeze)
+                subcmd_opts+=(
+                    "--all[do not skip these packages in the output: pip, setuptools, distribute, wheel]"
+                    "--user[only output packages installed in user-site]"
+                    {-f,--find-links}="[URL for finding packages, which will be added to the output]"
+                    {-l,--local}"[do not output globally-installed packages if in a virtualenv that has global access]"
+                    {-r,--requirement}="[use the order in the given requirements file when generating output]"
+                )
+                ;;
+
+            list)
+                subcmd_opts+=(
+                    {-o,--outdated}"[List outdated packages]"
+                    {-u,--uptodate}"[List uptodate packages]"
+                    {-e,--editable}"[List editable projects]"
+                    {-l,--local}"[do not list globally-installed packages if in a virtualenv that has global access]"
+                    "--user[only output packages installed in user-site]"
+                    "--pre[include pre-release and development versions]"
+                    $pi_opts
+                )
+                ;;
+
+            show)
+                subcmd_opts+=(
+                    "*: :_package_list_menu"
+                    {-f,--files}"[Show the full list of installed files for each package]"
+                )
+                ;;
+
+            search)
+                subcmd_opts+=(
+                    {-i,--index-url}="[base URL of Python Package Index]:"
+                )
+                ;;
+
+            help)
+                _describe 'subcommands' subcommands && return 0
+                ;;
+        esac
+        _arguments $subcmd_opts
+        ;;
+
+    # subcommand-options)
+    #     local tmp
+    #     tmp=("${(@)words:1}")
+    #     while [[ "${tmp[1]}" == '-'* ]]; do
+    #         tmp=("${(@)tmp:1}")
+    #     done
+    #     subcommand="${tmp[1]}"
+    #     _pip-${subcommand}
+    #     ;;
 esac
