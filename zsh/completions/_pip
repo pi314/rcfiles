@@ -160,6 +160,13 @@ case $state in
                 )
                 ;;
 
+            show)
+                subcmd_opts+=(
+                    "*: :_package_list_menu"
+                    {-f,--files}"[Show the full list of installed files for each package]"
+                )
+                ;;
+
             help)
                 _describe 'subcommands' subcommands && return 0
                 ;;
