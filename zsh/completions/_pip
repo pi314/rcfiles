@@ -163,6 +163,12 @@ case $state in
                 )
                 ;;
 
+            search)
+                subcmd_opts+=(
+                    {-i,--index-url}="[base URL of Python Package Index]:"
+                )
+                ;;
+
             help)
                 _describe 'subcommands' subcommands && return 0
                 ;;
