@@ -1,16 +1,15 @@
 venv () {
     if [ -z "$1" ]; then
-        if [ -n "$VIRTUAL_ENV" ]; then
-            echo "Leave venv: $VIRTUAL_ENV"
-            deactivate
-            return
-        else
-            echo "Apply default venv: ${HOME}/.venv"
-            target="${HOME}/.venv"
-        fi
+        target="${HOME}/.venv"
     else
         target="$1"
     fi
-    source "${target}/bin/activate"
-}
 
+    if [ -z "$1" ] && [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    elif [ -d "${target}" ]; then
+        source "${target}/bin/activate"
+    else
+        echo "venv not found: ${target}"
+    fi
+}
