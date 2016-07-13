@@ -1,9 +1,5 @@
 #compdef pip pip2 pip3
 
-_pip-uninstall () {
-    _arguments \
-}
-
 _package_list_menu () {
     _arguments \
         "*: :(($(pip list 2>/dev/null | sed 's/^\([^ ]*\) \(.*\)$/\1:"\1 \2"/')))"
