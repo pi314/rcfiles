@@ -1,6 +1,13 @@
 # force source .zshenv to prevent system modify it
 source $HOME/.zsh/.zshenv
 
+##########################
+# Python venv
+##########################
+if [ ! "$PWD" = "$HOME" ] && [ -d ".venv" ]; then
+    source ".venv/bin/activate"
+fi
+
 
 ##########################
 # Completions
