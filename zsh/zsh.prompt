@@ -90,7 +90,7 @@ function _virtual_env {
     fi
 }
 
-function _set_prompt {
+function _refresh_prompt {
     case ${KEYMAP} in
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
         viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
@@ -111,11 +111,9 @@ $prompt"
 }
 
 function zle-keymap-select zle-line-init {
-    _set_prompt
+    _refresh_prompt
     today=$(date "+%Y%m%d")
     zle reset-prompt
 }
 zle -N zle-line-init
 zle -N zle-keymap-select
-
-_set_prompt
