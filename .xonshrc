@@ -91,7 +91,7 @@ def time_str():
     return _get_cmd_output(['date', '+%H:%M'])
 
 
-$FORMATTER_DICT['xonsh-version'] = $(xonsh --version).strip()
+$FORMATTER_DICT['xonsh-version'] = 'xonsh-{}'.format(xonsh.__version__)
 $FORMATTER_DICT['LINE1'] = LINE1
 $FORMATTER_DICT['date_str'] = date_str
 $FORMATTER_DICT['time_str'] = time_str
