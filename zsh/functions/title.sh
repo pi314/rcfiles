@@ -31,8 +31,8 @@ save_title () {
 }
 
 delete_title () {
-    backup=$(cat $TITLE_FILE | grep -v "^$*$")
-    echo $backup >$TITLE_FILE 2>/dev/null
+    tmp_titles=$(cat $TITLE_FILE | grep -v "^$*$")
+    echo $tmp_titles >$TITLE_FILE 2>/dev/null
 }
 
 title () {
@@ -46,11 +46,4 @@ title () {
     esac
 
     set_title $@
-}
-
-chpwd () {
-    if [[ -z "$ZSH_TITLE" ]]; then
-        ZSH_TITLE=$(basename $PWD)
-        title -t $ZSH_TITLE
-    fi
 }
