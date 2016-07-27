@@ -3,9 +3,7 @@ chpwd () {
         ##########################
         # Shell Title
         ##########################
-        if [[ -z "$ZSH_TITLE" ]]; then
-            title -t $(basename $PWD)
-        fi
+        title -t $(basename $PWD)
 
         ##########################
         # Python venv
