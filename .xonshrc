@@ -2,101 +2,55 @@ import xonsh
 import subprocess as sub
 import os
 
-COLOR = {
-    'red': '\x01\033[1;31m\x02',
-    'green': '\x01\033[1;32m\x02',
-    'yellow': '\x01\033[1;33m\x02',
-    'blue': '\x01\033[1;34m\x02',
-    'magenta': '\x01\033[1;35m\x02',
-    'cyan': '\x01\033[1;36m\x02',
-    'white': '\x01\033[1;37m\x02',
-    'reset':  '\x01\033[m\x02'
-}
-
-
-DEV_NULL = open(os.devnull, 'w')
-def _get_cmd_output(cmd):
-    try:
-        return str(sub.check_output(cmd, stderr=DEV_NULL), 'utf8').strip()
-    except sub.CalledProcessError:
-        return ''
-
-
-class GitInfoStr(): # {{{
-    @classmethod
-    def _color(cls, color_code, text):
-        return '{}{}{}'.format(COLOR[color_code], text, COLOR['reset'])
-
-    @classmethod
-    def git_exists(cls):
-        return _get_cmd_output(['git', '--version']) != ''
-
-    @classmethod
-    def repo_path(cls):
-        return _get_cmd_output(['git', 'rev-parse', '--show-toplevel'])
-
-    @classmethod
-    def branch_name(cls):
-        return _get_cmd_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'])
-
-    @classmethod
-    def is_bare_repo(cls):
-        return _get_cmd_output(['git', 'rev-parse', '--is-bare-repository'])
-
-    @classmethod
-    def repo_color(cls):
-        if _get_cmd_output(['git', 'status', '--porcelain']) == '':
-            # repo clean
-            return 'blue'
-        if _get_cmd_output(['git', 'status', '-s', '-uno']) == '':
-            # repo dirty, but no modify on tracked files
-            return 'magenta'
-
-        # repo dirty
-        return 'red'
-
-    @classmethod
-    def gen(cls):
-        if not cls.git_exists():
-            return ''
-
-        rp = cls.repo_path()
-        if rp != '':    # we are in a repo
-            if os.path.isfile(os.path.join(rp, '.git/refs/stash')):
-                # there are stashes
-                pass
-
-            if cls.is_bare_repo().lower() == 'true':
-                return cls._color('blue', '(=BARE=)')
-
-            rn = os.path.basename(rp)
-            bn = cls.branch_name()
-            return cls._color(cls.repo_color(), '({}:{})'.format(rn, bn))
-
-        return ''
-# }}}
-
-
-def LINE1():
-    git_info_str = GitInfoStr.gen()
-    ret = ''
-    ret += git_info_str
-    return '|{}\n'.format(ret) if ret != '' else ''
+from datetime import datetime
 
 
 def date_str():
-    return _get_cmd_output(['date', '+%m/%d'])
+    now = datetime.now()
+    return '{:02d}:{:02d}'.format(now.month, now.day)
+
 
 def time_str():
-    return _get_cmd_output(['date', '+%H:%M'])
+    now = datetime.now()
+    return '{:02d}:{:02d}'.format(now.hour, now.minute)
+
+
+def line1():
+    ret = ''
+
+    xonsh_env_name = $FORMATTER_DICT['env_name']()
+    if xonsh_env_name:
+        ret += '{INTENSE_BLUE}'
+        ret += '[{}]'.format(xonsh_env_name.strip('()'))
+
+
+    xonsh_curr_branch = $FORMATTER_DICT['curr_branch']()
+    if xonsh_curr_branch:
+        xonsh_branch_color = $FORMATTER_DICT['branch_color']()
+        if 'GREEN' in xonsh_branch_color:
+            ret += '{INTENSE_GREEN}'
+
+        elif 'RED' in xonsh_branch_color:
+            ret += '{INTENSE_RED}'
+
+        else:
+            ret += '{INTENSE_YELLOW}'
+
+        ret += '({})'.format(xonsh_curr_branch)
+
+    if ret:
+        return ret + '{NO_COLOR}\n'
+
+    return ''
 
 
 $FORMATTER_DICT['xonsh-version'] = 'xonsh-{}'.format(xonsh.__version__)
-$FORMATTER_DICT['LINE1'] = LINE1
 $FORMATTER_DICT['date_str'] = date_str
 $FORMATTER_DICT['time_str'] = time_str
+$FORMATTER_DICT['line1'] = line1
 
-$LINE2 = '{LINE1}{BOLD_BLACK}|{BOLD_CYAN}{date_str}{BOLD_GREEN}[{cwd}]{BOLD_BLACK}[{xonsh-version}]{NO_COLOR}\n'
-$LINE3 = '{BOLD_BLACK}|{BOLD_CYAN}{time_str}{BOLD_YELLOW}{user}{NO_COLOR}@{BOLD_WHITE}{hostname}{NO_COLOR}> '
 
-$PROMPT = $LINE2 + $LINE3
+$line1 = '{line1}'
+$line2 = '{INTENSE_CYAN}{date_str}{INTENSE_GREEN}[{cwd}]{INTENSE_BLACK}[{xonsh-version}]{NO_COLOR}\n'
+$line3 = '{INTENSE_CYAN}{time_str}{INTENSE_YELLOW}{user}{NO_COLOR}@{INTENSE_WHITE}{hostname}{NO_COLOR}{prompt_end} '
+$PROMPT = $line1 + $line2 + $line3
