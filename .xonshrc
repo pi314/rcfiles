@@ -4,6 +4,8 @@ import os
 
 from datetime import datetime
 
+from xonsh.environ import git_dirty_working_directory
+
 
 def date_str():
     now = datetime.now()
@@ -28,7 +30,11 @@ def line1():
     if xonsh_curr_branch:
         xonsh_branch_color = $FORMATTER_DICT['branch_color']()
         if 'GREEN' in xonsh_branch_color:
-            ret += '{INTENSE_GREEN}'
+            if git_dirty_working_directory(include_untracked=True):
+                ret += '{INTENSE_PURPLE}'
+
+            else:
+                ret += '{INTENSE_BLUE}'
 
         elif 'RED' in xonsh_branch_color:
             ret += '{INTENSE_RED}'
