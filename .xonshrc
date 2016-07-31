@@ -1,6 +1,7 @@
 import xonsh
-import subprocess as sub
 import os
+import platform
+import subprocess as sub
 
 from datetime import datetime
 
@@ -60,3 +61,10 @@ $line1 = '{line1}'
 $line2 = '{INTENSE_CYAN}{date_str}{INTENSE_GREEN}[{cwd}]{INTENSE_BLACK}[{xonsh-version}]{NO_COLOR}\n'
 $line3 = '{INTENSE_CYAN}{time_str}{INTENSE_YELLOW}{user}{NO_COLOR}@{INTENSE_WHITE}{hostname}{NO_COLOR}{prompt_end} '
 $PROMPT = $line1 + $line2 + $line3
+
+
+if platform.system() == 'Windows':
+    aliases['ls'] = 'dir /-C'
+    aliases['l'] = 'dir /-C'
+
+aliases['up'] = 'cd ..'
