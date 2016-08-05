@@ -1,99 +1,183 @@
 pack () {
-    # $ pack [-c] target-file source-file ...
-    local filename="$1"
-    local clean="0"
-    local fallback=""
-    local flag=""
-    local util=""
-    if [ $# -lt 1 ]; then
-        echo "Usage:"
-        echo "    pack [-c] target-file source-file ..."
+    # pack -h
+    # pack [-c] archive-file source-file ...
+
+    if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+        pack_help
         return 1
     fi
-    shift
-    if [ "$filename" = "-c" ]; then
-        filename="$1"
-        clean="1"
-        if [ $# -lt 1 ]; then
-            echo "Usage:"
-            echo "    pack [-c] target-file source-file ..."
-            return 1
-        fi
+
+    # setup 'clean' bit
+    if [ "$1" = '-c' ] || [ "$1" = '--clean' ]; then
+        clean=1
         shift
+    else
+        clean=0
     fi
-    case "$filename" in
-        *.tar)      tar  cvf "$filename" --exclude "$filename" $@ ;;
-        *.tar.bz2)  tar jcvf "$filename" --exclude "$filename" $@ ;;
-        *.tbz2)     tar jcvf "$filename" --exclude "$filename" $@ ;;
-        *.tbz)      tar jcvf "$filename" --exclude "$filename" $@ ;;
-        *.tar.gz)   tar zcvf "$filename" --exclude "$filename" $@ ;;
-        *.tgz)      tar zcvf "$filename" --exclude "$filename" $@ ;;
-        *.xz)   fallback="${filename%*.xz}.tar" ;       util="xz" ;;
-        *.Z)    fallback="${filename%*.Z}.tar" ;        util="compress" ;;
-        *.bz)   fallback="${filename%*.bz}.tar.bz2" ;   flag="j" ;;
-        *.bz2)  fallback="${filename%*.bz2}.tar.bz2" ;  flag="j" ;;
-        *.gz)   fallback="${filename%*.gz}.tar.gz" ;    flag="z" ;;
-        *.zip) zip --symlinks --exclude "$filename" -r "$filename" $@ ;;
-        *.7z)  7z a "$filename" $@ ;;
-        -) tar jcvf - $@ ;;
-        *) echo "Don't know how to pack $filename" ;;
+
+    if [ $# -le 1 ]; then
+        pack_help
+        unset clean
+        return 1
+    fi
+
+    afile="$1"
+    shift
+
+    # check if the archive file already exists
+    if [ -f "$afile" ] || [ -d "$afile" ]; then
+        echo "File \"$afile\" already exists"
+        unset afile
+        unset clean
+        return 1
+    fi
+
+    # format check based on the file extension
+    case "$afile" in
+        -)          afile='-'; format='tar' ;;
+        *.tar)      format='tar' ;;
+        *.tar.bz)   afile="${afile%*.tar.bz}.tar.bz2" ; format='tar.bz2' ;;
+        *.tbz)      afile="${afile%*.tar.bz}.tbz2" ;    format='tar.bz2' ;;
+        *.tar.bz2)  format='tar.bz2' ;;
+        *.tbz2)     format='tar.bz2' ;;
+        *.tar.gz)   format='tar.gz' ;;
+        *.tgz)      format='tar.gz' ;;
+        *.tar.xz)   afile="${afile%*.tar.xz}.tar" ;     format='tar.xz' ;;
+        *.xz)       afile="${afile%*.xz}.tar" ;         format='tar.xz' ;;
+        *.tar.Z)    afile="${afile%*.tar.Z}.tar" ;      format='tar.Z' ;;
+        *.Z)        afile="${afile%*.Z}.tar" ;          format='tar.Z' ;;
+        *.bz)       afile="${afile%*.bz}.tar.bz2" ;     format='tar.bz2' ;;
+        *.bz2)      afile="${afile%*.bz2}.tar.bz2" ;    format='tar.bz2' ;;
+        *.gz)       afile="${afile%*.gz}.tar.gz" ;      format='tar.gz' ;;
+        *.zip)      format='zip' ;;
+        *.7z)       format='7z' ;;
+        *)
+            echo "Don't know how to pack \"$afile\""
+            unset afile
+            unset format
+            unset clean
+            return 1
+            ;;
     esac
 
-    if [ "x$flag" != "x" ]; then
-        tar ${flag}cvf "$fallback" --exclude "$fallback" $@
-    elif [ "x$util" != "x" ]; then
-        tar cvf "$fallback" --exclude "$fallback" $@
-        $util "$fallback"
+    # check if target is stdout
+    case "$afile" in
+        -.*)    afile='-' ;;
+    esac
+
+    # need "zip", check if "zip" installed
+    if [ "$format" = 'zip' ] && ! command -v zip 2>&1 >/dev/null; then
+        echo 'The "zip" utility is not installed'
+        unset afile
+        unset format
+        unset clean
+        return 1
     fi
 
-    if [ $? -eq 0 ] && [ "$clean" = "1" ] ; then
+    # need "7z", check if "7z" installed
+    if [ "$format" = '7z' ] && ! command -v 7z 2>&1 >/dev/null; then
+        echo 'The "7z" utility is not installed'
+        unset afile
+        unset format
+        unset clean
+        return 1
+    fi
+
+    # "7z" format streaming is not supported
+    if [ "$format" = '7z' ] && [ "$afile" = '-' ]; then
+        echo '"7z" format streaming is not supported'
+        unset afile
+        unset format
+        unset clean
+        return 1
+    fi
+
+    # packing
+    case "$format" in
+        tar)        tar cvf  "$afile" --exclude "$afile" $@ ;;
+        tar.bz2)    tar jcvf "$afile" --exclude "$afile" $@ ;;
+        tar.gz)     tar zcvf "$afile" --exclude "$afile" $@ ;;
+        tar.xz)
+            if [ "$afile" = '-' ]; then
+                tar cvf - --exclude "$afile" $@ | xz --stdout
+            else
+                # ``xz`` automatically removes the original file
+                tar cvf "$afile" --exclude "$afile" $@ && xz "$afile"
+            fi
+            ;;
+        tar.Z)
+            # ``compress`` automatically removes the original file
+            if [ "$afile" = '-' ]; then
+                tar cvf "$afile" $@ | compress -c -
+            else
+                tar cvf "$afile" --exclude "$afile" $@ && compress -f "$afile"
+            fi
+            ;;
+        zip)    zip --symlinks --exclude "$afile" -r "$afile" $@ ;;
+        7z)     7z a "$afile" $@ ;;
+    esac
+
+    # check if packing succeed
+    if [ "$?" -ne 0 ]; then
+        unset afile
+        unset format
+        unset clean
+        return 1
+    fi
+
+    # clean up source files if clean bit is set
+    if [ "$?" -eq 0 ] && [ "$clean" -eq 1 ]; then
         while [ $# -gt 0 ]; do
-            if [ $1 != "$filename" ]; then
+            if [ "$1" != "$afile" ]; then
                 rm -r $1
             fi
             shift
         done
     fi
+
+    unset afile
+    unset format
+    unset clean
+    return 0
 }
 
-unpack () {
-    # $ unpack [-c] target-file ...
-    local clean="0"
-    if [ "$1" = "-c" ]; then
-        clean="1"
-        shift
+
+pack_help () {
+    echo 'Usage:'
+    echo '  pack -h'
+    echo '  pack [-c] archive-file source-file'
+    echo ''
+    echo 'Optional arguments:'
+    echo ''
+    echo '  -h, --help      Show this help message and exit'
+    echo '  -c, --clean     Remove source files after packed'
+    echo ''
+    echo 'Supported formats:'
+    echo '  *.tar'
+    echo '  *.tar.bz, *.tar.bz2, *.tbz, *.tbz2'
+    echo '  *.tar.gz, *.tgz'
+
+    if command -v xz 2>&1 >/dev/null; then
+        echo '  *.tar.xz'
+    else
+        echo '  *.tar.xz    - (not available: xz)'
     fi
-    while [ $# -gt 0 ]; do
-        local filename=$1
-        if [ "$filename-" = "--" ]; then
-            tar xvf -
-        elif [ -f "$filename" ]; then
-            case $filename in
-                *.tar)      tar     xvf     "$filename" ;;
-                *.tar.bz2)  tar     xvf     "$filename" ;;
-                *.tbz2)     tar     xvf     "$filename" ;;
-                *.tbz)      tar     xvf     "$filename" ;;
-                *.tar.gz)   tar     xvf     "$filename" ;;
-                *.tar.xz)   tar     xvf     "$filename" ;;
-                *.tar.Z)    tar     xvf     "$filename" ;;
-                *.tgz)      tar     xvf     "$filename" ;;
-                *.bz2)      bzip2   -dkv    "$filename" ;;
-                *.bz)       bzip2   -dkv    "$filename" ;;
-                *.zip)      unzip           "$filename" ;;
-                *.gz)       gzip    -dkv    "$filename" ;;
-                *.7z)       7z      x       "$filename" ;;
-                *.xz)       unxz    -kv     "$filename" ;;
-                *.rar)      unrar   x       "$filename" ;;
-                *.Z)        uncompress      "$filename" ;;
-                *) echo "Don't know how to unpack $filename" >&2 ;;
-            esac
-            if [ "$clean" = "1" ]; then
-                rm -f $filename
-            fi
-        else
-            echo "$filename is not a file." >&2
-        fi
-        shift
-    done
-}
 
+    if command -v compress 2>&1 >/dev/null; then
+        echo '  *.tar.Z'
+    else
+        echo '  *.tar.Z     - (not available: compress)'
+    fi
+
+    if command -v zip 2>&1 >/dev/null; then
+        echo '  *.zip'
+    else
+        echo '  *.zip       - (not available: zip)'
+    fi
+
+    if command -v 7z 2>&1 >/dev/null; then
+        echo '  *.7z'
+    else
+        echo '  *.7z        - (not available: zip)'
+    fi
+}
