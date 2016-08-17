@@ -45,6 +45,7 @@ unpack () {
         *.gz)       format='gz' ;;
         *.zip)      format='zip' ;;
         *.7z)       format='7z' ;;
+        *.rar)      format='rar' ;;
         *)
             echo "Don't know how to unpack \"$afile\""
             unset afile
@@ -79,6 +80,15 @@ unpack () {
     # need "7z", check if "7z" installed
     if [ "$format" = '7z' ] && ! $(command -v 7z 2>&1 >/dev/null); then
         echo 'The "7z" utility is not installed'
+        unset afile
+        unset format
+        unset clean
+        return 1
+    fi
+
+    # need "unrar", check if "unrar" installed
+    if [ "$format" = 'unrar' ] && ! $(command -v unrar 2>&1 >/dev/null); then
+        echo 'The "unrar" utility is not installed'
         unset afile
         unset format
         unset clean
@@ -140,6 +150,7 @@ unpack () {
         bz2)    bunzip2 "$afile" ;;
         zip)    unzip "$afile" ;;
         7z)     7z x "$afile" ;;
+        rar)    unrar x "$afile" ;;
     esac
 
     # check if packing succeed
@@ -215,5 +226,11 @@ unpack_help () {
         echo '  *.7z'
     else
         echo '  *.7z        - (not available: 7z)'
+    fi
+
+    if command -v unrar 2>&1 >/dev/null; then
+        echo '  *.rar'
+    else
+        echo '  *.rar       - (not available: unrar)'
     fi
 }
