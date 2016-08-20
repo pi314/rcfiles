@@ -211,3 +211,5 @@ let g:todo_select_checkbox = '<C-k>'
 " change nerdtree arrows
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
+
+let g:boshiamy_custom_table = '~/.boshiamy.table'
