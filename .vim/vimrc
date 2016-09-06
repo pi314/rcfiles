@@ -148,7 +148,7 @@ nnoremap t( :tabn 9<CR>
 nnoremap <C-n> :NERDTreeTabsToggle<CR>
 
 " Insert a new line in normal mode, I just lazy
-nnoremap <CR> o<ESC>0D
+nnoremap <expr> <CR> &ma ? "o\<ESC>" : "\<CR>"
 
 " map these by hand
 inoremap <C-h> <BS>
