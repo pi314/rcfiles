@@ -18,7 +18,7 @@ folders=(
     "$HOME/bin"
 )
 
-# force these path positioned at start of $PATH
+# force these path being positioned at start of $PATH
 for i in $folders; do
     if [[ -d $i ]]; then
         PATH=$(echo $PATH | sed "s|:$i||")
