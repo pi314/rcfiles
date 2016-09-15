@@ -8,6 +8,7 @@ set_title () {
 
     if [ "$TERM" = "screen" ]; then
         printf "\033k$*\033\\"
+        return
     fi
 
     case $ZSH_KERNEL_TYPE in
@@ -20,7 +21,7 @@ set_title () {
 }
 
 save_title () {
-    ZSH_TITLE="$*"
+    local ZSH_TITLE="$*"
     if [ -z "$ZSH_TITLE" ]; then
         true
     elif grep "^$ZSH_TITLE$" $TITLE_FILE >/dev/null 2>&1; then
@@ -31,8 +32,18 @@ save_title () {
 }
 
 delete_title () {
-    tmp_titles=$(cat $TITLE_FILE | grep -v "^$*$")
+    local tmp_titles=$(cat $TITLE_FILE | grep -v "^$*$")
     echo $tmp_titles >$TITLE_FILE 2>/dev/null
+}
+
+print_usage () {
+    echo 'Usage:'
+    echo '  title -h'
+    echo '  title [-d|-t] <title-str>'
+    echo ''
+    echo 'Optional arguments:'
+    echo "  -d    delete <title-str> from $HOME/.titles"
+    echo "  -t    set title to <title-str> but not saving it to $HOME/.titles"
 }
 
 title () {
@@ -41,6 +52,10 @@ title () {
             delete_title $@
             return
             ;;
+        -h) print_usage
+            return
+            ;;
+        -t) shift ;;
         -*) shift ;;
         *)  save_title $@
     esac
