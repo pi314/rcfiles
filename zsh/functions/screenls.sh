@@ -3,5 +3,5 @@ screenls () {
 }
 
 tmuxls () {
-    tmux ls | sed "/attached/ s/^\(.*\): .*$/[Attached] \1/; s/^\(.*\): .*$/[Detached] \1/"
+    tmux ls -F '[#{?session_attached,Attached,Detached}] #{session_name}'
 }
