@@ -3,7 +3,6 @@
 
 export _KERNEL_TYPE="$(/usr/bin/env uname -s)"
 case $_KERNEL_TYPE in
-
     "FreeBSD")
         export LS_VERSION="BSD"
         ;;
@@ -26,7 +25,6 @@ case $_KERNEL_TYPE in
             uname -a
             export LS_VERSION="GNU"     # guess it uses GNU ls
         fi
-
 esac
 
 if [ $LS_VERSION == "BSD" ]; then
@@ -59,14 +57,12 @@ if [ $LS_VERSION == "BSD" ]; then
     # 11.  directory writable to others, without sticky
     #      bit
     #                1 2 3 4 5 6 7 8 9 1011
-
 else
     alias ls='ls --color=auto'
     alias l='ls -aCl --color=auto'
     alias ll='ls -aCl --color=auto'
     alias lsl='ls -Cl --color=auto'
     # Let "ls" has pretty color
-
 fi
 
 export LSCOLORS="GxFxcxDxCxegedabagacad"
@@ -78,19 +74,19 @@ export LS_COLORS="di=01;36:ln=01;35"
 
 black="\[\e[1;30m\]"
 gray="\[\e[37m\]"
-grey=$gray
+grey=${gray}
 red="\[\e[1;31m\]"
 green="\[\e[1;32m\]"
 yellow="\[\e[1;33m\]"
 blue="\[\e[1;34m\]"
 purple="\[\e[35m\]"
-magenta=$purple
+magenta=${purple}
 cyan="\[\e[1;36m\]"
 white="\[\e[1;37m\]"
 end="\[\e[m\]"
 
 _last_cmd_succ () {
-    if [ "=$(echo $?)" = "=0" ]; then
+    if [ "$(echo $?)" -eq 0 ]; then
         printf "${black}|${end}"
     else
         printf "${red}|${end}"
@@ -104,12 +100,58 @@ _suspend_jobs () {
     fi
 }
 
+if [ -n "$(command -v git)" ]; then
+    # Oh yes, we really have git
+    _git_info () {
+        local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [ -n "$branch_name" ]; then
+            # we are now in a git repo
+            local repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+            local repo_name=""
+            if [ -n "$repo_root" ]; then
+                repo_name="$(basename $repo_root):"
+            fi
+
+            if [ -f "$repo_root/.git/refs/stash" ]; then
+                local stashes_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+                local stashes_stack_str=$(printf '%*s' ${stashes_count} | tr ' ' '(')
+            fi
+
+            local is_bare=$(git rev-parse --is-bare-repository 2>/dev/null)
+            if [ "$is_bare" == "true" ]; then
+                local color=${blue}
+                branch_name='=BARE='
+            elif [ -z "$(git status --porcelain 2>/dev/null)" ]; then
+                # This repo is clean
+                local color=${blue}
+            elif [ -z "$(git status -s -uno 2>/dev/null)" ]; then
+                # This repo is dirty, but no modify on tracked files
+                local color=${magenta}
+            else
+                # This repo is dirty
+                local color=${red}
+            fi
+            echo "${color}${stashes_stack_str}($repo_name${branch_name})${end}"
+        fi
+    }
+else
+    _git_info () {
+        true
+    }
+fi
+
 PROMPT_COMMAND=_gen_prompt
 
 _gen_prompt () {
     lcs=$(_last_cmd_succ)
-    PS1="${lcs}${green}[\w]$(_suspend_jobs)${black}[\s\v]${end}\n"\
-"${lcs}${cyan}\A${yellow}\u${end}@${white}\h${end}\$ "
+    gi="$(_git_info)"
+    if [ -n "${gi}" ]; then
+        first_line="${lcs}${gi}\n"
+    else
+        first_line=""
+    fi
+    PS1="${first_line}${lcs}${cyan}\D{%m/%d}${green}[\w]$(_suspend_jobs)${black}[\s\v]${end}\n"\
+"${lcs}${cyan}\D{%H:%M}${yellow}\u${end}@${white}\h${end}\$ "
 }
 
 bind '"\e[A"':history-search-backward # Use up and down arrow to search
