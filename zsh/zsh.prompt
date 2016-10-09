@@ -11,7 +11,6 @@ magenta="%{$fg_bold[magenta]%}"
 purple=$magenta
 cyan="%{$fg_bold[cyan]%}"
 white="%{$fg_bold[white]%}"
-
 d_red="%{$fg_no_bold[red]%}"
 d_green="%{$fg_no_bold[green]%}"
 d_yellow="%{$fg_no_bold[yellow]%}"
@@ -23,9 +22,9 @@ gray="%{$fg_no_bold[white]%}"
 grey=$gray
 end="%{$reset_color%}"
 
-last_cmd_succ="%(?.${black}.${red})|${end}"
+lcs_str="%(?.${black}.${red})|${end}"
 
-function _dir_stacks {
+_dir_stacks () {
     depth=$(dirs -p | wc -l | tr -d ' ')
     if [[ $depth -gt 1 ]]; then
         dir_stack_str=$(printf '%*s' ${depth} | tr ' ' '[')
@@ -33,24 +32,24 @@ function _dir_stacks {
     fi
 }
 
-function _current_path {
+_current_path () {
     # show first and last 3 folders if path is deeper than 5 layers
     echo "$(_dir_stacks)${green}[%5(~:%^~/.../%3~:%~)]${end}"
 }
 
 if [[ -n "$(command -v git)" ]]; then
     # Oh yes, we really have git
-    function _git_info {
+    _git_info () {
         local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-        if [[ -n $branch_name ]]; then
+        if [[ -n "$branch_name" ]]; then
             # we are now in a git repo
             local repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
             local repo_name=""
-            if [[ -n $repo_root ]]; then
+            if [[ -n "$repo_root" ]]; then
                 repo_name="$(basename $repo_root):"
             fi
 
-            if [[ -f $repo_root/.git/refs/stash ]]; then
+            if [[ -f "$repo_root/.git/refs/stash" ]]; then
                 local stashes_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
                 local stashes_stack_str=$(printf '%*s' ${stashes_count} | tr ' ' '(')
             fi
@@ -59,10 +58,10 @@ if [[ -n "$(command -v git)" ]]; then
             if [[ "$is_bare" == "true" ]]; then
                 local color=${blue}
                 branch_name='=BARE='
-            elif [[ -z $(git status --porcelain 2>/dev/null) ]]; then
+            elif [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
                 # This repo is clean
                 local color=${blue}
-            elif [[ -z $(git status -s -uno 2>/dev/null) ]]; then
+            elif [[ -z "$(git status -s -uno 2>/dev/null)" ]]; then
                 # This repo is dirty, but no modify on tracked files
                 local color=${magenta}
             else
@@ -73,44 +72,46 @@ if [[ -n "$(command -v git)" ]]; then
         fi
     }
 else
-    function _git_info {}
+    _git_info () {
+        true
+    }
 fi
 
 vim_mode_str="${black}[zsh]${end}"
 date_str="${cyan}%D{%m/%d}${end}"
 time_str="${cyan}%D{%H:%M}${end}"   # %D{...} man strftime
-user_name_str="${yellow}%n${end}"
+uname_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
-host_name_str="${white}%m${end}"
+hostname_str="${white}%m${end}"
 uid_str="%(!.#.>)"
 
-function _virtual_env {
+_virtual_env () {
     if [[ -n "$VIRTUAL_ENV" ]]; then
         echo "${blue}[${VIRTUAL_ENV##*/}]${end}"
     fi
 }
 
-function _refresh_prompt {
+_refresh_prompt () {
     case ${KEYMAP} in
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
         viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
     esac
 
-    dynamic_line="$(_virtual_env)$(_git_info)"
+    first_line="$(_virtual_env)$(_git_info)"
     if [[ $#jobstates -ge 1 ]]; then
         # this cannot be written in function
         # because $#jobstates does not passed into subshell
-        dynamic_line="${dynamic_line}${blue}jobs:$#jobstates${end}"
+        first_line="${first_line}${blue}jobs:$#jobstates${end}"
     fi
-    prompt="${last_cmd_succ}${date_str}$(_current_path)${vim_mode_str}
-${last_cmd_succ}${time_str}${user_name_str}${at_str}${host_name_str}${uid_str} "
-    if [[ -n "${dynamic_line}" ]]; then
-        prompt="${last_cmd_succ}${dynamic_line}
+    prompt="${lcs_str}${date_str}$(_current_path)${vim_mode_str}
+${lcs_str}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+    if [[ -n "${first_line}" ]]; then
+        prompt="${lcs_str}${first_line}
 $prompt"
     fi
 }
 
-function zle-keymap-select zle-line-init {
+zle-keymap-select zle-line-init () {
     _refresh_prompt
     today=$(date "+%Y%m%d")
     zle reset-prompt
