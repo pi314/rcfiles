@@ -134,35 +134,18 @@ install_xonsh () { # {{{
     install .xonshrc
 } # }}}
 
-install_all () { #{{{
-    install_zsh
-    install_tcsh
-    install_bash
-    install_screen
-    install_tmux
-    install_git
-    install_vim
-    install_xonsh
-} #}}}
+cd $(dirname $0)
+source_dir=$(pwd -P)
+cd - >/dev/null
 
+targets=$(cat $source_dir/setup | grep '^install_.*()' | sed 's/install_\(.*\)().*$/\1/')
 
 if [ $# -eq 0 ]; then
     echo 'Available targets:'
     echo '    all'
-    echo '    zsh'
-    echo '    tcsh'
-    echo '    bash'
-    echo '    screen'
-    echo '    tmux'
-    echo '    git'
-    echo '    vim'
-    echo '    xonsh'
-    exit
+    echo "$targets" | sed 's/^/    /'
+    exit 64 # man errno
 fi
-
-cd $(dirname $0)
-source_dir=$(pwd -P)
-cd - 1>/dev/null
 
 . $source_dir/.setup-tools
 
@@ -171,17 +154,15 @@ BACKUP_DIR_NAME="`date +%Y%m%d_%H%M%S`"
 BACKUP_FILE_PATH="$HOME/$BACKUP_TOP_FOLDER/$BACKUP_DIR_NAME"
 
 while [ $# -gt 0 ]; do
-    case "$1" in
-        all | zsh | tcsh | bash | screen | tmux | git | vim | xonsh)
-            message_install_start $1
-            install_${1}
-            message_install_complete $1
-            echo ''
-            ;;
-        *)
-            message_unknown_target $1
-            ;;
-    esac
+    if [ "$1" = 'all' ] || (echo "$targets" | grep "$1" >/dev/null 2>&1); then
+        message_install_start $1
+        install_${1}
+        message_install_complete $1
+        echo ''
+    else
+        message_unknown_target $1
+    fi
+
     shift
 done
 
