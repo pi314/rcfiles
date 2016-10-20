@@ -10,17 +10,18 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " Plugins
-Bundle 'VundleVim/Vundle.vim'
-Bundle 'scrooloose/nerdtree'
-Bundle 'jistr/vim-nerdtree-tabs'
-Bundle 'tomtom/tcomment_vim'
-Bundle 'tpope/vim-surround'
-Bundle 'dhruvasagar/vim-table-mode'
-Bundle 'pi314/boshiamy.vim'
-Bundle 'pi314/pi314.asciiart.vim'
-Bundle 'pi314/pi314.rst.vim'
-Bundle 'pi314/todo-or-not-todo.vim'
-Bundle 'zdict/zdict.vim'
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'tpope/vim-surround'
+Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'pi314/boshiamy.vim'
+Plugin 'pi314/pi314.asciiart.vim'
+Plugin 'pi314/pi314.rst.vim'
+Plugin 'pi314/todo-or-not-todo.vim'
+Plugin 'zdict/zdict.vim'
+Plugin 'rust-lang/rust.vim'
 
 call vundle#end()           " required
 filetype plugin on          " required
