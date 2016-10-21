@@ -48,17 +48,7 @@ set showcmd
 syntax on
 set hlsearch
 set background=dark
-set colorcolumn=80  " put a blue line on column 80
-hi ColorColumn ctermbg=Blue
-" change completion menu color
-highlight Pmenu    ctermfg=White ctermbg=Blue gui=bold
-highlight PmenuSel ctermfg=Black ctermbg=Cyan gui=bold
-
-" Tabline setting in .vim/plugin/tabline.vim
-hi TabLine     ctermfg=black ctermbg=grey     " not active tab page label
-hi TabLineSel  ctermfg=grey  ctermbg=black    " active tab page label
-hi TabLineFill ctermfg=grey  ctermbg=white    " fill the other place
-hi VIMlogo     ctermfg=white ctermbg=blue
+set colorcolumn=80  " put a vertical line on column 80
 
 colorscheme pi314
 
