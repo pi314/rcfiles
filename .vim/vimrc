@@ -1,32 +1,31 @@
 " ============================================================================ "
-" Vundle initialization
+" Plug initialization
 " ============================================================================ "
 
-" no vi-compatible
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
 " Plugins
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'tomtom/tcomment_vim'
-Plugin 'tpope/vim-surround'
-Plugin 'dhruvasagar/vim-table-mode'
-Plugin 'pi314/boshiamy.vim'
-Plugin 'pi314/pi314.asciiart.vim'
-Plugin 'pi314/pi314.rst.vim'
-Plugin 'pi314/todo-or-not-todo.vim'
-Plugin 'zdict/zdict.vim'
-Plugin 'rust-lang/rust.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-surround'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'pi314/boshiamy.vim'
+Plug 'pi314/pi314.asciiart.vim'
+Plug 'pi314/pi314.rst.vim'
+Plug 'pi314/todo-or-not-todo.vim'
+Plug 'zdict/zdict.vim'
+Plug 'rust-lang/rust.vim'
 
-call vundle#end()           " required
-filetype plugin on          " required
+call plug#end()
 " ============================================================================ "
-" Vundle ok
+" Plug ok
 " ============================================================================ "
 
 " Encoding settings
@@ -191,12 +190,15 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 " status line, show plugin modes
 function! VimTableModeStatusString ()
-    if tablemode#IsActive()
+    if exists('*tablemode#IsActive') && tablemode#IsActive()
         return '[table]'
     endif
     return ''
 endfunction
-set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+
+if !empty(glob('~/.vim/plugged/boshiamy.vim'))
+    set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+endif
 
 " =============== "
 " Plugin settings "
