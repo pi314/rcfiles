@@ -176,7 +176,10 @@ vnoremap > >gv
 vnoremap < <gv
 
 " automatically purge trailing space on save
-autocmd BufWritePre * :%s/\s\+$//e
+if !exists('myvimrc_autocmd_loaded')
+    let myvimrc_autocmd_loaded = 1
+    autocmd BufWritePre * :%s/\s\+$//e
+endif
 
 " status line, show plugin modes
 function! VimTableModeStatusString ()
