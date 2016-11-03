@@ -190,7 +190,7 @@ function! VimTableModeStatusString ()
 endfunction
 
 if !empty(glob('~/.vim/plugged/boshiamy.vim'))
-    set statusline=%<%{boshiamy#status()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+    set statusline=%<%{boshiamy#mode()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
 endif
 
 " =============== "
