@@ -86,8 +86,14 @@ hostname_str="${white}%m${end}"
 uid_str="%(!.#.>)"
 
 _virtual_env () {
-    if [[ -n "$VIRTUAL_ENV" ]]; then
-        echo "${blue}[${VIRTUAL_ENV##*/}]${end}"
+    if [[ -n "${VIRTUAL_ENV}" ]]; then
+        bname="$(basename ${VIRTUAL_ENV})"
+        dname="$(dirname ${VIRTUAL_ENV})"
+        if [[ "${dname}" = "${HOME}" ]]; then
+            echo "${blue}[~/${bname}]${end}"
+        else
+            echo "${blue}[$(basename ${dname})/${bname}]${end}"
+        fi
     fi
 }
 
