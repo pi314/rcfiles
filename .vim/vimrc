@@ -50,7 +50,7 @@ set hlsearch
 set background=dark
 set colorcolumn=80  " put a vertical line on column 80
 
-colorscheme pi314
+autocmd BufReadPost * colorscheme pi314
 
 
 " Tab charactor related settings
