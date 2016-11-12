@@ -109,25 +109,6 @@ install_git () { #{{{
 
 install_vim () { #{{{
     install .vim
-    cd $HOME/.vim
-    if [ ! -d bundle ]; then
-        mkdir bundle
-    fi
-
-    cd bundle
-    printf '  Installing vundle plugin ... '
-    git clone https://github.com/VundleVim/Vundle.vim >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        echo 'Done'
-    else
-        echo 'Already installed'
-        printf '  Updating vundle ... '
-        cd Vundle.vim && git pull >/dev/null 2>&1
-        echo 'Done'
-    fi
-    printf '  Installing plugins ... '
-    vim +PluginInstall +qall
-    echo 'Done'
 } #}}}
 
 install_xonsh () { # {{{
