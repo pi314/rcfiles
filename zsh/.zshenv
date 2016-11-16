@@ -1,6 +1,6 @@
 if [[ -f /etc/profile ]]; then
     backup_PATH=$PATH
-    PATH=""
+    PATH=''
     source /etc/profile
 
     if [[ -z $PATH ]]; then
@@ -33,30 +33,25 @@ export PATH
 export ZSH_KERNEL_TYPE="$(/usr/bin/env uname -s)"
 
 case $ZSH_KERNEL_TYPE in
-
-    "FreeBSD")
-        export LS_VERSION="BSD"
+    'FreeBSD')
+        export LS_VERSION='BSD'
         ;;
-
-    "Darwin")   # Mac OS
-        export LS_VERSION="BSD"
+    'Darwin')   # Mac OS X
+        export LS_VERSION='BSD'
         ;;
-
-    "Linux")
-        export LS_VERSION="GNU"
+    'Linux')
+        export LS_VERSION='GNU'
         ;;
-
     *)
         if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN"* ]]; then
-            export ZSH_KERNEL_TYPE="CYGWIN"
-            export LS_VERSION="GNU"
+            export ZSH_KERNEL_TYPE='CYGWIN'
+            export LS_VERSION='GNU'
         else
-            export ZSH_KERNEL_TYPE="UNKNOWN"
-            echo "Unknown OS type"
+            export ZSH_KERNEL_TYPE='UNKNOWN'
+            echo 'Unknown OS type'
             uname -a
-            export LS_VERSION="GNU"     # guess it uses GNU ls
+            export LS_VERSION='GNU'     # guess it uses GNU ls
         fi
-
 esac
 
 #Let "ls has pretty color
@@ -88,7 +83,7 @@ export LSCOLORS='GxFxcxDxCxegedabagacad'
 # di: directories
 # ln: symbolic links
 # pi:
-export LS_COLORS="di=01;36:ln=01;35:pi=01;33:ex=01;32"
+export LS_COLORS='di=01;36:ln=01;35:pi=01;33:ex=01;32'
 
 export EDITOR=vim
 export PAGER=less

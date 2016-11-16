@@ -15,6 +15,15 @@ zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' special-dirs true
 
+# cool formatting and messages
+# http://unix.stackexchange.com/a/214699
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format "$fg[yellow]%B--- %d%b"
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format "$fg[red]No matches for:$reset_color %d"
+zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+zstyle ':completion:*' group-name ''
+
 
 ###############################################################################
 # Prompt
@@ -65,7 +74,7 @@ SAVEHIST=1000
 ###############################################################################
 bindkey -v
 zle -A kill-whole-line      vi-kill-line
-zle -A backward-kill-word   vi-backward-kill-word
+# zle -A backward-kill-word   vi-backward-kill-word
 zle -A backward-delete-char vi-backward-delete-char
 
 bindkey "\e[H"      beginning-of-line
