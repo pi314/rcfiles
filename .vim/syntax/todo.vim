@@ -13,7 +13,16 @@ syn match   regex_pattern       _\v(<r")@<=([^\\"]|\\.)+"@=_
 syn match   regex_pattern       _\v(<r/)@<=([^\\/]|\\.)+/@=_
 hi def      regex_pattern       ctermfg=magenta
 
-syn match   date_string         _\<[0-9][0-9]/[0-9][0-9]\>_
+syn match   rst_link_quote      ,\v`(.* +\<.*\>`_)@=,
+syn match   rst_link_quote      ,\v(`.* +)@<=\<(.*\>`_)@=,
+syn match   rst_link_quote      ,\v(`.* +\<.*)@<=\>`_,
+hi def      rst_link_quote      ctermfg=darkcyan
+
+syn match   rst_link_text       ,\v(`)@<=.*( +\<.*\>`_)@=,
+hi def      rst_link_text       ctermfg=cyan
+
+syn match   date_string         _\v<[0-9]{2}/[0-9]{2}>_
+syn match   date_string         _\v<[0-9]{4}/[0-9]{2}/[0-9]{2}>_
 hi def      date_string         cterm=underline ctermfg=white
 
 " Just for fun
