@@ -1,15 +1,12 @@
 if [[ $LS_VERSION == "BSD" ]]; then
-    alias ls='ls -G'
-    alias ll='ls -aClGF'
-    alias l='ls -aClGF'
-    alias lsl='ls -ClGF'
-
+    alias ls='ls -CGF'
+    alias l='ls -l'
+    alias la='l -a'
 else
     alias ls='ls --color=auto'
     alias ll='ls -aCl --color=auto'
     alias l='ls -aCl --color=auto'
     alias lsl='ls -Cl --color=auto'
-
 fi
 
 alias grep='grep --color=auto'
