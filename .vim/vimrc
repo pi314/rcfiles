@@ -123,8 +123,13 @@ vnoremap j gj
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
-nnoremap tp :tabm -1<CR>
-nnoremap tn :tabm +1<CR>
+if v:version < 704
+    nnoremap tp :execute "tabmove" (tabpagenr()-2)<CR>
+    nnoremap tn :execute "tabmove" tabpagenr()<CR>
+else
+    nnoremap tp :tabm -1<CR>
+    nnoremap tn :tabm +1<CR>
+endif
 let g:NERDTreeMapOpenInTab='tt'
 nnoremap t! :tabn 1<CR>
 nnoremap t@ :tabn 2<CR>
