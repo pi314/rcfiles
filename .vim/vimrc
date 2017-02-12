@@ -29,9 +29,18 @@ call plug#end()
 " ============================================================================ "
 
 " Encoding settings
-set encoding=utf-8
+let $LANG="zh_TW.UTF-8"
+set encoding=utf8
 set langmenu=zh_TW.UTF-8
 language message zh_TW.UTF-8
+
+if has("win32")
+    "reload menu with UTF-8 encoding
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
+    set guifont=MingLiU:h14:cANSI
+endif
+
 set fileformat=unix
 
 set ambiwidth=single
