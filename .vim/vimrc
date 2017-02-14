@@ -206,7 +206,7 @@ function! CleanUnusedBuffers ()
         endif
     endfor
 endfunction
-nnoremap <C-c> :call CleanUnusedBuffers()<CR>
+nnoremap <SPACE> :call CleanUnusedBuffers()<CR>
 
 
 " status line, show plugin modes
