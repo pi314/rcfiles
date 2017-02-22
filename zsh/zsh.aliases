@@ -1,13 +1,10 @@
 if [[ $LS_VERSION == "BSD" ]]; then
     alias ls='ls -CGF'
-    alias l='ls -l'
-    alias la='l -a'
 else
     alias ls='ls --color=auto'
-    alias ll='ls -aCl --color=auto'
-    alias l='ls -aCl --color=auto'
-    alias lsl='ls -Cl --color=auto'
 fi
+alias l='ls -l'
+alias la='l -a'
 
 alias grep='grep --color=auto'
 alias v='vim -p'
