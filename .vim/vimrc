@@ -32,7 +32,11 @@ call plug#end()
 let $LANG="zh_TW.UTF-8"
 set encoding=utf8
 set langmenu=zh_TW.UTF-8
-language message zh_TW.UTF-8
+try
+    language message zh_TW.UTF-8
+catch /E197/
+    language message en_US.UTF-8
+endtry
 
 if has("win32")
     "reload menu with UTF-8 encoding
