@@ -172,3 +172,6 @@ up () {
     fi
 }
 
+if [ -f ~/.bashlocal ]; then
+    source ~/.bashlocal
+fi
