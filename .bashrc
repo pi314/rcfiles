@@ -28,43 +28,37 @@ case $_KERNEL_TYPE in
 esac
 
 if [ $LS_VERSION == "BSD" ]; then
-    alias ls='ls -G'
-    alias l='ls -aClG'
-    alias ll='ls -aClG'
-    alias lsl='ls -ClG'
-
-    #Let "ls has pretty color
-    # a     black
-    # b     red
-    # c     green
-    # d     brown
-    # e     blue
-    # f     magenta
-    # g     cyan
-    # h     light grey
-    # x     default foreground or background
-
-    # 1.   directory
-    # 2.   symbolic link
-    # 3.   socket
-    # 4.   pipe
-    # 5.   executable
-    # 6.   block special
-    # 7.   character special
-    # 8.   executable with setuid bit set
-    # 9.   executable with setgid bit set
-    # 10.  directory writable to others, with sticky bit
-    # 11.  directory writable to others, without sticky
-    #      bit
-    #                1 2 3 4 5 6 7 8 9 1011
+    alias ls='ls -CGF'
 else
     alias ls='ls --color=auto'
-    alias l='ls -aCl --color=auto'
-    alias ll='ls -aCl --color=auto'
-    alias lsl='ls -Cl --color=auto'
-    # Let "ls" has pretty color
 fi
+alias l='ls -l'
+alias la='l -a'
 
+#Let "ls has pretty color
+# a     black
+# b     red
+# c     green
+# d     brown
+# e     blue
+# f     magenta
+# g     cyan
+# h     light grey
+# x     default foreground or background
+
+# 1.   directory
+# 2.   symbolic link
+# 3.   socket
+# 4.   pipe
+# 5.   executable
+# 6.   block special
+# 7.   character special
+# 8.   executable with setuid bit set
+# 9.   executable with setgid bit set
+# 10.  directory writable to others, with sticky bit
+# 11.  directory writable to others, without sticky
+#      bit
+#                1 2 3 4 5 6 7 8 9 1011
 export LSCOLORS="GxFxcxDxCxegedabagacad"
 export LS_COLORS="di=01;36:ln=01;35"
 
