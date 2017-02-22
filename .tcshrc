@@ -12,18 +12,12 @@ else
 endif
 
 if ($LS_TYPE == "BSD") then
-    alias ls 'ls-F -G'
-    alias l 'ls -aClG'
-    alias ll 'ls -aClG'
-    alias lsl 'ls -ClG'
-
+    alias ls 'ls -CGF'
 else
-    alias ls 'ls-F --color=auto'
-    alias l 'ls -aCl --color=auto'
-    alias ll 'ls -aCl --color=auto'
-    alias lsl 'ls -Cl --color=auto'
-
+    alias ls 'ls --color=auto'
 endif
+alias l 'ls -l'
+alias la 'l -a'
 
 #Let "ls" has pretty color
 # a     black
