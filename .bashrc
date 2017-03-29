@@ -162,9 +162,57 @@ up () {
     if [ $# -eq 0 ]; then
         cd ..
     else
-        cd $1
+        while [ $# -gt 0 ]; do
+            cd $1
+            shift
+        done
     fi
 }
+
+_up () {
+    local cur prev opts
+    COMPREPLY=()
+    if [ "${COMP_CWORD}" = 1 ]; then
+        opts=""
+        pwd=$(pwd)
+        while [ "$pwd" != "/" ]; do
+            opts="$pwd $opts"
+            pwd=$(dirname $pwd)
+        done
+        COMPREPLY=( $(compgen -W "${opts}" -S '/' -- "${COMP_WORDS[COMP_CWORD]}") )
+
+    elif [ "${COMP_CWORD}" = 2 ]; then
+        if [ ! -d "${COMP_WORDS[1]}" ]; then
+            return 1
+        elif [ "${COMP_WORDS[2]}" = "" ]; then
+            opts=$(ls ${COMP_WORDS[1]})
+            COMPREPLY=( $(compgen -W "${opts}" -- "${COMP_WORDS[2]}") )
+        else
+            case "${COMP_WORDS[2]}" in
+                "")
+                    opts=$(ls ${COMP_WORDS[1]})
+                    COMPREPLY=( $(compgen -W "${opts}" -- "$cur") )
+                    ;;
+                */)
+                    opts="$(ls ${COMP_WORDS[1]}/${COMP_WORDS[2]})"
+                    COMPREPLY=( $(compgen -W "${opts}" -P "${COMP_WORDS[2]}" -S '/' -- "$cur") )
+                    ;;
+                *)
+                    if [ "$(basename ${COMP_WORDS[2]})" = "${COMP_WORDS[2]}" ]; then
+                        opts="$(ls ${COMP_WORDS[1]})"
+                        COMPREPLY=( $(compgen -W "${opts}" -S '/' -- "${COMP_WORDS[2]}") )
+                    else
+                        opts="$(ls $(dirname ${COMP_WORDS[1]}/${COMP_WORDS[2]}))"
+                        prefix="$(dirname ${COMP_WORDS[2]})/"
+                        COMPREPLY=( $(compgen -W "${opts}" -P "${prefix}" -S '/' -- "$(basename ${COMP_WORDS[2]})") )
+                    fi
+                    ;;
+            esac
+        fi
+    fi
+    return 0
+}
+complete -o nospace -F _up up
 
 if [ -f ~/.bashlocal ]; then
     source ~/.bashlocal
