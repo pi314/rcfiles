@@ -16,11 +16,12 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'pi314/boshiamy.vim'
-Plug 'pi314/boshiamy-wide'
-Plug 'pi314/boshiamy-braille'
-Plug 'pi314/boshiamy-emoji'
-Plug 'pi314/boshiamy-runes'
+Plug 'pi314/ime.vim'
+Plug 'pi314/ime-wide.vim'
+Plug 'pi314/ime-braille.vim'
+Plug 'pi314/ime-emoji.vim'
+Plug 'pi314/ime-runes.vim'
+Plug 'pi314/ime-phonetic.vim'
 Plug 'pi314/pi314.asciiart.vim'
 Plug 'pi314/pi314.rst.vim'
 Plug 'pi314/todo-or-not-todo.vim'
@@ -227,8 +228,8 @@ function! VimTableModeStatusString ()
 endfunction
 
 
-if !empty(glob('~/.vim/plugged/boshiamy.vim'))
-    set statusline=%<%{boshiamy#mode()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+if !empty(glob('~/.vim/plugged/ime.vim'))
+    set statusline=%<%{ime#mode()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
 endif
 
 " =============== "
@@ -246,8 +247,11 @@ let g:todo_select_checkbox = '<C-k>'
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
 
-let g:boshiamy_custom_table = '~/.boshiamy.table'
-let g:boshiamy_plugins = ['wide', 'runes', 'braille', 'emoji']
+let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
+let g:ime_plugins = ['builtin-boshiamy', 'builtin-kana', 'builtin-chewing', 'builtin-unicode']
+let g:ime_plugins += ['emoji', 'phonetic', 'runes', 'wide', 'braille']
+let g:ime_select_mode_style = 'fallback'
+let g:ime_phonetic_custom_table = '~/.phonetic.table'
 
 let g:rst_title_style = 'shorten'
 let g:rst_title_length_step = 0
