@@ -202,7 +202,7 @@ command! QA execute "qa!"
 cnoremap w!! w !sudo tee %
 
 " open file in new tab
-nnoremap gF <C-w>gf
+nnoremap gF <C-w>gF
 
 " indenting in visual mode
 vnoremap > >gv
