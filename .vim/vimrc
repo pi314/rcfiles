@@ -28,6 +28,8 @@ Plug 'pi314/todo-or-not-todo.vim'
 Plug 'zdict/zdict.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'dodie/vim-disapprove-deep-indentation'
+Plug 'breuckelen/vim-resize'
+Plug 'junegunn/vader.vim'
 
 call plug#end()
 " ============================================================================ "
