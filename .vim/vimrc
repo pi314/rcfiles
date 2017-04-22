@@ -252,7 +252,7 @@ let g:NERDTreeDirArrowCollapsible = '~'
 let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
 let g:ime_plugins = ['builtin-boshiamy', 'builtin-kana', 'builtin-chewing', 'builtin-unicode']
 let g:ime_plugins += ['emoji', 'phonetic', 'runes', 'wide', 'braille']
-let g:ime_select_mode_style = 'fallback'
+let g:ime_select_mode_style = 'interactive'
 let g:ime_phonetic_custom_table = '~/.phonetic.table'
 
 let g:rst_title_style = 'shorten'
