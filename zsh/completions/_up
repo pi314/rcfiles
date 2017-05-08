@@ -12,5 +12,5 @@ _get_parent_folders () {
     echo "${indicator}:\"${climber}\""
 }
 
-_arguments '1: :((-P:"Resole symbolic links" $(_get_parent_folders)))' '*: :(($(_get_parent_folders)))'
+_arguments '1: :((-P:"Resole symbolic links" ${(f)"$(_get_parent_folders)"}))' '*: :((${(f)"$(_get_parent_folders)"}))'
 
