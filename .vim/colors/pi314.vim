@@ -14,8 +14,8 @@ endif
 highlight Normal     guifg=Grey80       guibg=Black     gui=None
 highlight Normal     ctermfg=LightGrey  ctermbg=Black   cterm=bold
 
-highlight Search     guifg=Black        guibg=Red       gui=bold
-highlight Search     ctermfg=Black      ctermbg=Red     cterm=NONE
+highlight Search     guifg=Black        guibg=Yellow    gui=bold
+highlight Search     ctermfg=Black      ctermbg=Yellow  cterm=NONE
 
 highlight Visual     guifg=#404040                      gui=bold
 highlight Visual                                        cterm=reverse
