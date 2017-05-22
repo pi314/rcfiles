@@ -66,21 +66,17 @@ set showcmd
 " ============== "
 " Color settings "
 " ============== "
-syntax on
 set hlsearch
-set background=dark
 set colorcolumn=80  " put a vertical line on column 80
 
 
 augroup pi314
     autocmd!
-    " Load colorscheme pi314 for every window.
-    " Note: BufReadPost doesn't work on non-exist files
-    autocmd BufWinEnter * colorscheme pi314
-
     " automatically purge trailing space on save
     autocmd BufWritePre * :%s/\s\+$//e
 augroup END
+
+colorscheme pi314
 
 
 " Tab charactor related settings

@@ -15,7 +15,7 @@ highlight Normal     guifg=Grey80       guibg=Black     gui=None
 highlight Normal     ctermfg=LightGrey  ctermbg=Black   cterm=bold
 
 highlight Search     guifg=Black        guibg=Yellow    gui=bold
-highlight Search     ctermfg=Black      ctermbg=Yellow  cterm=NONE
+highlight Search     ctermfg=Black      ctermbg=Yellow
 
 highlight Visual     guifg=#404040                      gui=bold
 highlight Visual                                        cterm=reverse
@@ -24,19 +24,19 @@ highlight Cursor     guifg=Black        guibg=Green     gui=bold
 highlight Cursor     ctermfg=Black      ctermbg=Green   cterm=bold
 
 highlight Special    guifg=Orange
-highlight Special    ctermfg=Brown
+highlight Special    ctermfg=Red
 
 highlight Comment    guifg=#80a0ff
-highlight Comment    ctermfg=Blue
+highlight Comment    ctermfg=Cyan
 
 highlight StatusLine guifg=Black        guibg=Grey      gui=bold
 highlight StatusLine ctermfg=Black      ctermbg=grey    cterm=bold
 
 highlight Statement  guifg=Yellow                       gui=NONE
-highlight Statement  ctermfg=Yellow                     cterm=NONE
+highlight Statement  ctermfg=Yellow
 
 highlight Type                                          gui=NONE
-highlight Type                                          cterm=NONE
+highlight Type       ctermfg=Green
 
 
 " Vertical line color settings
