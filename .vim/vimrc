@@ -30,6 +30,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'dodie/vim-disapprove-deep-indentation'
 Plug 'breuckelen/vim-resize'
 Plug 'junegunn/vader.vim'
+Plug 'johngrib/vim-game-code-break'
 
 call plug#end()
 " ============================================================================ "
