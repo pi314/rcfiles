@@ -218,6 +218,17 @@ endfunction
 nnoremap <SPACE> :call CleanUnusedBuffers()<CR>
 
 
+" Handy shortcut to create a scratch buffer
+function! s:new_scratch_buffer ()
+    if bufname('%') == '' && &modified == 0
+    else
+        tabedit
+    endif
+    set buftype=nofile
+endfunction
+nnoremap ,s :call <SID>new_scratch_buffer()<CR>
+
+
 " status line, show plugin modes
 function! VimTableModeStatusString ()
     if exists('*tablemode#IsActive') && tablemode#IsActive()
