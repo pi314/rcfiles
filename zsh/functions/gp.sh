@@ -4,9 +4,10 @@ gp () {
         return 1
     fi
 
-    if [ $# = 1 ]; then
-        grep -n -R "$1" .
+    if [ -t 0 ]; then
+        # stdin
+        grep -n $@ -R .
     else
-        grep -n -R $@
+        grep $@
     fi
 }

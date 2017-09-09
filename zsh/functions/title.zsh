@@ -2,7 +2,7 @@ TITLE_FILE="$HOME/.titles"
 
 set_title () {
     if [ -n "$TMUX" ]; then
-        tmux rename-window "$*"
+        printf '\ePtmux;\e\e]0;'"$*"'\007\e\\'
         return
     fi
 
