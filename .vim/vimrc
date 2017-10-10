@@ -65,6 +65,7 @@ set showmode
 " Show command on bottom-right
 set showcmd
 
+
 " ============== "
 " Color settings "
 " ============== "
@@ -127,6 +128,7 @@ set splitright
 set splitbelow
 
 set pastetoggle=<leader>p
+
 
 " ======== "
 " Mappings "
@@ -228,6 +230,34 @@ nnoremap <silent> ,t :%s/\v\s+$//e<CR>
 vnoremap <silent> ,t :s/\v\s+$//e<CR>
 
 
+function! s:MoveCursorLeftSoftTab ()
+    let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
+    let l:idx = col('.') - 1
+    if l:left_indent < l:idx
+        return "\<Left>"
+    elseif l:idx % &tabstop == 0
+        return repeat("\<Left>", &tabstop)
+    else
+        return repeat("\<Left>", l:idx % &tabstop)
+    endif
+endfunction
+function! s:MoveCursorRightSoftTab ()
+    let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
+    let l:idx = col('.') - 1
+    if l:left_indent <= l:idx
+        return "\<Right>"
+    elseif l:idx % &tabstop == 0
+        return repeat("\<Right>", &tabstop)
+    else
+        return repeat("\<Right>", &tabstop - (l:idx % &tabstop))
+    endif
+endfunction
+inoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
+inoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
+nnoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
+nnoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
+
+
 " status line, show plugin modes
 function! VimTableModeStatusString ()
     if exists('*tablemode#IsActive') && tablemode#IsActive()
@@ -240,6 +270,7 @@ endfunction
 if !empty(glob('~/.vim/plugged/ime.vim'))
     set statusline=%<%{ime#mode()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
 endif
+
 
 " =============== "
 " Plugin settings "
