@@ -71,13 +71,6 @@ set showcmd
 set hlsearch
 set colorcolumn=80  " put a vertical line on column 80
 
-
-augroup pi314
-    autocmd!
-    " automatically purge trailing space on save
-    autocmd BufWritePre * :%s/\s\+$//e
-augroup END
-
 colorscheme pi314
 
 
@@ -228,6 +221,11 @@ function! s:new_scratch_buffer ()
     set buftype=nofile
 endfunction
 nnoremap ,s :call <SID>new_scratch_buffer()<CR>
+
+
+" Handy shortcut to trim trailing spaces
+nnoremap <silent> ,t :%s/\v\s+$//e<CR>
+vnoremap <silent> ,t :s/\v\s+$//e<CR>
 
 
 " status line, show plugin modes
