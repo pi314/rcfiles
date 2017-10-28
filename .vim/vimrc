@@ -272,6 +272,45 @@ if !empty(glob('~/.vim/plugged/ime.vim'))
 endif
 
 
+" Resize window interactively
+function! s:resize_mode ()
+    let l:cmds = {
+    \ '<': '<',
+    \ '+': '+',
+    \ '-': '-',
+    \ '>': '>',
+    \ 'H': '<',
+    \ 'J': '+',
+    \ 'K': '-',
+    \ 'L': '>',
+    \ 'h': 'h',
+    \ 'j': 'j',
+    \ 'k': 'k',
+    \ 'l': 'l',
+    \ }
+    let l:statusline_resizing = 'Resize: <(H) +(J) -(K) >(L) h j k l q'
+    let l:statusline_user = &l:statusline
+    let &l:statusline = l:statusline_resizing
+    redrawstatus
+    try
+        while 1
+            let l:key = nr2char(getchar())
+            if l:key == 'q' || l:key == 'Q'
+                break
+            elseif has_key(l:cmds, l:key)
+                let &l:statusline = l:statusline_user
+                execute 'wincmd '. l:cmds[(l:key)]
+                let &l:statusline = l:statusline_resizing
+            endif
+            redraw
+        endwhile
+    catch
+    endtry
+    setlocal statusline&
+endfunction
+nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
+
+
 " =============== "
 " Plugin settings "
 " =============== "
