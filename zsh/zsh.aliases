@@ -7,7 +7,6 @@ alias l='ls -l'
 alias la='l -a'
 
 alias grep='grep --color=auto'
-alias v='vim -p'
 
 if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]; then
     alias open='cygstart'
