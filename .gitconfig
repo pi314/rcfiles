@@ -7,6 +7,7 @@
     ci = commit -v
     co = checkout
     st = status
+    d = difftool
 
 [push]
     default = current
@@ -16,4 +17,7 @@
 
 [core]
     editor = vim
-    pager = less -r
+    pager = less -R -S
+
+[merge]
+    tool = vimdiff
