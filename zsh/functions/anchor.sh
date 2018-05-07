@@ -7,11 +7,6 @@ a () {
     anchor "$@"
 }
 
-ag () {
-    anchor -g "$@"
-}
-
-
 an () {
     anchor "$@"
 }
