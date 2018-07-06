@@ -103,6 +103,7 @@ set number
 " Status line
 set laststatus=2
 set wildmenu
+set wildmode=list:longest
 
 set scrolloff=5
 
