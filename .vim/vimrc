@@ -103,7 +103,7 @@ set number
 " Status line
 set laststatus=2
 set wildmenu
-set wildmode=list:longest
+set wildmode=longest:list,full  " zsh-like completion
 
 set scrolloff=5
 
