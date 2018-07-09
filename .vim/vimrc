@@ -275,39 +275,48 @@ endif
 
 " Resize window interactively
 function! s:resize_mode ()
-    let l:cmds = {
-    \ '<': '<',
-    \ '+': '+',
-    \ '-': '-',
-    \ '>': '>',
-    \ 'H': '<',
-    \ 'J': '+',
-    \ 'K': '-',
-    \ 'L': '>',
-    \ 'h': 'h',
-    \ 'j': 'j',
-    \ 'k': 'k',
-    \ 'l': 'l',
-    \ }
-    let l:statusline_resizing = 'Resize: <(H) +(J) -(K) >(L) h j k l q'
+    let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l'}
+    let l:cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
+    let l:statusline_usage = 'Resize: HJKL hjkl q <space>'
     let l:statusline_user = &l:statusline
-    let &l:statusline = l:statusline_resizing
+    let l:cc = &colorcolumn
+    call s:highlight_pane()
+    let &l:statusline = l:statusline_usage
     redrawstatus
     try
         while 1
             let l:key = nr2char(getchar())
-            if l:key == 'q' || l:key == 'Q'
+            if l:key == 'q' || l:key == 'Q' || l:key == ' '
                 break
-            elseif has_key(l:cmds, l:key)
+            elseif has_key(l:cmd_resize, l:key)
+                let l:winnr_cur = winnr()
+                if l:key == 'H' || l:key == 'L'
+                    wincmd l
+                    let l:winnr_probe = winnr()
+                elseif l:key == 'J' || l:key == 'K'
+                    wincmd j
+                    let l:winnr_probe = winnr()
+                endif
+                execute l:winnr_cur .'wincmd w'
+                execute 'wincmd '. l:cmd_resize[(l:key)][(l:winnr_cur == l:winnr_probe)]
+                call s:highlight_pane()
+            elseif has_key(l:cmd_focus, l:key)
                 let &l:statusline = l:statusline_user
-                execute 'wincmd '. l:cmds[(l:key)]
-                let &l:statusline = l:statusline_resizing
+                let &colorcolumn = l:cc
+                execute 'wincmd '. l:cmd_focus[(l:key)]
+                let &l:statusline = l:statusline_usage
+                let l:cc = &colorcolumn
+                call s:highlight_pane()
             endif
             redraw
         endwhile
     catch
     endtry
-    setlocal statusline&
+    let &l:statusline = l:statusline_user
+    let &colorcolumn = l:cc
+endfunction
+function! s:highlight_pane ()
+    let &colorcolumn=join(range(1, getwininfo(win_getid())[0]['width']), ',')
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
