@@ -51,12 +51,13 @@ highlight Pmenu     ctermfg=White   ctermbg=Blue
 highlight PmenuSel  guifg=Black     guibg=Cyan      gui=bold
 highlight PmenuSel  ctermfg=Black   ctermbg=Cyan
 
-
-" Tabline setting in .vim/plugin/tabline.vim
-highlight TabLine       ctermfg=Black   ctermbg=Grey     " not active tab page label
-highlight TabLineSel    ctermfg=Grey    ctermbg=Black    " active tab page label
-highlight TabLineFill   ctermfg=Grey    ctermbg=White    " fill the other place
-highlight VIMlogo       ctermfg=White   ctermbg=Blue
+" Tab line settings
+highlight TabLine       cterm=bold  ctermfg=Black       ctermbg=LightGray
+highlight TabLineSel    cterm=bold  ctermfg=LightGray   ctermbg=Black
+highlight TabLineFill   cterm=bold  ctermfg=LightGray   ctermbg=LightGray
+highlight TabLine       gui=bold    guifg=Black         guibg=LightGray
+highlight TabLineSel    gui=bold    guifg=LightGray     guibg=Black
+highlight TabLineFill   gui=bold    guifg=LightGray     guibg=LightGray
 
 
 " Trailing spaces
