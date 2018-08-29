@@ -329,7 +329,7 @@ nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 let g:table_mode_corner_corner = '+'
 let g:table_mode_header_fillchar = '='
 
-let g:todo_loop_checkbox = '<C-c>'
+let g:todo_next_checkbox = '<C-c>'
 let g:todo_select_checkbox = '<C-k>'
 
 " change nerdtree arrows
