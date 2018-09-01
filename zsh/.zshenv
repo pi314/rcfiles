@@ -14,6 +14,7 @@ folders=(
     "/opt/local/sbin"
     "/opt/local/share/java/android-sdk-macosx/platform-tools"
     "/opt/local/Library/Frameworks/Python.framework/Versions/3.6/bin"
+    "$HOME/Library/Python/3.6/bin"
     "$HOME/.cabal/bin"
     "$HOME/bin"
 )
