@@ -320,6 +320,8 @@ function! s:highlight_pane ()
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
+nnoremap ,w :set wrap!<CR>
+
 
 " =============== "
 " Plugin settings "
