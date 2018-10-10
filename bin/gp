@@ -25,3 +25,6 @@ gp () {
         grep ${opt1} "${pattern}" ${opt2}
     fi
 }
+
+
+gp "$@"

@@ -183,3 +183,6 @@ pack_help () {
         echo '  *.7z        - (not available: zip)'
     fi
 }
+
+
+pack "$@"

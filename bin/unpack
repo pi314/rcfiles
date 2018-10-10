@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+
 unpack () {
     # unpack -h
     # unpack [-c] archive-file
@@ -236,3 +237,6 @@ unpack_help () {
         echo '  *.rar       - (not available: unrar)'
     fi
 }
+
+
+unpack "$@"

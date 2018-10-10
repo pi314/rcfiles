@@ -3,3 +3,6 @@
 tmuxls () {
     tmux ls -F '[#{?session_attached,Attached,Detached}] #{session_name}'
 }
+
+
+tmuxls "$@"
