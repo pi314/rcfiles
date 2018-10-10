@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 unpack () {
     # unpack -h
     # unpack [-c] archive-file

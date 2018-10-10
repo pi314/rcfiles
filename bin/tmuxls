@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+tmuxls () {
+    tmux ls -F '[#{?session_attached,Attached,Detached}] #{session_name}'
+}

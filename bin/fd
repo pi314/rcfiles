@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 fd () {
     if [ "$1" = '' ]; then
         echo 'Filename ಠ_ಠ?'
