@@ -1,13 +1,8 @@
 #!/usr/bin/env sh
 
-fd () {
-    if [ "$1" = '' ]; then
-        echo 'Filename ಠ_ಠ?'
-        return 1
-    fi
+if [ "$1" = '' ]; then
+    echo 'Filename ಠ_ಠ?'
+    return 1
+fi
 
-    find . -name "$1"
-}
-
-
-fd "$@"
+find . -name "$1"
