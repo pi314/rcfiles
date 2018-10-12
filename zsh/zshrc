@@ -43,6 +43,12 @@ fi
 ###############################################################################
 # Functions
 ###############################################################################
+if [[ -d $HOME/.rcfiles/functions ]]; then
+    for i in $(ls $HOME/.rcfiles/functions/); do
+        source $HOME/.rcfiles/functions/$i
+    done
+fi
+
 if [[ -d $HOME/.rcfiles/zsh/functions ]]; then
     for i in $(ls $HOME/.rcfiles/zsh/functions/); do
         source $HOME/.rcfiles/zsh/functions/$i
