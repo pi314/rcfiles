@@ -1,0 +1,62 @@
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
+
+###############################################################################
+# Completions
+###############################################################################
+if [ -f $HOME/.rcfiles/bash/bash.completions ]; then
+    source $HOME/.rcfiles/bash/bash.completions
+fi
+
+
+###############################################################################
+# Env
+###############################################################################
+if [ -f $HOME/.rcfiles/bash/bashenv ]; then
+    source $HOME/.rcfiles/bash/bashenv
+fi
+
+
+###############################################################################
+# Prompt
+###############################################################################
+if [ -f $HOME/.rcfiles/bash/bash.prompt ]; then
+    source $HOME/.rcfiles/bash/bash.prompt
+fi
+
+
+###############################################################################
+# Aliases
+###############################################################################
+if [ -f $HOME/.rcfiles/bash/bash.aliases ]; then
+    source $HOME/.rcfiles/bash/bash.aliases
+fi
+
+
+###############################################################################
+# Functions
+###############################################################################
+if [ -d $HOME/.rcfiles/functions ]; then
+    for i in $(ls $HOME/.rcfiles/functions/); do
+        source $HOME/.rcfiles/functions/$i
+    done
+fi
+
+
+###############################################################################
+# Bindkeys
+###############################################################################
+bind '"\e[A"':history-search-backward # Use up and down arrow to search
+bind '"\e[B"':history-search-forward  # the history. Invaluable!
+
+bind '"\ej"':shell-backward-word
+bind '"\ek"':shell-forward-word
+
+
+###############################################################################
+# bashlocal
+###############################################################################
+if [ -f ~/.bashlocal ]; then
+    source ~/.bashlocal
+fi

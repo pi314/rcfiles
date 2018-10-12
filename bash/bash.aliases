@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+OS="$(/usr/bin/env uname -s)"
+case $OS in
+    "FreeBSD")
+        LS_VERSION="BSD"
+        ;;
+
+    "Darwin")   # Mac OS
+        LS_VERSION="BSD"
+        ;;
+
+    "Linux")
+        LS_VERSION="GNU"
+        ;;
+
+    *)
+        if [ "$_KERNEL_TYPE" == "CYGWIN"* ]; then
+            OS="CYGWIN"
+            LS_VERSION="GNU"
+        else
+            OS="UNKNOWN"
+            echo "Unknown OS type"
+            uname -a
+            LS_VERSION="GNU"     # guess it uses GNU ls
+        fi
+esac
+
+if [ $LS_VERSION == "BSD" ]; then
+    alias ls='ls -CGF'
+else
+    alias ls='ls --color=auto'
+fi
+alias l='ls -l'
+alias la='l -a'
