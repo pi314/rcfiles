@@ -154,20 +154,6 @@ bind '"\e[B"':history-search-forward  # the history. Invaluable!
 bind '"\ej"':shell-backward-word
 bind '"\ek"':shell-forward-word
 
-mkcd () {
-    mkdir $1 && cd $1
-}
-
-up () {
-    if [ $# -eq 0 ]; then
-        cd ..
-    else
-        while [ $# -gt 0 ]; do
-            cd $1
-            shift
-        done
-    fi
-}
 
 _up () {
     local cur prev opts
