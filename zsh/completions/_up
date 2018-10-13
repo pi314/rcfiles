@@ -5,12 +5,21 @@ _get_parent_folders () {
     local climber="$(dirname $pwd_str)"
     local indicator="../"
     while [ "$climber" != "/" ]; do
-        echo "${indicator}:\"${climber}\" "
+        echo "${climber}:${climber} "
         climber="$(dirname $climber)"
         indicator="${indicator}../"
     done
-    echo "${indicator}:\"${climber}\""
+    echo "${climber}:${climber}"
 }
 
-_arguments '1: :((-P:"Resole symbolic links" ${(f)"$(_get_parent_folders)"}))' '*: :((${(f)"$(_get_parent_folders)"}))'
+_split_pwd () {
+    probe="$(dirname "$(pwd)")"
+    echo "$(basename "${probe}")"
+    while [ "${probe}" != '/' ]; do
+        probe="$(dirname "${probe}")"
+        echo "$(basename "${probe}")"
+    done
+    echo "$(basename "${probe}")"
+}
 
+_arguments '1: :((${(f)"$(_get_parent_folders)"} ${(f)"$(_split_pwd)"}))'
