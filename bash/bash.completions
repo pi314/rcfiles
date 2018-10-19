@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+_up () {
+    local cur prev opts
+    COMPREPLY=()
+    if [ ${COMP_CWORD} -eq 1 ]; then
+        if [ "${COMP_WORDS[COMP_CWORD]}" = '/' ]; then
+            COMPREPLY=( "$(pwd)" )
+        elif [ -z "${COMP_WORDS[COMP_CWORD]}" ]; then
+            COMPREPLY=( "$(pwd)/" )
+        else
+            COMPREPLY=( "$(dirname "${COMP_WORDS[COMP_CWORD]}")" )
+        fi
+    elif [ ${COMP_CWORD} -eq 2 ]; then
+        options=$(ls -1 "${COMP_WORDS[1]}")
+        COMPREPLY=( $(compgen -W "$options" -- "${COMP_WORDS[COMP_CWORD]}") )
+    fi
+}
+complete -o nospace -F _up up

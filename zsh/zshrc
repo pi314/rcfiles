@@ -1,15 +1,14 @@
 # force source .zshenv to prevent system modifying it
-source $HOME/.zsh/.zshenv
+source $HOME/.zshenv
 
 
 ###############################################################################
 # Completions
 ###############################################################################
-fpath=($fpath $HOME/.zsh/completions)
+fpath=($fpath $HOME/.rcfiles/zsh/completions)
 
-# ``antigen apply`` would do it
-# autoload -Uz compinit
-# compinit -u
+autoload -Uz compinit
+compinit -u
 
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -28,36 +27,40 @@ zstyle ':completion:*' group-name ''
 ###############################################################################
 # Prompt
 ###############################################################################
-if [[ -f $HOME/.zsh/zsh.prompt ]]; then
-    source $HOME/.zsh/zsh.prompt
+if [[ -f $HOME/.rcfiles/zsh/zsh.prompt ]]; then
+    source $HOME/.rcfiles/zsh/zsh.prompt
 fi
 
 
 ###############################################################################
 # Aliases
 ###############################################################################
-if [[ -f $HOME/.zsh/zsh.aliases ]]; then
-    source $HOME/.zsh/zsh.aliases
+if [[ -f $HOME/.rcfiles/zsh/zsh.aliases ]]; then
+    source $HOME/.rcfiles/zsh/zsh.aliases
 fi
 
 
 ###############################################################################
 # Functions
 ###############################################################################
-if [[ -d $HOME/.zsh/functions ]]; then
-    for i in $(ls $HOME/.zsh/functions/); do
-        source $HOME/.zsh/functions/$i
+if [[ -d $HOME/.rcfiles/functions ]]; then
+    for i in $(ls $HOME/.rcfiles/functions/); do
+        source $HOME/.rcfiles/functions/$i
+    done
+fi
+
+if [[ -d $HOME/.rcfiles/zsh/functions ]]; then
+    for i in $(ls $HOME/.rcfiles/zsh/functions/); do
+        source $HOME/.rcfiles/zsh/functions/$i
     done
 fi
 
 
 ###############################################################################
-# Local Files & antigen plugins
+# Local Files
 ###############################################################################
 if [[ -f $HOME/.zshlocal ]]; then
-    source $HOME/.zsh/antigen.zsh
     source $HOME/.zshlocal
-    antigen apply
 fi
 
 

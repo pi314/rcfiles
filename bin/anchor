@@ -1,16 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
 
 ANCHOR_POOL=${HOME}/.anchors
-
-
-a () {
-    anchor "$@"
-}
-
-an () {
-    anchor "$@"
-}
-
 
 anchor () {
     if [ $# -eq 0 ]; then
@@ -131,3 +122,6 @@ _anchor_sub () {
 _anchor_tableize () {
     column -s ^ -t
 }
+
+
+anchor "$@"

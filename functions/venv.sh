@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 venv () {
     if [ -z "$1" ]; then
         target="${HOME}/.venv"

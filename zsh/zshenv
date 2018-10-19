@@ -16,6 +16,7 @@ folders=(
     "/opt/local/Library/Frameworks/Python.framework/Versions/3.6/bin"
     "$HOME/Library/Python/3.6/bin"
     "$HOME/.cabal/bin"
+    "$HOME/.rcfiles/bin"
     "$HOME/bin"
 )
 

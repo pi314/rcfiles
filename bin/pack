@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 pack () {
     # pack -h
     # pack [-c] archive-file source-file ...
@@ -181,3 +183,6 @@ pack_help () {
         echo '  *.7z        - (not available: zip)'
     fi
 }
+
+
+pack "$@"

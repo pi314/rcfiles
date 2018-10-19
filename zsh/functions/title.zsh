@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 TITLE_FILE="$HOME/.titles"
 
 set_title () {

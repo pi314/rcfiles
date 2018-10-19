@@ -1,3 +1,6 @@
+#!/usr/bin/env sh
+
+
 unpack () {
     # unpack -h
     # unpack [-c] archive-file
@@ -15,12 +18,18 @@ unpack () {
         clean=0
     fi
 
-    if [ $# -ne 1 ]; then
-        echo 'Multiple file is not supported'
-        echo ''
+    if [ $# -lt 1 ]; then
         unpack_help
         unset clean
         return 1
+    fi
+
+    if [ $# -gt 1 ]; then
+        while [ $# -gt 0 ]; do
+            unpack "$1"
+            shift
+        done
+        return
     fi
 
     afile="$1"
@@ -234,3 +243,6 @@ unpack_help () {
         echo '  *.rar       - (not available: unrar)'
     fi
 }
+
+
+unpack "$@"

@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+# prompt setting
+# color codes needs to be wrapped by \[ and \]
+#  so that the length of color codes will not be calculate by terminal
+
+black="\[\e[1;30m\]"
+gray="\[\e[37m\]"
+grey=${gray}
+red="\[\e[1;31m\]"
+green="\[\e[1;32m\]"
+yellow="\[\e[1;33m\]"
+blue="\[\e[1;34m\]"
+purple="\[\e[35m\]"
+magenta=${purple}
+cyan="\[\e[1;36m\]"
+white="\[\e[1;37m\]"
+end="\[\e[m\]"
+
+_last_cmd_succ () {
+    if [ "$(echo $?)" -eq 0 ]; then
+        printf "${black}|${end}"
+    else
+        printf "${red}|${end}"
+    fi
+}
+
+_suspend_jobs () {
+    jbs=$(jobs -p | wc -l)
+    if [ $jbs -ne 0 ]; then
+        printf "${blue}jobs:\j${end}"
+    fi
+}
+
+if [ -n "$(command -v git)" ]; then
+    # Oh yes, we really have git
+    _git_info () {
+        local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [ -n "$branch_name" ]; then
+            # we are now in a git repo
+            local repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+            local repo_name=""
+            if [ -n "$repo_root" ]; then
+                repo_name="$(basename $repo_root):"
+            fi
+
+            if [ -f "$repo_root/.git/refs/stash" ]; then
+                local stashes_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+                local stashes_stack_str=$(printf '%*s' ${stashes_count} | tr ' ' '(')
+            fi
+
+            local is_bare=$(git rev-parse --is-bare-repository 2>/dev/null)
+            if [ "$is_bare" == "true" ]; then
+                local color=${blue}
+                branch_name='=BARE='
+            elif [ -z "$(git status --porcelain 2>/dev/null)" ]; then
+                # This repo is clean
+                local color=${blue}
+            elif [ -z "$(git status -s -uno 2>/dev/null)" ]; then
+                # This repo is dirty, but no modify on tracked files
+                local color=${magenta}
+            else
+                # This repo is dirty
+                local color=${red}
+            fi
+            echo "${color}${stashes_stack_str}($repo_name${branch_name})${end}"
+        fi
+    }
+else
+    _git_info () {
+        true
+    }
+fi
+
+_gen_prompt () {
+    lcs=$(_last_cmd_succ)
+    gi="$(_git_info)"
+    if [ -n "${gi}" ]; then
+        first_line="${lcs}${gi}\n"
+    else
+        first_line=""
+    fi
+    PS1="${first_line}${lcs}${cyan}\D{%m/%d}${green}[\w]$(_suspend_jobs)${black}[\s\v]${end}\n"\
+"${lcs}${cyan}\D{%H:%M}${yellow}\u${end}@${white}\h${end}\$ "
+}
+
+PROMPT_COMMAND=_gen_prompt

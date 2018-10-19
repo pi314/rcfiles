@@ -1,9 +1,8 @@
 #!/bin/sh
 
 install_zsh () { #{{{
-    install zsh/.zshrc .zshrc
-    install zsh/.zshenv .zshenv
-    install zsh .zsh
+    install zsh/zshrc .zshrc
+    install zsh/zshenv .zshenv
 } #}}}
 
 install_tcsh () { #{{{
@@ -11,8 +10,8 @@ install_tcsh () { #{{{
 } #}}}
 
 install_bash () { #{{{
-    install .bashrc
-    install .bash_profile
+    install bash/bashrc .bashrc
+    install bash/bash_profile .bash_profile
 } #}}}
 
 install_screen () { #{{{

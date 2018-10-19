@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+screen -ls | grep --color=no -o '[0-9]\+\..*(.*)' | tr '\t()' ' []' | sed "s/\([^ ][^ ]*\)  *\([^ ][^ ]*\)/\2 \1/"
