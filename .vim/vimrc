@@ -316,7 +316,7 @@ function! s:resize_mode ()
     let &colorcolumn = l:cc
 endfunction
 function! s:highlight_pane ()
-    let &colorcolumn=join(range(1, getwininfo(win_getid())[0]['width']), ',')
+    let &colorcolumn=join(range(1, winwidth(0)), ',')
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
