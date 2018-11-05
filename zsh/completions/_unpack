@@ -1,0 +1,44 @@
+#compdef unpack
+
+
+local expl patterns
+
+patterns=(-g '*.tar' -g '*.jar')
+patterns=("$patterns[@]" -g '*.tar.bz' -g '*.tar.bz2' -g '*.tbz' -g '*.tbz2')
+patterns=("$patterns[@]" -g '*.tar.gz' -g '*.tgz')
+patterns=("$patterns[@]" -g '*.jar')
+
+if command -v unxz 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.tar.xz' -g '*.xz')
+fi
+
+if command -v uncompress 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.tar.Z' -g '*.Z')
+fi
+
+if command -v bunzip2 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.bz' -g '*.bz2')
+fi
+
+if command -v gzip 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.gz')
+fi
+
+if command -v unzip 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.zip')
+fi
+
+if command -v 7z 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.7z')
+fi
+
+if command -v unrar 2>&1 >/dev/null; then
+    patterns=("$patterns[@]" -g '*.rar')
+fi
+
+local -a options
+options=('-h:Show this help message and exit' '-c:Remove archive file after unpacked')
+_describe 'Options' options
+
+_description files expl 'Compressed files'
+_files "$expl[@]" "$patterns[@]"

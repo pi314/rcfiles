@@ -5,7 +5,7 @@ source $HOME/.zshenv
 ###############################################################################
 # Completions
 ###############################################################################
-fpath=($fpath $HOME/.rcfiles/zsh/completions)
+fpath=($HOME/.rcfiles/zsh/completions "${fpath[@]}")
 
 autoload -Uz compinit
 compinit -u
