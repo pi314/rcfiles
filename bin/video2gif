@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+video2gif () {
+    if [ $# -lt 2 ]; then
+        echo 'Usage:'
+        echo "    $0 option=value video gif"
+        echo ""
+        echo "Options:"
+        echo "    width"
+        echo "    height"
+        return 1
+    fi
+
+    width="-1"
+    height="-1"
+
+    while true; do
+        case "$1" in
+            width=*)
+                width="$(echo "$1" | cut -d= -f 2)"
+                shift
+                ;;
+            height=*)
+                height="$(echo "$1" | cut -d= -f 2)"
+                shift
+                ;;
+            *)
+                break
+        esac
+    done
+
+    if [ "${width}:${height}" = "-1:-1" ]; then
+        filters=""
+    else
+        filters="scale=${width}:${height}:flags=lanczos"
+    fi
+
+    if [ -z "${filters}" ]; then
+        phase1_filter="palettegen"
+        phase2_filter="paletteuse"
+    else
+        phase1_filter="${filters},palettegen"
+        phase2_filter="${filters} [x]; [x][1:v] paletteuse"
+    fi
+
+    ffmpeg -i "$1" -vf "${phase1_filter}" "$2.palette.png"
+    if [ $? -eq 0 ]; then
+        ffmpeg -i "$1" -i "$2.palette.png" -filter_complex "${phase2_filter}" "$2"
+    fi
+}
+
+video2gif "$@"
