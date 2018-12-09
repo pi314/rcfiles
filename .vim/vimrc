@@ -1,7 +1,6 @@
-" ============================================================================ "
+" =============================================================================
 " Plug initialization
-" ============================================================================ "
-
+" -----------------------------------------------------------------------------
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -31,12 +30,20 @@ Plug 'dodie/vim-disapprove-deep-indentation'
 Plug 'breuckelen/vim-resize'
 Plug 'junegunn/vader.vim'
 Plug 'johngrib/vim-game-code-break'
-Plug '~/.vim/plugged/sudoku-solver.vim'
+Plug 'pi314/sudoku-solver.vim'
+
+if !empty(glob('~/.vimrc-plugins.local'))
+    source ~/.vimrc-plugins.local
+endif
 
 call plug#end()
-" ============================================================================ "
-" Plug ok
-" ============================================================================ "
+" -----------------------------------------------------------------------------
+" Plug initialization
+" =============================================================================
+
+" =============================================================================
+" Options
+" -----------------------------------------------------------------------------
 
 " Encoding settings
 let $LANG="zh_TW.UTF-8"
@@ -66,9 +73,6 @@ set showmode
 set showcmd
 
 
-" ============== "
-" Color settings "
-" ============== "
 set hlsearch
 set colorcolumn=80  " put a vertical line on column 80
 
@@ -129,11 +133,14 @@ set splitright
 set splitbelow
 
 set pastetoggle=<leader>p
+" -----------------------------------------------------------------------------
+" Options
+" =============================================================================
 
 
-" ======== "
-" Mappings "
-" ======== "
+" =============================================================================
+" Mappings
+" -----------------------------------------------------------------------------
 
 " move moving between long wrapped lines
 " must use nnoremap = no recursive map
@@ -145,14 +152,13 @@ vnoremap j gj
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
-if v:version < 704
+if exists('*tabpagenr')
     nnoremap tp :execute "tabmove" (tabpagenr()-2)<CR>
     nnoremap tn :execute "tabmove" tabpagenr()<CR>
 else
     nnoremap tp :tabm -1<CR>
     nnoremap tn :tabm +1<CR>
 endif
-let g:NERDTreeMapOpenInTab='tt'
 nnoremap t! :tabn 1<CR>
 nnoremap t@ :tabn 2<CR>
 nnoremap t# :tabn 3<CR>
@@ -321,12 +327,14 @@ endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
 nnoremap ,w :set wrap!<CR>
+" -----------------------------------------------------------------------------
+" Mappings
+" =============================================================================
 
 
-" =============== "
-" Plugin settings "
-" =============== "
-
+" =============================================================================
+" Plugin settings
+" -----------------------------------------------------------------------------
 " vim-table-mode settings ([normal] <leader>tm to enable table mode)
 let g:table_mode_corner_corner = '+'
 let g:table_mode_header_fillchar = '='
@@ -335,6 +343,7 @@ let g:todo_next_checkbox = '<C-c>'
 let g:todo_select_checkbox = '<C-k>'
 
 " change nerdtree arrows
+let g:NERDTreeMapOpenInTab='tt'
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
 
@@ -347,3 +356,11 @@ let g:ime_enable_ime_buffer = 1
 
 let g:rst_title_style = 'shorten'
 let g:rst_title_length_step = 0
+" -----------------------------------------------------------------------------
+" Plugin settings
+" =============================================================================
+
+
+if !empty(glob('~/.vimrc.local'))
+    source ~/.vimrc.local
+endif
