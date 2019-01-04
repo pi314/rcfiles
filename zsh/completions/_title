@@ -1,8 +1,24 @@
 #compdef title
 
-local titles=(${(f)"$(cat $HOME/.titles 2>/dev/null)"})
+# _arguments \
+#     - '(del)' {-d,--delete}'[Delete a title from ~/.titles]: :((${titles}))'\
+#     - '(tem)' {-t,--temporary}'[Temporary set a title, not save to ~/.titles]: :((${titles} $(basename $PWD)\:"Current directory"))'\
+#     '1: :((${titles} $(basename $PWD)\:"Current directory"))'
 
-_arguments \
-    - '(del)' {-d,--delete}'[Delete a title from ~/.titles]: :((${titles}))'\
-    - '(tem)' {-t,--temporary}'[Temporary set a title, not save to ~/.titles]: :((${titles} $(basename $PWD)\:"Current directory"))'\
-    '1: :((${titles} $(basename $PWD)\:"Current directory"))'
+if [ -z "${TITLE_FILE}" ]; then
+    TITLE_FILE="$HOME/.titles"
+fi
+
+
+local expl
+local options=("-d:Delete a title from ${TITLE_FILE}" "-t:Temporary set a title without saving into ${TITLE_FILE}")
+local titles=(${(f)"$(cat ${TITLE_FILE} 2>/dev/null)"})
+local path_components=(${(f)"$(pwd | tr '/' '\n')"})
+
+_describe 'Options' options
+
+_description files expl 'Saved Titles'
+compadd "$expl[@]" - "$titles[@]"
+
+_description dir expl 'Path Components'
+compadd "$expl[@]" - "$path_components[@]"

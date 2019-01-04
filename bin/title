@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 
-TITLE_FILE="$HOME/.titles"
+
+if [ -z "${TITLE_FILE}" ]; then
+    TITLE_FILE="$HOME/.titles"
+fi
+
 
 set_title () {
     if [ -n "$TMUX" ]; then
@@ -22,21 +26,24 @@ set_title () {
     esac
 }
 
+
 save_title () {
-    local ZSH_TITLE="$*"
+    ZSH_TITLE="$*"
     if [ -z "$ZSH_TITLE" ]; then
         true
-    elif grep "^$ZSH_TITLE$" $TITLE_FILE >/dev/null 2>&1; then
+    elif grep "^$ZSH_TITLE$" "$TITLE_FILE" >/dev/null 2>&1; then
         true
     else
-        echo "$ZSH_TITLE" >>$TITLE_FILE 2>/dev/null
+        echo "$ZSH_TITLE" >>"$TITLE_FILE" 2>/dev/null
     fi
 }
 
+
 delete_title () {
-    local tmp_titles=$(cat $TITLE_FILE | grep -v "^$*$")
+    tmp_titles="$(cat $TITLE_FILE | grep -v "^$*$")"
     echo $tmp_titles >$TITLE_FILE 2>/dev/null
 }
+
 
 print_usage () {
     echo 'Usage:'
@@ -48,10 +55,11 @@ print_usage () {
     echo "  -t    set title to <title-str> but not saving it to $HOME/.titles"
 }
 
+
 title () {
     case "$1" in
         -d) shift
-            delete_title $@
+            delete_title "$@"
             return
             ;;
         -h) print_usage
@@ -59,8 +67,11 @@ title () {
             ;;
         -t) shift ;;
         -*) shift ;;
-        *)  save_title $@
+        *)  save_title "$@"
     esac
 
-    set_title $@
+    set_title "$@"
 }
+
+
+title "$@"
