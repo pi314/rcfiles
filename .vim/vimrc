@@ -73,6 +73,7 @@ set showmode
 set showcmd
 
 
+set incsearch
 set hlsearch
 set colorcolumn=80  " put a vertical line on column 80
 
