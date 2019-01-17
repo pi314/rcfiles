@@ -31,6 +31,7 @@ Plug 'breuckelen/vim-resize'
 Plug 'junegunn/vader.vim'
 Plug 'johngrib/vim-game-code-break'
 Plug 'pi314/sudoku-solver.vim'
+Plug 'pi314/logos.vim'
 
 if !empty(glob('~/.vimrc-plugins.local'))
     source ~/.vimrc-plugins.local
