@@ -77,7 +77,6 @@ else
     }
 fi
 
-vim_mode_str="${black}[zsh]${end}"
 date_str="${cyan}%D{%m/%d}${end}"
 time_str="${cyan}%D{%H:%M}${end}"   # %D{...} man strftime
 uname_str="${yellow}%n${end}"
