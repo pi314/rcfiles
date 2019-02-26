@@ -1,52 +1,108 @@
-#!/usr/bin/env sh
+#!/usr/bin/env python3
 
-video2gif () {
-    if [ $# -lt 2 ]; then
-        echo 'Usage:'
-        echo "    $0 option=value video gif"
-        echo ""
-        echo "Options:"
-        echo "    width"
-        echo "    height"
-        return 1
-    fi
+import re
+import sys
+import subprocess as sub
 
-    width="-1"
-    height="-1"
+from os.path import basename, splitext
+from urllib.parse import urlparse
 
-    while true; do
-        case "$1" in
-            width=*)
-                width="$(echo "$1" | cut -d= -f 2)"
-                shift
-                ;;
-            height=*)
-                height="$(echo "$1" | cut -d= -f 2)"
-                shift
-                ;;
-            *)
-                break
-        esac
-    done
 
-    if [ "${width}:${height}" = "-1:-1" ]; then
-        filters=""
-    else
-        filters="scale=${width}:${height}:flags=lanczos"
-    fi
+if sys.version_info.major < 3:
+    print('Need Python3')
+    exit(1)
 
-    if [ -z "${filters}" ]; then
-        phase1_filter="palettegen"
-        phase2_filter="paletteuse"
-    else
-        phase1_filter="${filters},palettegen"
-        phase2_filter="${filters} [x]; [x][1:v] paletteuse"
-    fi
 
-    ffmpeg -i "$1" -vf "${phase1_filter}" "$2.palette.png"
-    if [ $? -eq 0 ]; then
-        ffmpeg -i "$1" -i "$2.palette.png" -filter_complex "${phase2_filter}" "$2"
-    fi
-}
+def usage_and_exit():
+    print('Usage:')
+    print('    {} option=value video gif'.format(basename(sys.argv[0])))
+    print('')
+    print('Options:')
+    print('    width')
+    print('    height')
+    exit(1)
 
-video2gif "$@"
+
+def run_and_exit_on_fail(*cmd, capture_output=False):
+    kwargs = {
+        'stdout': sys.stdout,
+        'stderr': sys.stderr,
+    }
+    if capture_output:
+        kwargs['stdout'] = PIPE
+        kwargs['stderr'] = PIPE
+
+    p = sub.run(cmd, **kwargs)
+    if p.returncode:
+        exit(p.returncode)
+
+    return p
+
+
+def parse_args():
+    video_url = None
+    video = None
+    gif = None
+    width = None
+    height = None
+
+    for i in sys.argv[1:]:
+        if i.startswith('width='):
+            width = int(i[6:])
+
+        elif i.startswith('height='):
+            height = int(i[7:])
+
+        elif video is None:
+            video = i
+
+        elif gif is None:
+            gif = i
+
+    if video is None:
+        usage_and_exit()
+
+    if re.match(r'https?://', video):
+        video_url = video
+        video = basename(urlparse(video_url).path)
+
+    if gif is None:
+        gif = splitext(video)[0] + '.gif'
+
+    return {
+            'video_url': video_url,
+            'video': video,
+            'gif': gif,
+            'width': width,
+            'height': height,
+    }
+
+
+def main():
+    args = parse_args()
+
+    video = args['video']
+    video_url = args['video_url']
+    gif = args['gif']
+    width = args['width']
+    height = args['height']
+
+    palette = gif + '.palette.png'
+
+    if width and height:
+        ffmpeg_filters = "scale={}:{}:flags=lanczos".format(width, height)
+        phase1_filter = ffmpeg_filters + ",palettegen"
+        phase2_filter = ffmpeg_filters + " [x]; [x][1:v] paletteuse"
+    else:
+        phase1_filter = "palettegen"
+        phase2_filter = "paletteuse"
+
+    if video_url:
+        run_and_exit_on_fail('aria2c', video_url, '--out', video)
+
+    run_and_exit_on_fail('ffmpeg', '-i', video, '-vf', phase1_filter, palette)
+    run_and_exit_on_fail('ffmpeg', '-i', video, '-i', palette, '-filter_complex', phase2_filter, gif)
+
+
+if __name__ == '__main__':
+    main()
