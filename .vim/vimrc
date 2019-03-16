@@ -146,10 +146,10 @@ set pastetoggle=<leader>p
 
 " move moving between long wrapped lines
 " must use nnoremap = no recursive map
-nnoremap k gk
-nnoremap j gj
-vnoremap k gk
-vnoremap j gj
+" nnoremap k gk
+" nnoremap j gj
+" vnoremap k gk
+" vnoremap j gj
 
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
