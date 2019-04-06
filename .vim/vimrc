@@ -154,12 +154,12 @@ set pastetoggle=<leader>p
 nnoremap th :tabp<CR>
 nnoremap tl :tabn<CR>
 nnoremap tt :tabe<SPACE>
-if exists('*tabpagenr')
-    nnoremap tp :execute "tabmove" (tabpagenr()-2)<CR>
-    nnoremap tn :execute "tabmove" (tabpagenr()+1)<CR>
-else
+if exists(':tabm')
     nnoremap tp :tabm -1<CR>
     nnoremap tn :tabm +1<CR>
+else
+    nnoremap tp :execute "tabmove" (tabpagenr()-2)<CR>
+    nnoremap tn :execute "tabmove" (tabpagenr()+1)<CR>
 endif
 nnoremap t! :tabn 1<CR>
 nnoremap t@ :tabn 2<CR>
