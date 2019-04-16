@@ -63,6 +63,10 @@ if has("win32")
     set guifont=MingLiU:h14:cANSI
 endif
 
+if has("gui_macvim") && has("gui_running")
+    set guifont=Menlo:h18
+endif
+
 set fileformat=unix
 
 set ambiwidth=single
@@ -77,6 +81,8 @@ set showcmd
 set incsearch
 set hlsearch
 set colorcolumn=80  " put a vertical line on column 80
+
+let macvim_skip_colorscheme = 1
 
 colorscheme pi314
 
@@ -348,6 +354,7 @@ let g:todo_select_checkbox = '<C-k>'
 let g:NERDTreeMapOpenInTab='tt'
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
+let g:nerdtree_tabs_open_on_gui_startup = 0
 
 let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
 let g:ime_plugins = ['builtin_boshiamy', 'builtin_kana', 'zhuyin', 'pinyin', 'builtin_chewing', 'builtin_unicode']
