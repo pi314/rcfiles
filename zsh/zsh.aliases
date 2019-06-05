@@ -5,6 +5,7 @@ else
 fi
 alias l='ls -l'
 alias la='l -a'
+alias lh='l -h'
 
 alias grep='grep --color=auto'
 
