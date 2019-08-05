@@ -13,10 +13,6 @@ PY = 2 if (sys.version_info.major < 3) else 3
 color_code_rpattern = re.compile(r'(m(?:[\d;]+)?\[' + '\033)')
 
 
-def cwidth(c):
-    return 1 + (east_asian_width(c) in 'WF')
-
-
 class StringSlice(object):
     def __init__(self, s, l):
         self.s = s
@@ -31,7 +27,7 @@ def cut(width, line):
 
     for i in range(len(line)):
         c = line[i]
-        c_width = cwidth(c)
+        c_width = 1 + (east_asian_width(c) in 'WF')
 
         if color_escape:
             if c in '0123456789;[':
