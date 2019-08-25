@@ -243,6 +243,8 @@ nnoremap ,s :call <SID>new_scratch_buffer()<CR>
 " Handy shortcut to trim trailing spaces
 nnoremap <silent> ,t :%s/\v\s+$//e<CR>
 vnoremap <silent> ,t :s/\v\s+$//e<CR>
+nnoremap ,w :set wrap! <bar> set wrap?<CR>
+nnoremap ,i :set ignorecase! <bar> set ignorecase?<CR>
 
 
 function! s:MoveCursorLeftSoftTab ()
@@ -333,8 +335,6 @@ function! s:highlight_pane ()
     let &colorcolumn=join(range(1, winwidth(0)), ',')
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
-
-nnoremap ,w :set wrap!<CR>
 " -----------------------------------------------------------------------------
 " Mappings
 " =============================================================================
@@ -351,15 +351,15 @@ let g:todo_next_checkbox = '<C-c>'
 let g:todo_select_checkbox = '<C-k>'
 
 " change nerdtree arrows
-let g:NERDTreeMapOpenInTab='tt'
+let g:NERDTreeMapOpenInTab = 'tt'
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
 let g:nerdtree_tabs_open_on_gui_startup = 0
 
-let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
 let g:ime_plugins = ['builtin_boshiamy', 'builtin_kana', 'zhuyin', 'pinyin', 'builtin_chewing', 'builtin_unicode']
 let g:ime_plugins += ['emoji', 'runes', 'wide', 'braille']
-let g:ime_select_mode_style = 'interactive'
+" let g:ime_select_mode_style = 'window'
+let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
 let g:ime_phonetic_custom_table = '~/.phonetic.table'
 let g:ime_enable_ime_buffer = 1
 
