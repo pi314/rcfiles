@@ -96,3 +96,5 @@ bindkey "\e[B"      down-line-or-search
 bindkey '^R'        history-incremental-search-backward
 
 bindkey "\e[3~"     delete-char
+
+KEYTIMEOUT=1
