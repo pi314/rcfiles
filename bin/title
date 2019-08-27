@@ -1,77 +1,94 @@
-#!/usr/bin/env sh
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import argparse
+import sys
+
+from os import environ
+from os.path import expanduser
 
 
-if [ -z "${TITLE_FILE}" ]; then
-    TITLE_FILE="$HOME/.titles"
-fi
+TITLE_FILE = expanduser('~/.titles')
 
 
-set_title () {
-    if [ -n "$TMUX" ]; then
-        printf '\ePtmux;\e\e]0;'"$*"'\007\e\\'
+def set_title (title):
+    if 'TMUX' not in environ:
+        print('\033Ptmux;\033\033]0;' + title + '\007\033\\', end='')
         return
-    fi
 
-    if [ "$TERM" = "screen" ]; then
-        printf "\033k$*\033\\"
+    if environ.get('TERM', None) == 'screen':
+        print('\033k' + title + '\033\\', end='')
         return
-    fi
 
-    case $ZSH_KERNEL_TYPE in
-        "CYGWIN")
-            printf "\033]0;$*\007"
-            ;;
-        *)
-            printf "\033]1;$*\a"
-    esac
-}
+    print('\033[1;'+ title +'\a', end='')
 
 
-save_title () {
-    ZSH_TITLE="$*"
-    if [ -z "$ZSH_TITLE" ]; then
-        true
-    elif grep "^$ZSH_TITLE$" "$TITLE_FILE" >/dev/null 2>&1; then
-        true
-    else
-        echo "$ZSH_TITLE" >>"$TITLE_FILE" 2>/dev/null
-    fi
-}
+def store_title(title):
+    if not title:
+        return
+
+    try:
+        with open(TITLE_FILE) as f:
+            lines = [line.strip() for line in f]
+    except FileNotFoundError:
+        pass
+
+    if title in lines:
+        return
+
+    with open(TITLE_FILE, 'a') as f:
+        f.write(title + '\n')
 
 
-delete_title () {
-    tmp_titles="$(cat $TITLE_FILE | grep -v "^$*$")"
-    echo $tmp_titles >$TITLE_FILE 2>/dev/null
-}
+def delete_title(title):
+    if not title:
+        return
+
+    titles = []
+    with open(TITLE_FILE) as f:
+        titles = [line.strip() for line in f]
+
+    with open(TITLE_FILE, 'w') as f:
+        for t in titles:
+            if t != title:
+                f.write(t + '\n')
 
 
-print_usage () {
-    echo 'Usage:'
-    echo '  title -h'
-    echo '  title [-d|-t] <title-str>'
-    echo ''
-    echo 'Optional arguments:'
-    echo "  -d    delete <title-str> from $HOME/.titles"
-    echo "  -t    set title to <title-str> but not saving it to $HOME/.titles"
-}
+def show_title():
+    with open(TITLE_FILE) as f:
+        for line in f:
+            print(line.strip())
 
 
-title () {
-    case "$1" in
-        -d) shift
-            delete_title "$@"
-            return
-            ;;
-        -h) print_usage
-            return
-            ;;
-        -t) shift ;;
-        -*) shift ;;
-        *)  save_title "$@"
-    esac
+def main():
+    parser = argparse.ArgumentParser(description='Change title of the terminal', prog='')
+    parser.add_argument('-d', '--delele', action='store_true', dest='delete',
+            help='Remove a title from stored file')
+    parser.add_argument('-t', '--temp', action='store_true', dest='temp',
+            help='Temporary set title without storing it')
+    parser.add_argument('-l', '--list', action='store_true', dest='show',
+            help='Show available titles')
 
-    set_title "$@"
-}
+    parser.add_argument('title', nargs='*')
+
+    args = parser.parse_args()
+
+    args.title = ' '.join(args.title).strip()
+
+    if args.show:
+        show_title()
+        return
+
+    if args.delete:
+        delete_title(args.title)
+        return
+
+    set_title(args.title)
+
+    if not args.temp:
+        store_title(args.title)
 
 
-title "$@"
+if __name__ == '__main__':
+    main()
