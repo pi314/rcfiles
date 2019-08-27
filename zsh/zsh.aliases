@@ -1,9 +1,9 @@
 if [[ $LS_VERSION == "BSD" ]]; then
-    alias ls='LC_ALL=C /usr/bin/env ls -GFv'
+    ls='LC_ALL=C /usr/bin/env ls -GFv'
 else
-    alias ls='ls --color=auto'
+    ls='ls --color=auto'
 fi
-alias l='ls -l'
+alias l="$ls -l"
 alias la='l -a'
 alias lh='l -h'
 
