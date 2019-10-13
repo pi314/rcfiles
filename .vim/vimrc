@@ -367,6 +367,8 @@ let g:rst_style = 0
 
 let g:rst_title_style = 'shorten'
 let g:rst_title_length_step = 0
+
+let g:ime_braille_keys = '3ed4rfcv'
 " -----------------------------------------------------------------------------
 " Plugin settings
 " =============================================================================
