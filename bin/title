@@ -13,16 +13,17 @@ TITLE_FILE = expanduser('~/.titles')
 
 
 def set_title (title):
-    if 'TMUX' not in environ:
-        print('\033Ptmux;\033\033]0;' + title + '\007\033\\', end='')
-        return
-
-    if environ.get('TERM', None) == 'screen':
-        print('\033k' + title + '\033\\', end='')
-        return
-
-    print('\033[1;'+ title +'\a', end='')
-
+    # iTerm2
+    print('\033];'+ title +'\a', end='')
+    # if 'TMUX' not in environ:
+    #     print('\033Ptmux;\033\033]0;' + title + '\007\033\\', end='')
+    #     return
+    #
+    # if environ.get('TERM', None) == 'screen':
+    #     print('\033k' + title + '\033\\', end='')
+    #     return
+    #
+    # print('\033[1;'+ title +'\a', end='')
 
 def store_title(title):
     if not title:
