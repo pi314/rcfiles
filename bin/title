@@ -5,16 +5,20 @@ from __future__ import print_function
 import argparse
 import sys
 
-from os import environ
-from os.path import expanduser
+from os import environ, getcwd
+from os.path import expanduser, basename
 
 
 TITLE_FILE = expanduser('~/.titles')
 
 
 def set_title (title):
+    if title == '.':
+        title = basename(getcwd())
+
     # iTerm2
     print('\033];'+ title +'\a', end='')
+
     # if 'TMUX' not in environ:
     #     print('\033Ptmux;\033\033]0;' + title + '\007\033\\', end='')
     #     return
@@ -71,7 +75,7 @@ def main():
     parser.add_argument('-l', '--list', action='store_true', dest='show',
             help='Show available titles')
 
-    parser.add_argument('title', nargs='*')
+    parser.add_argument('title', nargs='*', help='Title string, a single dot expands to current dir name')
 
     args = parser.parse_args()
 
