@@ -3,9 +3,10 @@ if [[ $LS_VERSION == "BSD" ]]; then
 else
     ls='ls --color=auto'
 fi
+alias l1="$ls -1"
 alias l="$ls -l"
-alias la='l -a'
-alias lh='l -h'
+alias la="$ls -al"
+alias lh="$ls -lh"
 
 alias grep='grep --color=auto'
 
