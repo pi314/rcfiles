@@ -243,8 +243,39 @@ nnoremap ,s :call <SID>new_scratch_buffer()<CR>
 " Handy shortcut to trim trailing spaces
 nnoremap <silent> ,t :%s/\v\s+$//e<CR>
 vnoremap <silent> ,t :s/\v\s+$//e<CR>
-nnoremap ,w :set wrap! <bar> set wrap?<CR>
 nnoremap ,i :set ignorecase! <bar> set ignorecase?<CR>
+
+" =============================================================================
+" Handy function to toggle all window in all tags
+" -----------------------------------------------------------------------------
+function! s:toggle_opt (option, scope)
+    if a:scope == 'all'
+        let l:my_tab_id = tabpagenr()
+        exec 'let l:option_value = &'. a:option
+        if !(l:option_value)
+            exec 'tabdo windo set '. a:option
+        else
+            exec 'tabdo windo set no'. a:option
+        endif
+
+        exec 'tabn '. l:my_tab_id
+
+    else
+        exec 'set '. a:option .'!'
+
+    endif
+
+    exec 'set '. a:option .'?'
+endfunction
+" -----------------------------------------------------------------------------
+nnoremap ,C     :call <SID>toggle_opt('cursorline', 'all')<CR>
+nnoremap ,c     :call <SID>toggle_opt('cursorline', 1)<CR>
+
+nnoremap ,w     :call <SID>toggle_opt('wrap', 1)<CR>
+nnoremap ,W     :call <SID>toggle_opt('wrap', 'all')<CR>
+" =============================================================================
+
+nnoremap ,v :tabedit ~/.vim/vimrc<CR>
 
 
 function! s:MoveCursorLeftSoftTab ()
