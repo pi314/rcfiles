@@ -1,8 +1,45 @@
 #!/usr/bin/env sh
 
-if [ "$1" = '' ]; then
-    echo 'Filename ಠ_ಠ?'
+usage () {
+    echo 'Usage:'
+    echo '    fd                        same as "fd a"'
+    echo '    fd a/f/d                  iterate all/files/directories'
+    echo '    fd a/f/d <name>           grep <name>'
+    echo '    fd a/f/d <name> <path>    find under <path>'
+    echo '    fd <name>                 same as "fd a <name>" if <name> is not a/f/d'
+    echo '    fd <name> <path>          same as "fd a <name> <path>" if <name> is not a/f/d'
     exit 1
+}
+
+type='a'
+name=''
+path='.'
+
+if [ $# -gt 0 ]; then
+    if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+        usage
+    fi
+
+    if [ "$1" = 'a' ] || [ "$1" = 'f' ] || [ "$1" = 'd' ]; then
+        type="$1"
+        shift
+    fi
 fi
 
-find . -name "$1"
+if [ $# -gt 0 ]; then
+    name="$1"
+    shift
+fi
+
+if [ $# -gt 0 ]; then
+    path="$1"
+    shift
+fi
+
+if [ "${type}" = 'a' ]; then
+    type_arg=''
+else
+    type_arg="-type ${type}"
+fi
+
+find "${path}" ${type_arg} | grep --color=auto "$name"
