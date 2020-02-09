@@ -30,7 +30,6 @@ Plug 'rust-lang/rust.vim'
 Plug 'breuckelen/vim-resize'
 Plug 'junegunn/vader.vim'
 Plug 'johngrib/vim-game-code-break'
-Plug 'pi314/sudoku-solver.vim'
 Plug 'pi314/logos.vim'
 Plug 'Yggdroot/indentLine'
 
@@ -279,6 +278,7 @@ nnoremap ,i     :call <SID>toggle_opt('ignorecase', 1)<CR>
 
 nnoremap ,v :tabedit ~/.vim/vimrc<CR>
 nnoremap ,<bar> :IndentLinesToggle<CR>
+nnoremap ,* *N
 
 
 function! s:MoveCursorLeftSoftTab ()
