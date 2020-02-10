@@ -2,12 +2,12 @@
 
 usage () {
     echo 'Usage:'
-    echo '    fd                        same as "fd a"'
-    echo '    fd a/f/d                  iterate all/files/directories'
-    echo '    fd a/f/d <name>           grep <name>'
-    echo '    fd a/f/d <name> <path>    find under <path>'
-    echo '    fd <name>                 same as "fd a <name>" if <name> is not a/f/d'
-    echo '    fd <name> <path>          same as "fd a <name> <path>" if <name> is not a/f/d'
+    echo '    fd                        iterate all files and directories'
+    echo '    fd -f/-d                  iterate either files or directories'
+    echo '    fd -f/-d <name>           grep <name>'
+    echo '    fd -f/-d <name> <path>    find under <path>'
+    echo '    fd <name>                 iterate all files and directories, and grep <name>'
+    echo '    fd <name> <path>          find under <path>'
     exit 1
 }
 
@@ -20,8 +20,13 @@ if [ $# -gt 0 ]; then
         usage
     fi
 
-    if [ "$1" = 'a' ] || [ "$1" = 'f' ] || [ "$1" = 'd' ]; then
-        type="$1"
+    if [ "$1" = '-f' ]; then
+        type='f'
+        shift
+    fi
+
+    if [ "$1" = '-d' ]; then
+        type='d'
         shift
     fi
 fi
@@ -36,10 +41,11 @@ if [ $# -gt 0 ]; then
     shift
 fi
 
-if [ "${type}" = 'a' ]; then
-    type_arg=''
-else
-    type_arg="-type ${type}"
+set --
+set -- "$@" "${path}"
+
+if [ "${type}" != 'a' ]; then
+    set -- "$@" '-type' "${type}"
 fi
 
-find "${path}" ${type_arg} | grep --color=auto "$name"
+find "$@" | grep --color=auto "$name"
