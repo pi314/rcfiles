@@ -19,7 +19,7 @@ else
 fi
 
 if [ $# -ge 1 ]; then
-    grep ${opt1} "${pattern}" ${opt2} | gp "${@}"
+    grep "${opt1}" "${pattern}" "${opt2}" | gp "${@}"
 else
-    grep ${opt1} "${pattern}" ${opt2}
+    grep "${opt1}" "${pattern}" "${opt2}"
 fi

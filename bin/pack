@@ -68,7 +68,7 @@ pack () {
     esac
 
     # need "zip", check if "zip" installed
-    if [ "$format" = 'zip' ] && ! command -v zip 2>&1 >/dev/null; then
+    if [ "$format" = 'zip' ] && ! command -v zip >/dev/null 2>&1; then
         echo 'The "zip" utility is not installed'
         unset afile
         unset format
@@ -77,7 +77,7 @@ pack () {
     fi
 
     # need "7z", check if "7z" installed
-    if [ "$format" = '7z' ] && ! command -v 7z 2>&1 >/dev/null; then
+    if [ "$format" = '7z' ] && ! command -v 7z >/dev/null 2>&1; then
         echo 'The "7z" utility is not installed'
         unset afile
         unset format
@@ -96,31 +96,33 @@ pack () {
 
     # packing
     case "$format" in
-        tar)        tar cvf  "$afile" --exclude "$afile" $@ ;;
-        tar.bz2)    tar jcvf "$afile" --exclude "$afile" $@ ;;
-        tar.gz)     tar zcvf "$afile" --exclude "$afile" $@ ;;
+        tar)        tar cvf  "$afile" --exclude "$afile" "$@" ;;
+        tar.bz2)    tar jcvf "$afile" --exclude "$afile" "$@" ;;
+        tar.gz)     tar zcvf "$afile" --exclude "$afile" "$@" ;;
         tar.xz)
             if [ "$afile" = '-' ]; then
-                tar cvf - --exclude "$afile" $@ | xz --stdout
+                tar cvf - --exclude "$afile" "$@" | xz --stdout
             else
                 # ``xz`` automatically removes the original file
-                tar cvf "$afile" --exclude "$afile" $@ && xz "$afile"
+                tar cvf "$afile" --exclude "$afile" "$@" && xz "$afile"
             fi
             ;;
         tar.Z)
             # ``compress`` automatically removes the original file
             if [ "$afile" = '-' ]; then
-                tar cvf "$afile" $@ | compress -c -
+                tar cvf "$afile" "$@" | compress -c -
             else
-                tar cvf "$afile" --exclude "$afile" $@ && compress -f "$afile"
+                tar cvf "$afile" --exclude "$afile" "$@" && compress -f "$afile"
             fi
             ;;
-        zip)    zip --symlinks --exclude "$afile" -r "$afile" $@ ;;
-        7z)     7z a "$afile" $@ ;;
+        zip)    zip --symlinks --exclude "$afile" -r "$afile" "$@" ;;
+        7z)     7z a "$afile" "$@" ;;
     esac
 
+    ret_code=$?
+
     # check if packing succeed
-    if [ "$?" -ne 0 ]; then
+    if [ ${ret_code} -ne 0 ]; then
         unset afile
         unset format
         unset clean
@@ -128,10 +130,10 @@ pack () {
     fi
 
     # clean up source files if clean bit is set
-    if [ "$?" -eq 0 ] && [ "$clean" -eq 1 ]; then
+    if [ ${ret_code} -eq 0 ] && [ "$clean" -eq 1 ]; then
         while [ $# -gt 0 ]; do
             if [ "$1" != "$afile" ]; then
-                rm -r $1
+                rm -r "$1"
             fi
             shift
         done
@@ -159,25 +161,25 @@ pack_help () {
     echo '  *.tar.bz, *.tar.bz2, *.tbz, *.tbz2'
     echo '  *.tar.gz, *.tgz'
 
-    if command -v xz 2>&1 >/dev/null; then
+    if command -v xz >/dev/null 2>&1; then
         echo '  *.tar.xz'
     else
         echo '  *.tar.xz    - (not available: xz)'
     fi
 
-    if command -v compress 2>&1 >/dev/null; then
+    if command -v compress >/dev/null 2>&1; then
         echo '  *.tar.Z'
     else
         echo '  *.tar.Z     - (not available: compress)'
     fi
 
-    if command -v zip 2>&1 >/dev/null; then
+    if command -v zip >/dev/null 2>&1; then
         echo '  *.zip'
     else
         echo '  *.zip       - (not available: zip)'
     fi
 
-    if command -v 7z 2>&1 >/dev/null; then
+    if command -v 7z >/dev/null 2>&1; then
         echo '  *.7z'
     else
         echo '  *.7z        - (not available: zip)'
