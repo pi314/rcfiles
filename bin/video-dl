@@ -2,6 +2,8 @@
 
 import argparse
 import os
+import re
+import shutil
 import subprocess as sub
 import sys
 
@@ -52,25 +54,30 @@ def join_url_with_item(base_url, item):
 
 def menu(title, items, default=None):
     if len(items) == 1:
-        return items[0]
+        return items[0].url
 
     if default is None:
         default = len(items)
 
     while True:
         for idx, item in enumerate(items):
-            print('{}) {} {}'.format(idx + 1, item, '(exists)' if exists(basename(item)) else ''))
+            print('{idx}) (size={size}) {url} {exists}'.format(
+                idx=idx + 1,
+                size=item.size,
+                url=item.url,
+                exists='(exists)' if exists(basename(item.url)) else '',
+                ))
 
         choose = input('Choose (default={})> '.format(default))
 
         if choose.strip() == '':
-            return items[default - 1]
+            return items[default - 1].url
 
         try:
             if (int(choose) - 1) not in range(len(items)):
                 continue
 
-            return items[int(choose) - 1]
+            return items[int(choose) - 1].url
         except (ValueError, IndexError):
             pass
 
@@ -80,22 +87,28 @@ def parse_m3u8(m3u8_fname):
 
     ret.sublists = []
     ret.videos = []
+    m3u8_resolution = ''
     with open(m3u8_fname) as f:
         lines = list(map(str.strip, f.readlines()))
 
-        # Over design:
-        # Parse m3u8 item with a queue and a tiny state machine
-        # If complex format needs to be check, this might help
+        # Parse m3u8 item with a queue and an implicit tiny state machine
         while len(lines):
             item = lines.pop(0)
 
             if item.startswith('#'):
-                pass
+                m = re.match(r'^#EXT-X-STREAM-INF:.*RESOLUTION=(\d+x\d+).*$', item)
+                if m:
+                    m3u8_resolution = m.group(1)
+                    item = lines.pop(0)
 
-            elif item.endswith('.m3u8'):
-                ret.sublists.append(item)
+            if item.split('?')[0].endswith('.m3u8'):
+                obj = SimpleNamespace()
+                obj.url = item
+                obj.size = m3u8_resolution
+                ret.sublists.append(obj)
+                m3u8_resolution = ''
 
-            elif item.endswith('.ts'):
+            if item.split('?')[0].endswith('.ts'):
                 ret.videos.append(item)
 
             else:
@@ -147,7 +160,7 @@ def download_url(url):
         print('[download_url] Renamed as', fname + '.backup')
         os.rename(fname, fname + '.backup')
 
-    run_and_exit_on_fail('aria2c', url.geturl())
+    run_and_exit_on_fail('aria2c', '--continue', url.geturl())
 
     if fname.endswith('mp4'):
         return fname
@@ -201,7 +214,13 @@ def main():
 
     if exists(tmp_dir):
         print('[tmp_dir]', tmp_dir, 'already exists')
-        exit(1)
+        delete_tmp_dir = input('Delete? [Y/n] ').strip()
+        if delete_tmp_dir in ('Y', ''):
+            shutil.rmtree(tmp_dir)
+
+        else:
+            print('[tmp_dir] Renamed as', tmp_dir + '.backup')
+            os.rename(tmp_dir, tmp_dir + '.backup')
 
     os.mkdir(tmp_dir)
 
