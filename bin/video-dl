@@ -101,6 +101,9 @@ def parse_m3u8(m3u8_fname):
                     m3u8_resolution = m.group(1)
                     item = lines.pop(0)
 
+                else:
+                    continue
+
             if item.split('?')[0].endswith('.m3u8'):
                 obj = SimpleNamespace()
                 obj.url = item
@@ -108,7 +111,7 @@ def parse_m3u8(m3u8_fname):
                 ret.sublists.append(obj)
                 m3u8_resolution = ''
 
-            if item.split('?')[0].endswith('.ts'):
+            elif item.split('?')[0].endswith('.ts'):
                 ret.videos.append(item)
 
             else:
@@ -135,6 +138,7 @@ def download_and_merge_ts_videos(videos):
 
     # Merge .ts files
     vfname = basename(os.getcwd()) + '.ts'
+    print('[download_and_merge_ts_videos] Merging into', vfname)
     with open(vfname, 'wb') as output_v:
         for v in local_vlist:
             with open(v, 'rb') as sub_v:
@@ -214,7 +218,7 @@ def main():
 
     if exists(tmp_dir):
         print('[tmp_dir]', tmp_dir, 'already exists')
-        delete_tmp_dir = input('Delete? [Y/n] ').strip()
+        delete_tmp_dir = input('Delete? [Y/n] ').strip().lower()
         if delete_tmp_dir in ('Y', ''):
             shutil.rmtree(tmp_dir)
 
