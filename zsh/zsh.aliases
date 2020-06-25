@@ -5,9 +5,18 @@ else
 fi
 alias l1="$ls -1"
 alias ls1="$ls -1"
-alias l="$ls -l"
-alias la="$ls -al"
-alias lh="$ls -lh"
+
+if command -v exa >/dev/null 2>&1 ; then
+    lh="exa --long --header --binary --classify --time-style long-iso"
+    alias l="$lh"
+    alias lh="$lh"
+    alias la="$lh -a"
+    alias lt="$lh --tree"
+else
+    alias l="$ls -l"
+    alias la="$ls -al"
+    alias lh="$ls -lh"
+fi
 
 alias grep='grep --color=auto'
 

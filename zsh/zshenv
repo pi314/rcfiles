@@ -56,17 +56,6 @@ case $ZSH_KERNEL_TYPE in
         fi
 esac
 
-#Let "ls has pretty color
-# a     black
-# b     red
-# c     green
-# d     brown
-# e     blue
-# f     magenta
-# g     cyan
-# h     light grey
-# x     default foreground or background
-
 # 1.   directory
 # 2.   symbolic link
 # 3.   socket
@@ -78,20 +67,48 @@ esac
 # 9.   executable with setgid bit set
 # 10.  directory writable to others, with sticky bit
 # 11.  directory writable to others, without sticky
-#      bit
-#                1 2 3 4 5 6 7 8 9 1011
+#
+# a     black
+# b     red
+# c     green
+# d     brown
+# e     blue
+# f     magenta
+# g     cyan
+# h     light grey
+# x     default foreground or background
+#
+################ 1 2 3 4 5 6 7 8 9 1011
 export LSCOLORS='GxFxcxDxCxegedabagacad'
 
 # di: directories
 # ln: symbolic links
-# pi:
+# pi: Named pipe
+# ex: Executable file
 export LS_COLORS='di=01;36:ln=01;35:pi=01;33:ex=01;32'
+
+# ur/uw/ux/ue: User rwx bit
+# gr/gw/gx: Group rwx bit
+# tr/tw/tx: Others rwx bit
+# xa: Extended attribute marker
+# sn/sb: Size number/unit
+# uu: A user that’s you
+# un: A user that’s not
+# da: Timestamp
+export EXA_COLORS=\
+'ur=0;32:uw=0;32:ux=0;32:ue=0;32:'\
+'gr=0;32:gw=0;32:gx=0;32:'\
+'tr=0;32:tw=0;32:tx=0;32:'\
+'xa=0;32:'\
+'sn=1;35:sb=0;35:'\
+'uu=0;33:un=0;37:'\
+'da=1;34:'\
 
 export EDITOR=vim
 export PAGER=less
 export LESS=-r
 
-encode=zh_TW.UTF-8
+encode=en_US.UTF-8
 export LANG=$encode
 export LANGUAGE=$encode
 export LC_CTYPE=$encode
