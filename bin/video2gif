@@ -4,6 +4,7 @@ import os
 import re
 import subprocess as sub
 import sys
+import shutil
 
 from os.path import basename, splitext, join
 from urllib.parse import urlparse
@@ -19,8 +20,9 @@ def usage_and_exit():
     print('    {} option=value video gif'.format(basename(sys.argv[0])))
     print('')
     print('Options:')
-    print('    width')
-    print('    height')
+    print('    width=<width>')
+    print('    height=<height>')
+    print('    debug=1')
     exit(1)
 
 
@@ -46,6 +48,7 @@ def parse_args():
     gif = None
     width = None
     height = None
+    debug = False
 
     for i in sys.argv[1:]:
         if i.startswith('width='):
@@ -53,6 +56,9 @@ def parse_args():
 
         elif i.startswith('height='):
             height = int(i[7:])
+
+        elif i == 'debug=1':
+            debug = True
 
         elif video is None:
             video = i
@@ -76,6 +82,7 @@ def parse_args():
             'gif': gif,
             'width': width,
             'height': height,
+            'debug': debug,
     }
 
 
@@ -110,6 +117,9 @@ def main():
 
     run_and_exit_on_fail('ffmpeg', '-i', video, '-vf', phase1_filter, palette)
     run_and_exit_on_fail('ffmpeg', '-i', video, '-i', palette, '-filter_complex', phase2_filter, gif)
+
+    if not args['debug']:
+        shutil.rmtree(tmp_dir)
 
 
 if __name__ == '__main__':
