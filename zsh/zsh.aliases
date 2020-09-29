@@ -1,18 +1,19 @@
-if [[ $LS_VERSION == "BSD" ]]; then
-    ls='LC_ALL=C /usr/bin/env ls -GFv'
-else
-    ls='ls --color=auto'
-fi
-alias l1="$ls -1"
-alias ls1="$ls -1"
 
 if command -v exa >/dev/null 2>&1 ; then
     lh="exa --long --header --binary --classify --time-style long-iso"
+    alias l1='exa -1'
     alias l="$lh"
     alias lh="$lh"
     alias la="$lh -a"
     alias lt="$lh --tree"
 else
+    if [[ $LS_VERSION == "BSD" ]]; then
+        ls='LC_ALL=C /usr/bin/env ls -GFv'
+    else
+        ls='ls --color=auto'
+    fi
+    alias l1="$ls -1"
+    alias ls1="$ls -1"
     alias l="$ls -l"
     alias la="$ls -al"
     alias lh="$ls -lh"
