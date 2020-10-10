@@ -1,0 +1,341 @@
+#!/usr/bin/env python
+
+# TODO: confirm before actually running
+
+# TODO: good explaination here
+
+# TODO: retry certain URLs with different formats (like imgur.com and twitter)
+
+# TODO: more powerful stdin processor that can modify tasks on the fly
+
+### stdin processor: distinguish commands and URLs/filenames
+###   commands: fmt{idx}, start
+###
+### task generator: some URL may be ambiguous and need trial-n-error
+###   e.g. https://imgur.com/(.*) without file name ext
+###   task generator may need to guess jpg->png->other fmt
+###
+### task sorter: check if there are file name collisions
+###   can it be avoided just by sorting tasks
+###
+### task executor (mv / wget / aria2c / ...)
+
+import argparse
+import os
+import re
+import shutil
+import subprocess as sub
+import sys
+
+from datetime import datetime
+from os import getcwd
+from os.path import splitext, basename, exists, isfile
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, ParseResult
+
+
+def print_err(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+if sys.version_info.major < 3:
+    print_err('Need Python3')
+    exit(1)
+
+
+class ParsedURL:
+    def __init__(self, url):
+        o = urlparse(url)
+        self.url = url
+        self.scheme = o.scheme
+        self.netloc = o.netloc
+        self.path = o.path
+        self.params = o.params
+        self.query = parse_qs(o.query)
+        self.hostname = o.hostname
+
+        # unpack 1-item list
+        for key, value in self.query.items():
+            if type(value) is list and len(value) == 1:
+                self.query[key] = value[0]
+
+    def unparse(self):
+        return urlunparse(ParseResult(
+                scheme=self.scheme,
+                netloc=self.netloc,
+                path=self.path,
+                params=self.params,
+                query=urlencode(self.query, doseq=True),
+                fragment='',
+                ))
+
+    def __repr__(self):
+        return 'ParsedURL(scheme={scheme}, netloc={netloc}, path={path}, params={params}, query={query})'.format(
+                scheme=repr(self.scheme),
+                netloc=repr(self.netloc),
+                path=repr(self.path),
+                params=repr(self.params),
+                query=repr(self.query),
+                )
+
+
+class Config:
+    def __init__(self, args):
+        self.start = args.start
+        self.width = args.width
+        self.fmt = ' '.join(args.fmt)
+        self.ext = args.ext
+        self.downloader = args.downloader
+
+    def __repr__(self):
+        return 'Config(start={start}, width={width}, ext={ext}, fmt={fmt})'.format(
+                start=self.start,
+                width=self.width,
+                ext=hl_str(self.ext),
+                fmt=hl_str(self.fmt),
+                )
+
+class Task:
+    def __init__(self, url, index):
+        self.url = url
+        self.index = index
+        self.ourl = url
+
+        o = ParsedURL(url)
+
+        if o.path.endswith(('.jpg', '.png')):
+            self.ext = splitext(o.path)[1]
+
+        elif o.query.get('format') in ('jpg', 'png'):
+            self.ext = '.' + o.query['format']
+
+        else:
+            self.ext = None
+
+        self.fname = basename(o.path)
+        self.oname = splitext(basename(o.path))[0]
+
+        self.isfile = exists(url) and isfile(url)
+
+    def __repr__(self):
+        return 'Task(index={index}, ext={ext}, fname={fname}, url={url})'.format(
+                index=self.index,
+                ext=hl_str(self.ext),
+                fname=hl_str(self.fname),
+                url=hl_str(self.url),
+                )
+
+
+def hl_str(s, color='magenta'):
+    color_code = {
+            'black': 0,
+            'red': 1,
+            'green': 2,
+            'yellow': 3,
+            'blue': 4,
+            'magenta': 5,
+            'cyan': 6,
+            'white': 7,
+            }
+    return '[\033[1;3{c}m{s}\033[m]'.format(c=color_code.get(color), s=s)
+
+
+def gen_task_list(config, url_list):
+    task_list = []
+
+    index = config.start
+    ext_buckets = {}
+    for u in url_list:
+        t = Task(u, index)
+        task_list.append(t)
+        index += 1
+
+        if t.ext not in ext_buckets:
+            ext_buckets[t.ext] = 1
+        else:
+            ext_buckets[t.ext] += 1
+
+    config.width = max(config.width, len(str(index)))
+
+    if None in ext_buckets:
+        del ext_buckets[None]
+
+    if not ext_buckets:
+        if config.ext == '*':
+            print_err('Cannot infer file ext')
+            exit(1)
+        else:
+            most_ext = config.ext
+    else:
+        most_ext = max(ext_buckets.items(), key=lambda x: x[1])[0]
+
+    if not config.fmt:
+        fmt = '{oname}' if len(task_list) == 1 else '{idx}'
+
+    else:
+        fmt = config.fmt
+        if len(task_list) > 1:
+            if '{idx}' not in fmt:
+                fmt += ('' if fmt.endswith(('-', ' ')) else ' - ') + '{idx}'
+
+    fmt = fmt.replace('{idx}', '{idx:0>{width}}')
+
+    if not fmt.endswith('{ext}'):
+        fmt += '{ext}'
+
+    rightnow = datetime.now()
+
+    for t in task_list:
+        if t.ext is None:
+            t.ext = '.' + most_ext.lstrip('.')
+
+        t.fname = fmt.format(
+                idx=t.index, width=config.width, oname=t.oname, ext=t.ext,
+                here=basename(getcwd()),
+                today='{t.year:>04}{t.month:>02}{t.day:>02}'.format(t=rightnow),
+                now='{:>02}{:>02}'.format(rightnow.hour, rightnow.minute),
+                )
+
+        o = ParsedURL(t.url)
+        if o.netloc == 'imgur.com':
+            o.netloc = 'i.imgur.com'
+            o.path = o.path + t.ext
+            t.url = o.unparse()
+
+        elif o.netloc == 'pbs.twimg.com' and o.query.get('name') != 'orig':
+            if 'name' in o.query and o.query['name'] != 'orig':
+                o.query['name'] = 'orig'
+                t.url = o.unparse()
+
+    ret = []
+    for t in task_list:
+        if t.url == t.fname:
+            continue
+
+        ret.append(t)
+
+    return ret
+
+
+def sort_task_list(task_list):
+    ret = []
+    remain = task_list
+
+    cont = True
+    while cont:
+        pending = []
+        cont = False
+        for t in remain:
+            ok = False
+            if not exists(t.fname):
+                ok = True
+            elif exists(t.fname) and t.fname in {tt.url for tt in ret}:
+                ok = True
+            else:
+                ok = False
+
+            if ok:
+                ret.append(t)
+                cont = True
+            else:
+                pending.append(t)
+
+        remain = pending
+
+    if len(remain):
+        print_err('Cannot handle some tasks')
+        for t in ret:
+            print_err(hl_str('ok', 'green'), hl_str(t.fname, 'green'), '<=', hl_str(t.url, 'green'))
+
+        for t in remain:
+            print_err(hl_str('no', 'red'), hl_str(t.fname, 'red'), '<=', hl_str(t.url, 'red'))
+
+        exit(1)
+
+    return ret
+
+
+def execute_tasks(config, task_list):
+    for t in task_list:
+        if t.isfile and not exist(t.url):
+            print_err('File not exists')
+            print_err(hl_str(t.fname, 'red'), '<=', hl_str(t.url, 'red'))
+            exit(1)
+
+    for t in task_list:
+        if t.isfile:
+            shutil.move(t.url, t.fname)
+
+    if config.downloader == 'aria2c':
+        aria2c_input = []
+        for t in task_list:
+            if t.url.startswith(('http://', 'https://')):
+                aria2c_input.append(t.url)
+                aria2c_input.append('  out={}'.format(t.fname))
+
+        if aria2c_input:
+            try:
+                sub.run(['aria2c', '-i', '-'], input='\n'.join(aria2c_input).encode('utf8'))
+            except sub.CalledProcessError:
+                exit(1)
+
+    else:
+        print_err('Unsupported downloader:', config.downloader)
+
+
+def main():
+    parser = argparse.ArgumentParser(description='img-dl')
+    parser.add_argument('-s', '--start', dest='start', default=1, type=int, help='Starting index number')
+    parser.add_argument('-w', '--width', dest='width', default=1, type=int, help='The width for index number')
+    parser.add_argument('-e', '--ext', dest='ext', default='*', type=str, help='Preferred img format')
+    parser.add_argument('-d', '--downloader', default='aria2c', choices=['aria2c'], type=str)
+    parser.add_argument('-n', '--dry', default=False, action='store_true', help='dry run')
+    parser.add_argument('fmt', nargs='*')
+
+    args = parser.parse_args()
+
+    config = Config(args)
+    if sys.stdin.isatty():
+        print(config)
+
+    url_list = []
+    for line in sys.stdin:
+        line = line.rstrip('\n')
+
+        if line.startswith(':fmt='):
+            config.fmt = line[4:]
+            if sys.stdin.isatty():
+                print(config)
+
+        elif line.startswith(':start='):
+            config.start = int(line[6:])
+            if sys.stdin.isatty():
+                print(config)
+
+        elif line.startswith(':width='):
+            config.width = int(line[6:])
+            if sys.stdin.isatty():
+                print(config)
+
+        elif line == ':dump':
+            print('>', '=' * 80)
+            print('>', config)
+            for i in url_list:
+                print('>', i)
+            print('>', '=' * 80)
+
+        else:
+            url_list.append(line)
+
+    if not sys.stdin.isatty():
+        print(config)
+
+    task_list = gen_task_list(config, url_list)
+    task_list = sort_task_list(task_list)
+
+    for t in task_list:
+        print(hl_str(t.fname), '<=', hl_str(t.url))
+
+    if not args.dry:
+        execute_tasks(config, task_list)
+
+main()
