@@ -16,6 +16,15 @@
 ###     Each line could be a URL, a file name, or a command.
 ###     Commands start with a colon, see :help for a complete list.
 ###
+###     For :fmt, the following directives are supported:
+###         {idx}: index number, will be 0-padding to match the largest one
+###         {oname}: original "file name" (i.e. the basename of URL path)
+###         {here}: basename of current working directory
+###         {today}: Current date in format YYYYMMDD
+###         {now}: Current time in format hhmm
+###
+###         For example, :fmt={here}-{today}-{idx} may produce imgdl-20201011-01.jpg
+###
 ### 3.  Task generation:
 ###     Transforms URL list to file name list.
 ###
