@@ -1,24 +1,36 @@
 #!/usr/bin/env python
 
-# TODO: confirm before actually running
-
-# TODO: good explaination here
+### img-dl is a small script that takes stdin as a (image) URL list,
+### download all of them and rename the files in the way the arguments describe.
+###
+### Basic usage:
+### $ img-dl
+### (and then paste your URLs to stdin)
+###
+### Program flow
+###
+### 1.  Command line arguments parsing.
+###     See -h for a complete list.
+###
+### 2.  Stdin parsing:
+###     Each line could be a URL, a file name, or a command.
+###     Commands start with a colon, see :help for a complete list.
+###
+### 3.  Task generation:
+###     Transforms URL list to file name list.
+###
+### 4.  Task sorting:
+###     Sorts tasks to prevent files got overridden.
+###
+### 5.  User confirm:
+###     Summarize the tasks and ask if you want to execute them.
+###     You can choose 's' to store the inputs and edit them afterwards.
+###
+### 6.  Task execution:
+###     Actually rename/download the files.
+###
 
 # TODO: retry certain URLs with different formats (like imgur.com and twitter)
-
-# TODO: more powerful stdin processor that can modify tasks on the fly
-
-### stdin processor: distinguish commands and URLs/filenames
-###   commands: fmt{idx}, start
-###
-### task generator: some URL may be ambiguous and need trial-n-error
-###   e.g. https://imgur.com/(.*) without file name ext
-###   task generator may need to guess jpg->png->other fmt
-###
-### task sorter: check if there are file name collisions
-###   can it be avoided just by sorting tasks
-###
-### task executor (mv / wget / aria2c / ...)
 
 import argparse
 import os
@@ -40,6 +52,9 @@ def print_err(*args, **kwargs):
 if sys.version_info.major < 3:
     print_err('Need Python3')
     exit(1)
+
+
+rightnow = datetime.now()
 
 
 class ParsedURL:
@@ -85,14 +100,18 @@ class Config:
         self.fmt = ' '.join(args.fmt)
         self.ext = args.ext
         self.downloader = args.downloader
+        self.session_file = args.load
 
     def __repr__(self):
-        return 'Config(start={start}, width={width}, ext={ext}, fmt={fmt})'.format(
+        return 'Config(start={start}, width={width}, ext={ext}, downloader={downloader}, fmt={fmt}, session={session})'.format(
                 start=self.start,
                 width=self.width,
                 ext=hl_str(self.ext),
+                downloader=self.downloader,
                 fmt=hl_str(self.fmt),
+                session=self.session_file,
                 )
+
 
 class Task:
     def __init__(self, url, index):
@@ -125,7 +144,7 @@ class Task:
                 )
 
 
-def hl_str(s, color='magenta'):
+def color_str(s, color):
     color_code = {
             'black': 0,
             'red': 1,
@@ -136,7 +155,50 @@ def hl_str(s, color='magenta'):
             'cyan': 6,
             'white': 7,
             }
-    return '[\033[1;3{c}m{s}\033[m]'.format(c=color_code.get(color), s=s)
+    return '\033[1;3{c}m{s}\033[m'.format(c=color_code.get(color), s=s)
+
+
+def hl_str(s, color='magenta'):
+    return '[' + color_str(s, color) + ']'
+
+
+def parse_line(config, url_list, line):
+    if line.startswith(':fmt='):
+        config.fmt = line[len(':fmt='):]
+
+    elif line.startswith(':start='):
+        config.start = int(line[len(':start='):])
+
+    elif line.startswith(':width='):
+        config.width = int(line[len(':width='):])
+
+    elif line.startswith(':ext='):
+        config.ext = line[len(':ext='):]
+
+    elif line == ':help':
+        print_err('#', '=' * 80)
+        print_err('#', ':fmt={}'.format(config.fmt))
+        print_err('#', ':start={}'.format(config.start))
+        print_err('#', ':width={}'.format(config.width))
+        print_err('#', ':ext={}'.format(config.ext))
+        print_err('#', ':session={}'.format(config.session_file))
+        if len(url_list):
+            print_err('#', '-' * 80)
+            for i in url_list:
+                print_err('#', i)
+        print_err('#', '=' * 80)
+
+    elif line.startswith(':session='):
+        give_session_id = line[len(':session='):]
+        if give_session_id:
+            config.session_file = give_session_id
+
+    elif line.startswith(':'):
+        print_err('Unknown command:', line)
+        exit(1)
+
+    else:
+        url_list.append(line)
 
 
 def gen_task_list(config, url_list):
@@ -159,11 +221,9 @@ def gen_task_list(config, url_list):
     if None in ext_buckets:
         del ext_buckets[None]
 
+    most_ext = None
     if not ext_buckets:
-        if config.ext == '*':
-            print_err('Cannot infer file ext')
-            exit(1)
-        else:
+        if config.ext != '*':
             most_ext = config.ext
     else:
         most_ext = max(ext_buckets.items(), key=lambda x: x[1])[0]
@@ -181,8 +241,6 @@ def gen_task_list(config, url_list):
 
     if not fmt.endswith('{ext}'):
         fmt += '{ext}'
-
-    rightnow = datetime.now()
 
     for t in task_list:
         if t.ext is None:
@@ -254,6 +312,30 @@ def sort_task_list(task_list):
     return ret
 
 
+def prompt_confirm():
+    while True:
+        with open('/dev/tty') as tty:
+            stdin_backup, sys.stdin = sys.stdin, tty
+            try:
+                ret = input('Continue? {}Yes{}no{}store{} '.format(
+                    color_str('[', 'black'),
+                    color_str('/', 'black'),
+                    color_str('/', 'black'),
+                    color_str(']', 'black'),
+                    )).strip().lower()
+                if not ret:
+                    ret = 'Y'
+            except (EOFError, KeyboardInterrupt):
+                ret = 'n'
+
+            sys.stdin = stdin_backup
+
+        if ret in 'Yyns':
+            break
+
+    return ret
+
+
 def execute_tasks(config, task_list):
     for t in task_list:
         if t.isfile and not exist(t.url):
@@ -282,12 +364,33 @@ def execute_tasks(config, task_list):
         print_err('Unsupported downloader:', config.downloader)
 
 
+def store_session(config, task_list):
+    if not config.session_file:
+        config.session_file = 'img-dl.session.{t.year:>04}{t.month:>02}{t.day:>02}.{t.hour:>02}{t.minute:>02}'.format(
+                t=rightnow)
+
+    with open(config.session_file, 'wb') as f:
+        def writeline(line):
+            f.write((line + '\n').encode('utf-8'))
+
+        writeline(':start={}'.format(config.start))
+        writeline(':width={}'.format(config.width))
+        writeline(':ext={}'.format(config.ext))
+        writeline(':fmt={}'.format(config.fmt))
+
+        for t in task_list:
+            writeline(t.url)
+
+    print_err('Session file:', hl_str(config.session_file))
+
+
 def main():
     parser = argparse.ArgumentParser(description='img-dl')
     parser.add_argument('-s', '--start', dest='start', default=1, type=int, help='Starting index number')
     parser.add_argument('-w', '--width', dest='width', default=1, type=int, help='The width for index number')
     parser.add_argument('-e', '--ext', dest='ext', default='*', type=str, help='Preferred img format')
     parser.add_argument('-d', '--downloader', default='aria2c', choices=['aria2c'], type=str)
+    parser.add_argument('-l', '--load', default=None, type=str, help='session file')
     parser.add_argument('-n', '--dry', default=False, action='store_true', help='dry run')
     parser.add_argument('fmt', nargs='*')
 
@@ -297,45 +400,53 @@ def main():
     if sys.stdin.isatty():
         print(config)
 
-    url_list = []
-    for line in sys.stdin:
-        line = line.rstrip('\n')
+    try:
+        url_list = []
+        if config.session_file:
+            if not exists(config.session_file):
+                print_err('Session file not exist:', hl_str(config.session_file))
+                exit(1)
 
-        if line.startswith(':fmt='):
-            config.fmt = line[4:]
-            if sys.stdin.isatty():
-                print(config)
-
-        elif line.startswith(':start='):
-            config.start = int(line[6:])
-            if sys.stdin.isatty():
-                print(config)
-
-        elif line.startswith(':width='):
-            config.width = int(line[6:])
-            if sys.stdin.isatty():
-                print(config)
-
-        elif line == ':dump':
-            print('>', '=' * 80)
-            print('>', config)
-            for i in url_list:
-                print('>', i)
-            print('>', '=' * 80)
+            with open(config.session_file, 'rb') as f:
+                for line in f.readlines():
+                    line = line.decode('utf-8').rstrip('\n')
+                    if line.startswith(':session'):
+                        continue
+                    parse_line(config, url_list, line)
 
         else:
-            url_list.append(line)
+            for line in sys.stdin:
+                parse_line(config, url_list, line.rstrip('\n'))
+                if line.startswith(':'):
+                    print_err(config)
 
-    if not sys.stdin.isatty():
-        print(config)
+        if not sys.stdin.isatty():
+            print_err(config)
 
-    task_list = gen_task_list(config, url_list)
-    task_list = sort_task_list(task_list)
+        task_list = gen_task_list(config, url_list)
+        task_list = sort_task_list(task_list)
 
-    for t in task_list:
-        print(hl_str(t.fname), '<=', hl_str(t.url))
+        for t in task_list:
+            print(hl_str(t.fname), '<=', hl_str(t.url))
 
-    if not args.dry:
-        execute_tasks(config, task_list)
+        if not task_list:
+            exit(0)
+
+        confirm = prompt_confirm()
+
+        if confirm == 'n':
+            exit(1)
+
+        elif args.dry:
+            exit(0)
+
+        elif confirm in 'Yy':
+            execute_tasks(config, task_list)
+
+        elif confirm == 's':
+            store_session(config, task_list)
+
+    except KeyboardInterrupt:
+        print_err('KeyboardInterrupt')
 
 main()
