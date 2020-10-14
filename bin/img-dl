@@ -397,7 +397,7 @@ def execute_tasks(config, task_list):
         for t in task_list:
             if t.url.startswith(('http://', 'https://')):
                 aria2c_input.append(t.url)
-                aria2c_input.append('  out={}'.format(t.fname))
+                aria2c_input.append('  out={}'.format(t.path))
 
         if aria2c_input:
             try:
