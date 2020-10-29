@@ -2,10 +2,10 @@
 
 if [ -t 0 ]; then
     if [ $# -eq 0 ]; then
-        vim '+set buftype=nofile'
+        exec vim '+set buftype=nofile'
     else
-        vim '+set tabpagemax=1000' '+tab ball' "$@"
+        exec vim '+set tabpagemax=1000' '+tab ball' "$@"
     fi
 else
-    vim '+set buftype=nofile' -
+    exec vim '+set buftype=nofile' -
 fi
