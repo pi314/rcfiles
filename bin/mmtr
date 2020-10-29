@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+if ! command -v mtr >&/dev/null 2>&1; then
+    echo "mtr not found"
+    exit 1
+fi
+
+if [ -n "$1" ]; then
+    host="$1"
+else
+    host="8.8.8.8"
+fi
+
+while ! mtr "$host"; do sleep 1; done
