@@ -32,6 +32,8 @@ done
 
 export PATH
 
+export GOPATH="$HOME/bin/gopath"
+
 export ZSH_KERNEL_TYPE="$(/usr/bin/env uname -s)"
 
 case $ZSH_KERNEL_TYPE in
