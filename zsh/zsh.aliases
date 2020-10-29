@@ -54,3 +54,7 @@ fi
 alias tor-ssh='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
 
 alias wtf='where'
+
+if command -v bat >/dev/null 2>&1 ; then
+    alias cat='bat'
+fi
