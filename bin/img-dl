@@ -196,6 +196,11 @@ def hl_str(s, color='magenta'):
 
 
 def parse_line(config, url_list, line):
+    line = line.rstrip('\n')
+
+    if not line:
+        return
+
     if line.startswith(':fmt='):
         config.fmt = line[len(':fmt='):]
 
@@ -461,6 +466,7 @@ def main():
             with open(config.session_file, 'rb') as f:
                 for line in f.readlines():
                     line = line.decode('utf-8').rstrip('\n')
+
                     if line.startswith(':session'):
                         continue
 
@@ -468,7 +474,8 @@ def main():
 
         else:
             for line in sys.stdin:
-                parse_line(config, url_list, line.rstrip('\n'))
+                line = line.rstrip('\n')
+                parse_line(config, url_list, line)
                 if line.startswith(':') and sys.stdin.isatty():
                     print_err(config)
 
