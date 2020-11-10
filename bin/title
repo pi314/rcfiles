@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-from __future__ import print_function
+#!/usr/bin/env python3
 
 import argparse
 import sys
@@ -37,7 +35,7 @@ def store_title(title):
         with open(TITLE_FILE) as f:
             lines = [line.strip() for line in f]
     except FileNotFoundError:
-        pass
+        lines = []
 
     if title in lines:
         return
