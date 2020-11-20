@@ -450,7 +450,7 @@ def main():
     parser.add_argument('-d', '--downloader', choices=['aria2c'], type=str)
     parser.add_argument('-l', '--load', type=str, help='session file')
     parser.add_argument('-n', '--dry', default=False, action='store_true', help='dry run')
-    parser.add_argument('fmt', nargs='*')
+    parser.add_argument('fmt', nargs='*', help='Format. Available directives: {idx}, {oname}, {here}, {today}, {now}')
 
     args = parser.parse_args()
 
