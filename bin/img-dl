@@ -145,10 +145,10 @@ class Task:
 
         o = ParsedURL(url)
 
-        if o.path.endswith(('.jpg', '.png', '.jpeg')):
+        if o.path.lower().endswith(('.jpg', '.png', '.jpeg')):
             self.ext = splitext(o.path)[1]
 
-        elif o.query.get('format') in ('jpg', 'png', 'jpeg'):
+        elif o.query.get('format', '').lower() in ('jpg', 'png', 'jpeg'):
             self.ext = '.' + o.query['format']
 
         else:
@@ -282,7 +282,7 @@ def gen_task_list(config, url_list):
         fmt = config.fmt
 
         if len(task_list) > 1:
-            if '{idx}' not in fmt:
+            if '{idx}' not in fmt and '{oname}' not in fmt:
                 fmt += ('' if fmt.endswith(('-', ' ')) else ' - ') + '{idx}'
 
     fmt = fmt.replace('{idx}', '{idx:0>{width}}')
