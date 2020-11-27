@@ -145,10 +145,10 @@ class Task:
 
         o = ParsedURL(url)
 
-        if o.path.lower().endswith(('.jpg', '.png', '.jpeg')):
+        if o.path.lower().endswith(('.jpg', '.png', '.jpeg', '.gif')):
             self.ext = splitext(o.path)[1]
 
-        elif o.query.get('format', '').lower() in ('jpg', 'png', 'jpeg'):
+        elif o.query.get('format', '').lower() in ('jpg', 'png', 'jpeg', 'gif'):
             self.ext = '.' + o.query['format']
 
         else:
