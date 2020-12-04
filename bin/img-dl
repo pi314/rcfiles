@@ -53,6 +53,8 @@ from os import getcwd
 from os.path import splitext, basename, dirname, exists, isfile, expanduser, join, relpath
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, ParseResult
 
+img_exts = ('.jpg', '.png', '.jpeg', '.gif')
+
 
 def print_err(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -145,10 +147,10 @@ class Task:
 
         o = ParsedURL(url)
 
-        if o.path.lower().endswith(('.jpg', '.png', '.jpeg', '.gif')):
+        if o.path.lower().endswith(img_exts):
             self.ext = splitext(o.path)[1]
 
-        elif o.query.get('format', '').lower() in ('jpg', 'png', 'jpeg', 'gif'):
+        elif '.' + o.query.get('format', '').lower() in img_exts:
             self.ext = '.' + o.query['format']
 
         else:
@@ -286,6 +288,9 @@ def gen_task_list(config, url_list):
                 fmt += ('' if fmt.endswith(('-', ' ')) else ' - ') + '{idx}'
 
     fmt = fmt.replace('{idx}', '{idx:0>{width}}')
+
+    if fmt.endswith(img_exts):
+        fmt = splitext(fmt)[0]
 
     if not fmt.endswith('{ext}'):
         fmt += '{ext}'
