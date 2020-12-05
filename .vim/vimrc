@@ -283,36 +283,36 @@ nnoremap ,* *N
 
 function! s:MoveCursorLeftSoftTab ()
     let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
-    let l:idx = col('.') - 1
+    let l:pos = col('.') - 1
 
     let l:ts = &softtabstop
     if l:ts == 0
         let l:ts = &tabstop
     endif
 
-    if l:left_indent < l:idx
+    if l:left_indent < l:pos
         return "\<Left>"
-    elseif l:idx % l:ts == 0
+    elseif l:pos % l:ts == 0
         return repeat("\<Left>", l:ts)
     else
-        return repeat("\<Left>", l:idx % l:ts)
+        return repeat("\<Left>", l:pos % l:ts)
     endif
 endfunction
 function! s:MoveCursorRightSoftTab ()
     let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
-    let l:idx = col('.') - 1
+    let l:pos = col('.') - 1
 
     let l:ts = &softtabstop
     if l:ts == 0
         let l:ts = &tabstop
     endif
 
-    if l:left_indent <= l:idx
+    if l:left_indent <= l:pos
         return "\<Right>"
-    elseif l:idx % l:ts == 0
-        return repeat("\<Right>", l:ts)
+    elseif (l:left_indent - l:pos) <= l:ts
+        return repeat("\<Right>", (l:left_indent - l:pos))
     else
-        return repeat("\<Right>", l:ts - (l:idx % l:ts))
+        return repeat("\<Right>", l:ts - (l:pos % l:ts))
     endif
 endfunction
 inoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
