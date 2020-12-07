@@ -47,6 +47,7 @@ import re
 import shutil
 import subprocess as sub
 import sys
+import readline
 
 from datetime import datetime
 from os import getcwd
@@ -370,7 +371,6 @@ def sort_task_list(task_list):
 def prompt_confirm():
     while True:
         with open('/dev/tty') as tty:
-            stdin_backup, sys.stdin = sys.stdin, tty
             try:
                 ret = input('Continue? {}Yes{}no{}store{} '.format(
                     color_str('[', 'black'),
@@ -382,8 +382,6 @@ def prompt_confirm():
                     ret = 'Y'
             except (EOFError, KeyboardInterrupt):
                 ret = 'n'
-
-            sys.stdin = stdin_backup
 
         if ret in 'Yyns':
             break
@@ -478,11 +476,14 @@ def main():
                     parse_line(config, url_list, line)
 
         else:
-            for line in sys.stdin:
-                line = line.rstrip('\n')
-                parse_line(config, url_list, line)
-                if line.startswith(':') and sys.stdin.isatty():
-                    print_err(config)
+            try:
+                while True:
+                    line = input().rstrip('\n')
+                    parse_line(config, url_list, line)
+                    if line.startswith(':') and sys.stdin.isatty():
+                        print_err(config)
+            except EOFError:
+                pass
 
         config.post_config()
 
