@@ -370,18 +370,17 @@ def sort_task_list(task_list):
 
 def prompt_confirm():
     while True:
-        with open('/dev/tty') as tty:
-            try:
-                ret = input('Continue? {}Yes{}no{}store{} '.format(
-                    color_str('[', 'black'),
-                    color_str('/', 'black'),
-                    color_str('/', 'black'),
-                    color_str(']', 'black'),
-                    )).strip().lower()
-                if not ret:
-                    ret = 'Y'
-            except (EOFError, KeyboardInterrupt):
-                ret = 'n'
+        try:
+            ret = input('Continue? {}Yes{}no{}store{} '.format(
+                color_str('[', 'black'),
+                color_str('/', 'black'),
+                color_str('/', 'black'),
+                color_str(']', 'black'),
+                )).strip().lower()
+            if not ret:
+                ret = 'Y'
+        except (EOFError, KeyboardInterrupt):
+            ret = 'n'
 
         if ret in 'Yyns':
             break
@@ -453,6 +452,7 @@ def main():
     parser.add_argument('-d', '--downloader', choices=['aria2c'], type=str)
     parser.add_argument('-l', '--load', type=str, help='session file')
     parser.add_argument('-n', '--dry', default=False, action='store_true', help='dry run')
+    parser.add_argument('-y', '--yes', default=False, action='store_true', help='Yes')
     parser.add_argument('fmt', nargs='*', help='Format. Available directives: {idx}, {oname}, {here}, {today}, {now}')
 
     args = parser.parse_args()
@@ -499,7 +499,7 @@ def main():
         if not task_list:
             exit(0)
 
-        confirm = prompt_confirm()
+        confirm = 'Y' if args.yes else prompt_confirm()
 
         if confirm in 'Nn':
             exit(1)
