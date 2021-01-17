@@ -18,9 +18,9 @@ install_screen () { #{{{
     install .screenrc
 } #}}}
 
-install_tmux () { #{{{
-    install .tmux.conf
-} #}}}
+# install_tmux () { #{{{
+#     install .tmux.conf
+# } #}}}
 
 install_git () { #{{{
     install .gitconfig
