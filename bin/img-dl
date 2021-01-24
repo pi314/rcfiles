@@ -483,7 +483,7 @@ def main():
                     if line.startswith(':') and sys.stdin.isatty():
                         print_err(config)
             except EOFError:
-                pass
+                print()
 
         config.post_config()
 
