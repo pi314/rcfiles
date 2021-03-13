@@ -37,7 +37,7 @@ if command -v unrar 2>&1 >/dev/null; then
 fi
 
 local -a options
-options=('-h:Show this help message and exit' '-c:Remove archive file after unpacked')
+options=('-h:Show this help message and exit' '-d:Remove archive file after unpacked')
 _describe 'Options' options
 
 _description files expl 'Compressed files'

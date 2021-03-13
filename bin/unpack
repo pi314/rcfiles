@@ -11,7 +11,7 @@ unpack () {
     fi
 
     # setup 'clean' bit
-    if [ "$1" = '-c' ] || [ "$1" = '--clean' ]; then
+    if [ "$1" = '-d' ] || [ "$1" = '--delete' ]; then
         clean=1
         shift
     else
@@ -175,7 +175,7 @@ unpack () {
 
     # clean up source file if clean bit is set
     if [ ${ret_code} -eq 0 ] && [ "$clean" -eq 1 ]; then
-        rm -r $afile
+        rm -r "$afile"
     fi
 
     unset afile
@@ -188,12 +188,12 @@ unpack () {
 unpack_help () {
     echo 'Usage:'
     echo '  unpack -h'
-    echo '  unpack [-c] archive-file'
+    echo '  unpack [-d] archive-file'
     echo ''
     echo 'Optional arguments:'
     echo ''
     echo '  -h, --help      Show this help message and exit'
-    echo '  -c, --clean     Remove archive file after unpacked'
+    echo '  -d, --delete    Remove archive file after unpacked'
     echo ''
     echo 'Supported formats:'
     echo '  *.tar'

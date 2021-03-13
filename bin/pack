@@ -10,7 +10,7 @@ pack () {
     fi
 
     # setup 'clean' bit
-    if [ "$1" = '-c' ] || [ "$1" = '--clean' ]; then
+    if [ "$1" = '-d' ] || [ "$1" = '--delete' ]; then
         clean=1
         shift
     else
@@ -149,12 +149,12 @@ pack () {
 pack_help () {
     echo 'Usage:'
     echo '  pack -h'
-    echo '  pack [-c] archive-file source-file'
+    echo '  pack [-d] archive-file source-file'
     echo ''
     echo 'Optional arguments:'
     echo ''
     echo '  -h, --help      Show this help message and exit'
-    echo '  -c, --clean     Remove source files after packed'
+    echo '  -d, --delete    Remove source files after packed'
     echo ''
     echo 'Supported formats:'
     echo '  *.tar'
