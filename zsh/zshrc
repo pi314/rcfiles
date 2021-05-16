@@ -97,4 +97,7 @@ bindkey '^R'        history-incremental-search-backward
 
 bindkey "\e[3~"     delete-char
 
+bindkey "^P" up-line-or-search
+bindkey "^N" down-line-or-search
+
 KEYTIMEOUT=1
