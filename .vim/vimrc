@@ -60,7 +60,7 @@ if has("win32")
     "reload menu with UTF-8 encoding
     source $VIMRUNTIME/delmenu.vim
     source $VIMRUNTIME/menu.vim
-    set guifont=MingLiU:h14:cANSI
+    set guifont=Consolas:h14:cANSI
 endif
 
 if has("gui_macvim") && has("gui_running")
@@ -215,6 +215,8 @@ nnoremap gF <C-w>gF
 vnoremap > >gv
 vnoremap < <gv
 
+nnoremap gp `[V`]
+
 
 function! CleanUnusedBuffers ()
     for l:bnr in range(1, bufnr('$'))
@@ -273,7 +275,11 @@ nnoremap ,W     :call <SID>toggle_opt('wrap', 'all')<CR>
 nnoremap ,i     :call <SID>toggle_opt('ignorecase', 1)<CR>
 " =============================================================================
 
-nnoremap ,v :tabedit ~/.vim/vimrc<CR>
+if has("win32")
+    nnoremap ,v :tabedit $HOME/vimfiles/vimrc<CR>
+else
+    nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
+endif
 nnoremap ,<bar> :IndentLinesToggle<CR>
 nnoremap ,* *N
 
