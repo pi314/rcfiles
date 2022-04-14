@@ -1,70 +1,396 @@
+#!/usr/bin/env python3
+
 import xonsh
+
 import os
 import platform
+import shlex
 import subprocess as sub
+import sys
+import unicodedata
 
 from datetime import datetime
-
-from xonsh.environ import git_dirty_working_directory
-
-
-def date_str():
-    now = datetime.now()
-    return '{:02d}:{:02d}'.format(now.month, now.day)
+from prompt_toolkit.key_binding import vi_state
+from shutil import which
 
 
-def time_str():
-    now = datetime.now()
-    return '{:02d}:{:02d}'.format(now.hour, now.minute)
+$VI_MODE = True
+# $UPDATE_PROMPT_ON_KEYPRESS = True
 
 
-def line1():
-    ret = ''
+color = lambda c: lambda s: '{' + c + '}' + str(s) + '{RESET}'
+black = color('INTENSE_BLACK')
+red = color('INTENSE_RED')
+green = color('INTENSE_GREEN')
+yellow = color('INTENSE_YELLOW')
+blue = color('INTENSE_BLUE')
+purple = color('INTENSE_PURPLE')
+cyan = color('INTENSE_CYAN')
+white = color('INTENSE_WHITE')
+dark_black = color('BLACK')
+dark_red = color('RED')
+dark_green = color('GREEN')
+dark_yellow = color('YELLOW')
+dark_blue = color('BLUE')
+dark_purple = color('PURPLE')
+dark_cyan = color('CYAN')
+dark_white = color('WHITE')
 
-    xonsh_env_name = $FORMATTER_DICT['env_name']()
-    if xonsh_env_name:
-        ret += '{INTENSE_BLUE}'
-        ret += '[{}]'.format(xonsh_env_name.strip('()'))
+prompt_xonsh_version = black('[xonsh-{}]'.format(xonsh.__version__, ))
+prompt_py_ver = black('py{}.{}'.format(sys.version_info.major, sys.version_info.minor))
 
 
-    xonsh_curr_branch = $FORMATTER_DICT['curr_branch']()
-    if xonsh_curr_branch:
-        xonsh_branch_color = $FORMATTER_DICT['branch_color']()
-        if 'GREEN' in xonsh_branch_color:
-            if git_dirty_working_directory(include_untracked=True):
-                ret += '{INTENSE_PURPLE}'
+class run:
+    def __init__(self, cmd):
+        if isinstance(cmd, str):
+            cmd = cmd.split()
 
-            else:
-                ret += '{INTENSE_BLUE}'
-
-        elif 'RED' in xonsh_branch_color:
-            ret += '{INTENSE_RED}'
-
+        p = sub.run(cmd, stdout=sub.PIPE, stderr=sub.PIPE)
+        self.returncode = p.returncode
+        stdout = p.stdout.decode('utf8').rstrip()
+        if not stdout:
+            self.stdout = []
         else:
-            ret += '{INTENSE_YELLOW}'
+            self.stdout = stdout.split('\n')
 
-        ret += '({})'.format(xonsh_curr_branch)
-
-    if ret:
-        return ret + '{NO_COLOR}\n'
-
-    return ''
-
-
-$FORMATTER_DICT['xonsh-version'] = 'xonsh-{}'.format(xonsh.__version__)
-$FORMATTER_DICT['date_str'] = date_str
-$FORMATTER_DICT['time_str'] = time_str
-$FORMATTER_DICT['line1'] = line1
+        stderr = p.stderr.decode('utf8').rstrip()
+        if not stderr:
+            self.stderr = []
+        else:
+            self.stderr = stderr.split('\n')
 
 
-$line1 = '{line1}'
-$line2 = '{INTENSE_CYAN}{date_str}{INTENSE_GREEN}[{cwd}]{INTENSE_BLACK}[{xonsh-version}]{NO_COLOR}\n'
-$line3 = '{INTENSE_CYAN}{time_str}{INTENSE_YELLOW}{user}{NO_COLOR}@{INTENSE_WHITE}{hostname}{NO_COLOR}{prompt_end} '
-$PROMPT = $line1 + $line2 + $line3
+# =============================================================================
+# Prompt
+# -----------------------------------------------------------------------------
+
+def lrtn(pos=1):
+    if not __xonsh__.history or not __xonsh__.history[-1].rtn:
+        bad = black
+    else:
+        bad = red
+
+    return bad(['┌', '│', '└'][pos])
 
 
-if platform.system() == 'Windows':
-    aliases['ls'] = 'dir /-C'
-    aliases['l'] = 'dir /-C'
+def prompt_date():
+    now = datetime.now()
+    return dark_cyan('{:02d}/{:02d}'.format(now.month, now.day))
+
+
+def prompt_time():
+    now = datetime.now()
+    return dark_cyan('{:02d}:{:02d}'.format(now.hour, now.minute))
+
+
+def shrinkuser(p):
+    return p.replace(os.path.expanduser('~'), '~')
+
+
+def prompt_cwd():
+    try:
+        cwd = os.getcwd()
+    except FileNotFoundError:
+        cwd = 'FileNotFoundError'
+
+    return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[' + shrinkuser(cwd) + ']')
+
+
+def vi_mode():
+    state = __xonsh__.shell.shell.prompter.app.vi_state
+    mode = state.input_mode
+
+    if mode == vi_state.InputMode.INSERT:
+        return black('[' + prompt_py_ver + ']')
+
+    elif mode == vi_state.InputMode.INSERT_MULTIPLE:
+        ret = 'INSERT_MULTIPLE'
+    elif mode == vi_state.InputMode.NAVIGATION:
+        ret = 'NORMAL'
+    elif mode == vi_state.InputMode.REPLACE:
+        ret = 'REPLACE'
+    else:
+        ret = 'NORMAL'
+
+    return cyan('[' + ret + ']')
+
+
+def prompt_venv():
+    if 'VIRTUAL_ENV' in ${...}:
+        return dark_blue('(' + shrinkuser($VIRTUAL_ENV) + ')')
+
+
+def prompt_git_info():
+    join = os.path.join
+    realpath = os.path.realpath
+    split = os.path.split
+    isdir = os.path.isdir
+    dirname = os.path.dirname
+    basename = os.path.basename
+
+    p = run('git rev-parse --absolute-git-dir')
+    if p.returncode != 0:
+        return
+
+    git_repo_dot_git = p.stdout[0]
+    git_repo_name = basename(dirname(git_repo_dot_git))
+
+    git_branch = None
+    p = run('git rev-parse --abbrev-ref HEAD')
+    if p.returncode == 0:
+        git_branch = p.stdout[0]
+
+    git_status = None
+    p = run('git status --porcelain')
+    if p.returncode == 0:
+        git_status = set(x[:2] for x in p.stdout if x)
+
+    git_stash_count = 0
+    if git_repo_dot_git and os.path.exists(join(git_repo_dot_git, 'refs/stash')):
+        git_stash_count = len(run('git stash list').stdout)
+
+    if git_status is None:
+        git_dirty_color = dark_yellow
+
+    elif not git_status:
+        git_dirty_color = dark_blue
+
+    elif len(git_status) == 1 and '!!' in git_status:
+        git_dirty_color = dark_yellow
+
+    elif len(git_status) == 1 and '??' in git_status:
+        git_dirty_color = dark_purple
+
+    else:
+        git_dirty_color = dark_red
+
+    return dark_red('(' * git_stash_count) + git_dirty_color('(' + str(git_repo_name) + ':' + git_branch + ')')
+
+
+def prompt_jobs():
+    if xonsh.prompt.job.XSH.all_jobs:
+        return dark_blue('jobs:' + str(len(xonsh.prompt.job.XSH.all_jobs)))
+
+
+def prompt_user():
+    return dark_yellow($USER)
+
+
+def prompt_hostname():
+    return dark_white(platform.node())
+
+
+def prompt_full():
+    my_prompt = lrtn(0)
+
+    prompt_first_line = (prompt_venv() or '') + (prompt_git_info() or '') + (prompt_jobs() or '')
+    if prompt_first_line:
+        my_prompt += prompt_first_line + '\n' + lrtn(1)
+
+    my_prompt += prompt_date() + prompt_cwd() + prompt_xonsh_version + prompt_py_ver + '\n'
+    my_prompt += lrtn(2) + prompt_time() + prompt_user() + '@' + prompt_hostname() + ('#' if os.geteuid() == 0 else '@') + ' '
+
+    return my_prompt
+
+
+$PROMPT = prompt_full
+
+
+# =============================================================================
+# Alises
+# -----------------------------------------------------------------------------
 
 aliases['up'] = 'cd ..'
+
+
+if which('exa'):
+    _lh = ['exa', '--long', '--header', '--binary', '--classify', '--time-style', 'long-iso']
+    aliases['lh'] = _lh
+    aliases['l'] = _lh
+    aliases['la'] = _lh + ['-a']
+    aliases['lt'] = _lh + ['--tree']
+    aliases['l1'] = 'exa -1'
+
+
+if which('bat'):
+    aliases['cat'] = 'bat'
+
+
+def _o(args):
+    if not args:
+        ![open .]
+
+    else:
+        ![open @(args)]
+
+aliases['o'] = _o
+
+
+def _mkcd(args):
+    if args and args[0]:
+        ![mkdir @(args[0])]
+        ![cd @(args[0])]
+
+aliases['mkcd'] = _mkcd
+
+
+# =============================================================================
+# Completer
+# -----------------------------------------------------------------------------
+def search_path_candidates(cwd, prefix, filter_func=None):
+    join = os.path.join
+    expanduser = os.path.expanduser
+
+    if not filter_func:
+        filter_func = lambda x: True
+
+    if prefix.startswith('/'):
+        path_nodes = prefix.lstrip('/').split('/')
+        base_candidates = {'/'}
+
+    elif prefix.startswith('~'):
+        path_nodes = prefix.lstrip('~').lstrip('/').split('/')
+        base_candidates = {expanduser('~')}
+
+    else:
+        path_nodes = prefix.split('/')
+        base_candidates = {cwd}
+
+    # print('[nodes]', path_nodes)
+    # print('[cand]', base_candidates)
+
+    for idx, node in enumerate(path_nodes):
+        # if not node:
+        #     continue
+
+        bcs, base_candidates = base_candidates, set()
+        for bc in bcs:
+            if node == '.' and idx != len(path_nodes) - 1:
+                base_candidates.add(bc)
+                continue
+
+            if node == '..':
+                base_candidates.add(join(bc, '..'))
+                continue
+
+            try:
+                normalize = lambda x: unicodedata.normalize('NFD', x)
+                for i in os.listdir(bc):
+                    ok = all((
+                        node.startswith('.') == i.startswith('.'),
+                        filter_func(expanduser(join(bc, i))),
+                        i.startswith(node) or normalize(i).startswith(normalize(node)),
+                        ))
+                    if ok:
+                        base_candidates.add(join(bc, i))
+
+            except PermissionError:
+                pass
+
+        # print('[node]', node)
+        # print('[cand]', base_candidates)
+
+    ret = set()
+    for c in base_candidates:
+
+        p = ''
+        if prefix.startswith('/'):
+            p = c
+
+        elif prefix.startswith('~'):
+            p = shrinkuser(c)
+
+        else:
+            p = (shrinkuser(c)[len(shrinkuser(cwd)):].lstrip('/'))
+
+        p += ('/' if os.path.isdir(p) else '')
+
+        ret.add(p)
+
+    return ret
+
+
+def _my_path_completer_internal(command, filter_func):
+    debug = False
+
+    exists = os.path.exists
+
+    if debug:
+        print(command)
+
+    cwd = os.getcwd()
+
+    prefix = command.prefix
+    if command.prefix and command.prefix[0] in ("'", '"'):
+        prefix = prefix.replace(command.prefix[0], '')
+
+    ret = search_path_candidates(cwd, prefix, filter_func=filter_func)
+
+    if command.prefix.startswith('./'):
+        ret = set('./' + p for p in ret)
+
+    # # Nope
+    # ret = set(p.replace(' ', r'\ ') for p in ret)
+
+    if debug:
+        print(ret)
+
+    if command.arg_index != 0:
+        if not command.opening_quote:
+            ret = set(repr(r) for r in ret)
+
+        elif command.opening_quote and not command.closing_quote:
+            ret = set(r + command.opening_quote for r in ret)
+
+        # elif any([(' ' in p) || ('[' in p) for p in ret]):
+        #     ret = set(repr(r) for r in ret)
+        # ret = set(repr(r) for r in ret)
+
+    if debug:
+        print(ret)
+
+    # if command.opening_quote:
+    #     if not command.closing_quote:
+    #         ret = set(r + command.opening_quote for r in ret)
+    # else:
+    #     ret = set(repr(r) for r in ret)
+
+    return ret
+
+
+@xonsh.completers.tools.contextual_command_completer_for('cd')
+def _my_cd_completer(command):
+    # https://xon.sh/tutorial_completers.html
+    # https://xon.sh/tutorial_completers.html#advanced-completions
+    return _my_path_completer_internal(command, filter_func=os.path.isdir)
+
+
+@xonsh.completers.tools.non_exclusive_completer
+@xonsh.completers.tools.contextual_command_completer
+def _my_path_completer(command):
+    if command.args and command.args[0].value == 'cd':
+        return
+
+    return _my_path_completer_internal(command, filter_func=None)
+
+
+@xonsh.completers.tools.contextual_command_completer
+def _my_last_argument_completer(command):
+    if command.prefix == '!$' and not command.suffix:
+        if __xonsh__.history:
+            return {repr(shlex.split(__xonsh__.history[-1].cmd)[-1])}
+
+
+$FUZZY_PATH_COMPLETION = False
+
+
+![completer remove cd]
+![completer remove path]
+![completer remove environment_vars]
+
+![completer add my_cd _my_cd_completer 'start']
+![completer add my_path _my_path_completer]
+![completer add my_la _my_last_argument_completer]
+
+$XONSH_SHOW_TRACEBACK = True
+# $XONSH_TRACE_COMPLETIONS = True
