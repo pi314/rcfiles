@@ -10,6 +10,7 @@
     co = checkout
     st = status
     d = difftool
+    root = rev-parse --show-toplevel
 
 [push]
     default = current
