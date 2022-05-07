@@ -39,14 +39,21 @@
 ###     Actually rename/download the files.
 ###
 
-# TODO: retry certain URLs with different formats (like imgur.com and twitter)
+# TODO: rewrite
+
+
+import sys
+
+if sys.version_info.major < 3:
+    print_err('Need Python3')
+    exit(1)
 
 import argparse
 import os
 import re
 import shutil
 import subprocess as sub
-import sys
+import tempfile
 import readline
 
 from datetime import datetime
@@ -59,11 +66,6 @@ img_exts = ('.jpg', '.png', '.jpeg', '.gif')
 
 def print_err(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
-
-if sys.version_info.major < 3:
-    print_err('Need Python3')
-    exit(1)
 
 
 rightnow = datetime.now()
@@ -105,7 +107,7 @@ class ParsedURL:
                 )
 
 
-class Config:
+class Options:
     def __init__(self, args):
         self.start = args.start
         self.width = args.width
@@ -113,9 +115,10 @@ class Config:
         self.fmt = ' '.join(args.fmt)
         self.ext = args.ext
         self.downloader = args.downloader
-        self.session_file = args.load
 
-    def post_config(self):
+        self.reset_invalid_values()
+
+    def reset_invalid_values(self):
         self.start = int(self.start) if self.start is not None else 1
 
         self.width = int(self.width) if self.width is not None else 1
@@ -130,7 +133,7 @@ class Config:
             self.folder, self.fmt = os.path.split(self.fmt)
 
     def __repr__(self):
-        return 'Config(start={start}, width={width}, ext={ext}, fmt={fmt}, downloader={downloader}, session={session})'.format(
+        return 'Options(start={start}, width={width}, ext={ext}, fmt={fmt}, downloader={downloader}, session={session})'.format(
                 start=self.start,
                 width=self.width,
                 ext=hl_str(self.ext),
@@ -198,60 +201,10 @@ def hl_str(s, color='magenta'):
     return '[' + color_str(s, color) + ']'
 
 
-def parse_line(config, url_list, line):
-    line = line.rstrip('\n')
-
-    if not line:
-        return
-
-    if line.startswith(':fmt='):
-        config.fmt = line[len(':fmt='):]
-
-    elif line.startswith(':start='):
-        v = line[len(':start='):]
-        if v:
-            config.start = int(v)
-
-    elif line.startswith(':width='):
-        v = line[len(':width='):]
-        if v:
-            config.width = int(v)
-
-    elif line.startswith(':ext='):
-        v = line[len(':ext='):]
-        if v:
-            config.ext = v
-
-    elif line == ':help':
-        print_err('#', '=' * 80)
-        print_err('#', ':fmt={}'.format(config.fmt))
-        print_err('#', ':start={}'.format(config.start))
-        print_err('#', ':width={}'.format(config.width))
-        print_err('#', ':ext={}'.format(config.ext))
-        print_err('#', ':session={}'.format(config.session_file))
-        if len(url_list):
-            print_err('#', '-' * 80)
-            for i in url_list:
-                print_err('#', i)
-        print_err('#', '=' * 80)
-
-    elif line.startswith(':session='):
-        give_session_id = line[len(':session='):]
-        if give_session_id:
-            config.session_file = give_session_id
-
-    elif line.startswith(':'):
-        print_err('Unknown command:', line)
-        exit(1)
-
-    else:
-        url_list.append(line)
-
-
-def gen_task_list(config, url_list):
+def construct_task_list(options, url_list):
     task_list = []
 
-    index = config.start
+    index = options.start
     ext_buckets = {}
     for u in url_list:
         t = Task(u, index)
@@ -263,26 +216,26 @@ def gen_task_list(config, url_list):
         else:
             ext_buckets[t.ext] += 1
 
-    config.width = max(config.width, len(str(index)))
+    options.width = max(options.width, len(str(index)))
 
     if None in ext_buckets:
         del ext_buckets[None]
 
     most_ext = None
     if not ext_buckets:
-        if config.ext != '*':
-            most_ext = config.ext
+        if options.ext != '*':
+            most_ext = options.ext
         else:
             print_err('Cannot infer file ext')
             exit(1)
     else:
         most_ext = max(ext_buckets.items(), key=lambda x: x[1])[0]
 
-    if not config.fmt:
+    if not options.fmt:
         fmt = '{oname}' if len(task_list) == 1 else '{idx}'
 
     else:
-        fmt = config.fmt
+        fmt = options.fmt
 
         if len(task_list) > 1:
             if '{idx}' not in fmt and '{oname}' not in fmt:
@@ -300,9 +253,9 @@ def gen_task_list(config, url_list):
         if t.ext is None:
             t.ext = '.' + most_ext.lstrip('.')
 
-        t.folder = config.folder
+        t.folder = options.folder
         t.fname = fmt.format(
-                idx=t.index, width=config.width, oname=t.oname, ext=t.ext,
+                idx=t.index, width=options.width, oname=t.oname, ext=t.ext,
                 here=basename(getcwd()),
                 today='{t.year:>04}{t.month:>02}{t.day:>02}'.format(t=rightnow),
                 now='{:>02}{:>02}'.format(rightnow.hour, rightnow.minute),
@@ -368,10 +321,18 @@ def sort_task_list(task_list):
     return ret
 
 
+def pause_due_to_error():
+    try:
+        input('Press Enter for editing or Ctrl-C to leave> ')
+    except (EOFError, KeyboardInterrupt) as e:
+        print_err(type(e).__name__)
+        exit(1)
+
+
 def prompt_confirm():
     while True:
         try:
-            ret = input('Continue? {}Yes{}no{}store{} '.format(
+            ret = input('Continue? {}Yes{}no{}vim{} '.format(
                 color_str('[', 'black'),
                 color_str('/', 'black'),
                 color_str('/', 'black'),
@@ -382,13 +343,13 @@ def prompt_confirm():
         except (EOFError, KeyboardInterrupt):
             ret = 'n'
 
-        if ret in 'Yyns':
+        if ret in 'Yynv':
             break
 
     return ret
 
 
-def execute_tasks(config, task_list):
+def execute_tasks(options, task_list):
     for t in task_list:
         if t.isfile and not exists(expanduser(t.url)):
             print_err('File not exists')
@@ -399,7 +360,7 @@ def execute_tasks(config, task_list):
         if t.isfile:
             shutil.move(expanduser(t.url), t.path)
 
-    if config.downloader == 'aria2c':
+    if options.downloader == 'aria2c':
         aria2c_input = []
         for t in task_list:
             if t.url.startswith(('http://', 'https://')):
@@ -407,41 +368,19 @@ def execute_tasks(config, task_list):
                 aria2c_input.append('  out={}'.format(t.path))
 
         if aria2c_input:
-            try:
-                sub.run(['aria2c', '-i', '-'], input='\n'.join(aria2c_input).encode('utf8'))
-            except sub.CalledProcessError:
-                exit(1)
+            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf8', suffix='.img-dl.tmp') as tf:
+                for line in aria2c_input:
+                    tf.write(line + '\n')
+
+                tf.flush()
+
+                try:
+                    sub.call(['aria2c', '-i', tf.name])
+                except sub.CalledProcessError:
+                    exit(1)
 
     else:
-        print_err('Unsupported downloader:', config.downloader)
-
-
-def store_session(config, url_list):
-    if not config.session_file:
-        config.session_file = 'img-dl.session.{year:>04}{month:>02}{day:>02}.{hour:>02}{minute:>02}'.format(
-                year=rightnow.year,
-                month=rightnow.month,
-                day=rightnow.day,
-                hour=rightnow.hour,
-                minute=rightnow.minute,
-                )
-
-    with open(config.session_file, 'wb') as f:
-        def writeline(line):
-            f.write((line + '\n').encode('utf-8'))
-
-        writeline(':start={}'.format(config.start))
-        writeline(':width={}'.format(config.width))
-        writeline(':ext={}'.format(config.ext))
-        if config.folder == '.':
-            writeline(':fmt={}'.format(config.fmt))
-        else:
-            writeline(':fmt={}'.format(join(config.folder, config.fmt)))
-
-        for u in url_list:
-            writeline(u)
-
-    print_err('Session file:', hl_str(config.session_file))
+        print_err('Unsupported downloader:', options.downloader)
 
 
 def main():
@@ -450,70 +389,93 @@ def main():
     parser.add_argument('-w', '--width', dest='width', help='The width for index number')
     parser.add_argument('-e', '--ext', dest='ext', type=str, help='Preferred img format')
     parser.add_argument('-d', '--downloader', choices=['aria2c'], type=str)
-    parser.add_argument('-l', '--load', type=str, help='session file')
     parser.add_argument('-n', '--dry', default=False, action='store_true', help='dry run')
     parser.add_argument('-y', '--yes', default=False, action='store_true', help='Yes')
     parser.add_argument('fmt', nargs='*', help='Format. Available directives: {idx}, {oname}, {here}, {today}, {now}')
 
     args = parser.parse_args()
 
-    config = Config(args)
+    options = Options(args)
 
-    try:
-        url_list = []
-        if config.session_file:
-            if not exists(config.session_file):
-                print_err('Session file not exist:', hl_str(config.session_file))
-                exit(1)
+    lines = []
 
-            with open(config.session_file, 'rb') as f:
-                for line in f.readlines():
-                    line = line.decode('utf-8').rstrip('\n')
+    # Start a vim directly when stdin is a tty
+    if sys.stdin.isatty():
+        confirm = 'v'
 
-                    if line.startswith(':session'):
-                        continue
+    # Or read stdin as initial content
+    else:
+        lines += [line.rstrip() for line in sys.stdin.readlines()]
+        sys.stdin.close()
+        sys.stdin = open('/dev/tty')
+        confirm = None
 
-                    parse_line(config, url_list, line)
+    parse_error = []
 
-        else:
-            try:
-                while True:
-                    line = input().rstrip('\n')
-                    parse_line(config, url_list, line)
-                    if line.startswith(':') and sys.stdin.isatty():
-                        print_err(config)
-            except EOFError:
-                print()
+    while True:
+        if confirm == 'v':
+            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf8', suffix='.img-dl.tmp') as tf:
+                for line in lines:
+                    tf.write(line + '\n')
 
-        config.post_config()
+                tf.flush()
 
-        if (config.session_file) or (not sys.stdin.isatty()):
-            print_err(config)
+                jump_to = '+normal G'
+                if parse_error:
+                    jump_to = '+' + str(parse_error[0])
 
-        task_list = gen_task_list(config, url_list)
+                parse_error = []
+
+                sub.call(['vim', tf.name, jump_to], stdin=open('/dev/tty'))
+
+                with open(tf.name, mode='r', encoding='utf8') as f:
+                    lines = [line.rstrip() for line in f.readlines()]
+
+        # Input parsing
+        any_parse_errors = False
+        for idx, line in enumerate(lines):
+            if line.startswith(('http://', 'https://')):
+                continue
+
+            elif not isfile(line):
+                parse_error = (idx+1, line)
+                print_err('Error at line', idx+1, ':', line)
+                any_parse_errors = True
+
+        if any_parse_errors:
+            pause_due_to_error()
+            continue
+
+        print('=' * 50)
+
+        task_list = construct_task_list(options, lines)
         task_list = sort_task_list(task_list)
 
         for t in task_list:
-            print(hl_str(t.path), '<=', hl_str(t.url))
+            print(hl_str(t.path), '<=', hl_str(t.url, 'red' if (t.isfile and not exists(expanduser(t.url))) else 'magenta'))
 
         if not task_list:
             exit(0)
 
         confirm = 'Y' if args.yes else prompt_confirm()
 
-        if confirm in 'Nn':
+        if confirm == 'n':
             exit(1)
 
         elif args.dry:
             exit(0)
 
         elif confirm in 'Yy':
-            execute_tasks(config, task_list)
+            break
 
-        elif confirm == 's':
-            store_session(config, url_list)
+    execute_tasks(options, task_list)
 
+
+if __name__ == '__main__':
+    try:
+        main()
     except KeyboardInterrupt:
         print_err('KeyboardInterrupt')
 
-main()
+else:
+    raise Exception('import no no')
