@@ -434,6 +434,9 @@ def main():
         # Input parsing
         any_parse_errors = False
         for idx, line in enumerate(lines):
+            if not line:
+                continue
+
             if line.startswith(('http://', 'https://')):
                 continue
 
@@ -448,7 +451,7 @@ def main():
 
         print('=' * 50)
 
-        task_list = construct_task_list(options, lines)
+        task_list = construct_task_list(options, [line for line in lines if line])
         task_list = sort_task_list(task_list)
 
         for t in task_list:
