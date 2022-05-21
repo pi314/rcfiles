@@ -440,7 +440,7 @@ def main():
             if line.startswith(('http://', 'https://')):
                 continue
 
-            elif not isfile(line):
+            elif not isfile(expanduser(line)):
                 parse_error = (idx+1, line)
                 print_err('Error at line', idx+1, ':', line)
                 any_parse_errors = True
