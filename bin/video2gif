@@ -18,6 +18,7 @@ if sys.version_info.major < 3:
 def usage_and_exit():
     print('Usage:')
     print('    {} option=value video gif'.format(basename(sys.argv[0])))
+    print('    {} option=value video'.format(basename(sys.argv[0])))
     print('')
     print('Options:')
     print('    width=<width>')

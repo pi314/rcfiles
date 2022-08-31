@@ -2,10 +2,11 @@
 
 if [ -t 0 ]; then
     if [ $# -eq 0 ]; then
-        exec vim '+set buftype=nofile'
+        vim '+set buftype=nofile'
     else
-        exec vim '+set tabpagemax=1000' '+tab ball' "$@"
+        vim '+set tabpagemax=1000' '+tab ball' "$@"
     fi
 else
-    exec vim '+set buftype=nofile' -
+    PWD="$(pwd)"
+    cd "$PWD" && vim '+set buftype=nofile' -
 fi
