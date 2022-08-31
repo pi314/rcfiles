@@ -9,6 +9,7 @@ import subprocess as sub
 import sys
 import unicodedata
 
+from xonsh.completers.tools import RichCompletion
 from datetime import datetime
 from prompt_toolkit.key_binding import vi_state
 from shutil import which
@@ -36,8 +37,8 @@ dark_purple = color('PURPLE')
 dark_cyan = color('CYAN')
 dark_white = color('WHITE')
 
-prompt_xonsh_version = black('[xonsh-{}]'.format(xonsh.__version__, ))
-prompt_py_ver = black('py{}.{}'.format(sys.version_info.major, sys.version_info.minor))
+def print_color(*args, **kwargs):
+    xonsh.tools.print_color(' '.join(str(arg) for arg in args), **kwargs)
 
 
 class run:
@@ -63,6 +64,10 @@ class run:
 # =============================================================================
 # Prompt
 # -----------------------------------------------------------------------------
+
+prompt_xonsh_version = black('[xonsh-{}]'.format(xonsh.__version__, ))
+prompt_py_ver = black('py{}.{}'.format(sys.version_info.major, sys.version_info.minor))
+
 
 def lrtn(pos=1):
     if not __xonsh__.history or not __xonsh__.history[-1].rtn:
@@ -93,7 +98,8 @@ def prompt_cwd():
     except FileNotFoundError:
         cwd = 'FileNotFoundError'
 
-    return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[' + shrinkuser(cwd) + ']')
+    # return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[' + shrinkuser(cwd) + ']')
+    return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[{cwd}]')
 
 
 def vi_mode():
@@ -226,6 +232,16 @@ def _o(args):
 aliases['o'] = _o
 
 
+def _cd(args):
+    if len(args) in (0, 1):
+        return xonsh.aliases.cd(args)
+
+    elif len(args) == 2:
+        return xonsh.aliases.cd([xonsh.built_ins.XSH.env['PWD'].replace(args[0], args[1])])
+
+aliases['cd'] = _cd
+
+
 def _mkcd(args):
     if args and args[0]:
         ![mkdir @(args[0])]
@@ -303,7 +319,7 @@ def search_path_candidates(cwd, prefix, filter_func=None):
         else:
             p = (shrinkuser(c)[len(shrinkuser(cwd)):].lstrip('/'))
 
-        p += ('/' if os.path.isdir(p) else '')
+        p += ('/' if os.path.isdir(c) else '')
 
         ret.add(p)
 
@@ -311,9 +327,10 @@ def search_path_candidates(cwd, prefix, filter_func=None):
 
 
 def _my_path_completer_internal(command, filter_func):
-    debug = False
+    debug = $XONSH_TRACE_COMPLETIONS
 
     exists = os.path.exists
+    isfile = os.path.isfile
 
     if debug:
         print(command)
@@ -332,22 +349,41 @@ def _my_path_completer_internal(command, filter_func):
     # # Nope
     # ret = set(p.replace(' ', r'\ ') for p in ret)
 
+    def _print_results(title, results):
+        print()
+        print_color(blue(title))
+        indent = '  '
+        for item in sorted(ret):
+            if isinstance(item, RichCompletion):
+                print_color(indent + 'RichCompletion(' + ', '.join([
+                    red(repr(item.value)),
+                    'append_space=' + cyan(item.append_space),
+                    ]) + ')')
+            else:
+                print_color(indent + red(repr(item)))
+
     if debug:
-        print(ret)
+        _print_results('[raw_results]', ret)
 
     if command.arg_index != 0:
+
         if not command.opening_quote:
-            ret = set(repr(r) for r in ret)
+            ret = set(RichCompletion(value=repr(r), append_space=isfile(r)) for r in ret)
 
         elif command.opening_quote and not command.closing_quote:
-            ret = set(r + command.opening_quote for r in ret)
+            # RichCompletion.append_closing_quote somehow doesnt work
+            ret = set(r + command.opening_quote + (' ' if isfile(r) else '') for r in ret)
+
+        elif command.opening_quote and command.closing_quote:
+            ret = set(RichCompletion(value=r, append_space=isfile(r)) for r in ret)
 
         # elif any([(' ' in p) || ('[' in p) for p in ret]):
         #     ret = set(repr(r) for r in ret)
         # ret = set(repr(r) for r in ret)
 
     if debug:
-        print(ret)
+        _print_results('[quoted_results]', ret)
+        print()
 
     # if command.opening_quote:
     #     if not command.closing_quote:
@@ -382,6 +418,13 @@ def _my_last_argument_completer(command):
 
 
 $FUZZY_PATH_COMPLETION = False
+$COMPLETIONS_DISPLAY = 'single'
+$COMPLETIONS_CONFIRM = False
+
+try:
+    $COMPLETIONS_MENU_ROWS = max(10, int(int(run('stty size').stdout[0].split()[0]) / 2))
+except:
+    $COMPLETIONS_MENU_ROWS = 10
 
 
 ![completer remove cd]
