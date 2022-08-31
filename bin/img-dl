@@ -332,12 +332,13 @@ def pause_due_to_error():
 def prompt_confirm():
     while True:
         try:
-            ret = input('Continue? {}Yes{}no{}vim{} '.format(
+            print('Continue? {}Yes{}no{}vim{}'.format(
                 color_str('[', 'black'),
                 color_str('/', 'black'),
                 color_str('/', 'black'),
                 color_str(']', 'black'),
-                )).strip().lower()
+                ), end=' ')
+            ret = input().strip().lower()
             if not ret:
                 ret = 'Y'
         except (EOFError, KeyboardInterrupt):
