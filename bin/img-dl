@@ -42,6 +42,10 @@
 # TODO: rewrite
 
 
+def print_err(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
 import sys
 
 if sys.version_info.major < 3:
@@ -62,10 +66,6 @@ from os.path import splitext, basename, dirname, exists, isfile, expanduser, joi
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, ParseResult
 
 img_exts = ('.jpg', '.png', '.jpeg', '.gif')
-
-
-def print_err(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
 
 
 rightnow = datetime.now()
@@ -415,7 +415,7 @@ def main():
 
     while True:
         if confirm == 'v':
-            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf8', suffix='.img-dl.tmp') as tf:
+            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf8', prefix=options.fmt.replace('/', '_'), suffix='.img-dl.tmp') as tf:
                 for line in lines:
                     tf.write(line + '\n')
 
@@ -460,6 +460,10 @@ def main():
 
         if not task_list:
             exit(0)
+
+        if args.dry:
+            print_err('(dry run)')
+            exit(1)
 
         confirm = 'Y' if args.yes else prompt_confirm()
 
