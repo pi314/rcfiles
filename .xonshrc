@@ -174,8 +174,8 @@ def prompt_git_info():
 
 
 def prompt_jobs():
-    if xonsh.prompt.job.XSH.all_jobs:
-        return dark_blue('jobs:' + str(len(xonsh.prompt.job.XSH.all_jobs)))
+    if xonsh.jobs.XSH.all_jobs:
+        return dark_blue('jobs:' + str(len(xonsh.jobs.XSH.all_jobs)))
 
 
 def prompt_user():
