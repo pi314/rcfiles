@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-if [ -n "$(command -v ag)" ]; then
-    ag -g "$1"
-else
-    find . | grep "$1"
-fi
