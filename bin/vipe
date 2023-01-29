@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+def print_err(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+import sys
+
+if sys.version_info.major < 3:
+    print_err('Need Python3')
+    exit(1)
+
+import subprocess as sub
+import tempfile
+
+
+
+def main():
+    lines = []
+    stdin_backup = sys.stdin
+    stdout_backup = sys.stdout
+    stderr_backup = sys.stderr
+
+    if not sys.stdin.isatty():
+        lines += sys.stdin.readlines()
+        sys.stdin.close()
+
+    sys.stdin = open('/dev/tty')
+    sys.stdout = open('/dev/tty', 'wb')
+    sys.stderr = open('/dev/tty', 'wb')
+
+    with tempfile.NamedTemporaryFile(mode='w+', encoding='utf8', suffix='.vipe') as tf:
+        for line in lines:
+            tf.write(line)
+
+        tf.flush()
+
+        sub.call(['vim', tf.name], stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
+
+        with open(tf.name, mode='r', encoding='utf8') as f:
+            lines = [line for line in f.readlines()]
+
+    sys.stdin = stdin_backup
+    sys.stdout = stdout_backup
+    sys.stderr = stderr_backup
+
+    for line in lines:
+        print(line, end='')
+
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print_err('KeyboardInterrupt')
+
+else:
+    raise Exception('import no no')
