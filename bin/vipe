@@ -1,15 +1,14 @@
-#!/usr/bin/env python3
-
-def print_err(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+''''true
+TMPFILE=$(mktemp /tmp/vipe.XXXXXX)
+cat > "${TMPFILE}"
+vim ${TMPFILE} </dev/tty >/dev/tty
+cat ${TMPFILE}
+rm "${TMPFILE}"
+exit
+'''
 
 
 import sys
-
-if sys.version_info.major < 3:
-    print_err('Need Python3')
-    exit(1)
-
 import subprocess as sub
 import tempfile
 
@@ -45,7 +44,7 @@ def main():
     sys.stderr = stderr_backup
 
     for line in lines:
-        print(line, end='')
+        sys.stdout.write(line)
 
 
 
@@ -53,7 +52,7 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print_err('KeyboardInterrupt')
+        pass
 
 else:
     raise Exception('import no no')
