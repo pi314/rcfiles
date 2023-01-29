@@ -1,15 +1,16 @@
 ''''true
 TMPFILE=$(mktemp /tmp/vipe.XXXXXX)
 cat > "${TMPFILE}"
-vim ${TMPFILE} </dev/tty >/dev/tty
+${EDITOR} ${TMPFILE} </dev/tty >/dev/tty
 cat ${TMPFILE}
 rm "${TMPFILE}"
 exit
 '''
 
 
-import sys
+import os
 import subprocess as sub
+import sys
 import tempfile
 
 
@@ -34,7 +35,7 @@ def main():
 
         tf.flush()
 
-        sub.call(['vim', tf.name], stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
+        sub.call([os.environ.get('EDITOR', 'vim'), tf.name], stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
 
         with open(tf.name, mode='r', encoding='utf8') as f:
             lines = [line for line in f.readlines()]
