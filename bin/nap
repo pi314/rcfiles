@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+
+import datetime
+import re
+import sys
+import time
+
+from os.path import basename
+
+
+if sys.version_info.major < 3:
+    sys.stderr.write('Need Python3\n')
+    exit(1)
+
+
+def print_err(*args, **kwargs):
+    kwargs['file'] = sys.stderr
+    print(*args, **kwargs)
+
+
+def usage(*msg):
+    if msg:
+        print_err(*msg)
+        print_err()
+
+    print_err('''Usage:
+    $ ''' + basename(sys.argv[0]) + ''' [-h|--help] DUE
+
+The following formats for "due" are accepted:
+
+    HH:MM:SS, take a nap until the specified time, in range 00:00:00 ~ 29:59:59.
+    +HH:MM:SS, take a nap for HH:MM:SS.
+    Nhour(s), take a nap for N hours.
+    Nmin(s), take a nap for N minutes.
+    Nsec(s), take a nap for N seconds.
+    XhYmZs, take a nap for X hours Y minutes and Z seconds.
+            Any of Xh, Ym or Zs can be omitted, as long as the result
+            is not an empty string.
+''')
+    exit(1)
+
+
+def format_datetime_obj(d):
+    return '{year:>04}/{month:>02}/{day:>02} {hour:>02}:{minute:>02}:{second:>02}'.format(
+            year=d.year, month=d.month, day=d.day,
+            hour=d.hour, minute=d.minute, second=d.second)
+
+
+class RegexCache:
+    def __init__(self, text):
+        self.text = text
+        self.match_obj = None
+
+    def match(self, pattern):
+        self.match_obj = re.match(pattern, self.text)
+        return self.match_obj
+
+    def group(self, *args, **kwargs):
+        return self.match_obj.group(*args, **kwargs)
+
+
+def parse_target(target):
+    m = RegexCache(target)
+
+    if m.match(r'^(\d\d):(\d\d):(\d\d)$'):
+        hh = int(m.group(1)) if m.group(1) is not None else 0
+        mm = int(m.group(2)) if m.group(2) is not None else 0
+        ss = int(m.group(3)) if m.group(3) is not None else 0
+        if hh < 30 and mm < 60 and ss < 60:
+            return (False, hh, mm, ss)
+
+    if m.match(r'^\+(\d+):(\d\d):(\d\d)$'):
+        hh = int(m.group(1)) if m.group(1) is not None else 0
+        mm = int(m.group(2)) if m.group(2) is not None else 0
+        ss = int(m.group(3)) if m.group(3) is not None else 0
+        return (True, hh, mm, ss)
+
+    if m.match(r'^(\d+)hours?$'):
+        return (True, int(m.group(1)), 0, 0)
+
+    if m.match(r'^(\d+)mins?$'):
+        return (True, 0, int(m.group(1)), 0)
+
+    if m.match(r'^(\d+)secs?$'):
+        return (True, 0, 0, int(m.group(1)))
+
+    if m.match(r'^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$'):
+        hh = int(m.group(1)) if m.group(1) is not None else 0
+        mm = int(m.group(2)) if m.group(2) is not None else 0
+        ss = int(m.group(3)) if m.group(3) is not None else 0
+        if hh or mm or ss:
+            return (True, hh, mm, ss)
+
+    return (None, None, None, None)
+
+
+def main(prog, argv):
+    if not argv:
+        usage()
+
+    if argv[0] == 'selftest':
+        exit(selftest())
+
+    if '-h' in argv or '--help' in argv:
+        usage()
+
+    if len(argv) != 1:
+        usage()
+
+    delta, hh, mm, ss = parse_target(argv[0])
+    if delta is None:
+        usage('Invalid timestamp:', argv[0])
+
+    now = datetime.datetime.now()
+
+    if delta:
+        target = now + datetime.timedelta(hours=hh, minutes=mm, seconds=ss)
+
+    else:
+        target = datetime.datetime(
+                year=now.year, month=now.month, day=now.day,
+                hour=hh % 24, minute=mm, second=ss)
+
+    if hh >= 24:
+        target += datetime.timedelta(days=1)
+
+    print_err('Current time:', format_datetime_obj(now))
+    print_err('Target time: ', format_datetime_obj(target))
+
+    if target == now:
+        exit(0)
+
+    if target < now:
+        print_err()
+        print_err('Error: target time is earlier than current time')
+        exit(1)
+
+    tds = (target - now).seconds
+
+    print_err()
+    print_err('Timedelta: {hh:>02}:{mm:>02}:{ss:>02} ({total} seconds)'.format(
+        hh=int(tds / 3600),
+        mm=int((tds % 3600) / 60),
+        ss=tds % 60,
+        total=tds,
+        ))
+
+    print_err('')
+    for i in range(tds):
+        tds = (target - datetime.datetime.now()).seconds
+        print_err('\rRemaining: {hh:>02}:{mm:>02}:{ss:>02} ({total} seconds)'.format(
+            hh=int(tds / 3600),
+            mm=int((tds % 3600) / 60),
+            ss=tds % 60,
+            total=tds,
+            ), end=' ')
+
+        time.sleep(1)
+
+    print_err()
+
+
+def selftest():
+    testcase = None
+    error = 0
+    def expect_eq(a, b):
+        nonlocal error
+        if a != b:
+            print_err('selftest failed: input={}, expect_eq({}, {})'.format(repr(testcase), a, b))
+            error = 1
+
+    testcase = '12:34:56'
+    delta, hh, mm, ss = parse_target(testcase)
+    expect_eq(delta, False)
+    expect_eq(hh, 12)
+    expect_eq(mm, 34)
+    expect_eq(ss, 56)
+
+    testcase = '+12:34:56'
+    delta, hh, mm, ss = parse_target(testcase)
+    expect_eq(delta, True)
+    expect_eq(hh, 12)
+    expect_eq(mm, 34)
+    expect_eq(ss, 56)
+
+    testcase = '+1234:56:59'
+    delta, hh, mm, ss = parse_target(testcase)
+    expect_eq(delta, True)
+    expect_eq(hh, 1234)
+    expect_eq(mm, 56)
+    expect_eq(ss, 59)
+
+    for testcase in ('10hours', '10hour', '10h'):
+        delta, hh, mm, ss = parse_target(testcase)
+        expect_eq(delta, True)
+        expect_eq(hh, 10)
+        expect_eq(mm, 0)
+        expect_eq(ss, 0)
+
+    for testcase in ('100mins', '100min', '100m'):
+        delta, hh, mm, ss = parse_target(testcase)
+        expect_eq(delta, True)
+        expect_eq(hh, 0)
+        expect_eq(mm, 100)
+        expect_eq(ss, 0)
+
+    for testcase in ('10000sec', '10000secs', '10000s'):
+        delta, hh, mm, ss = parse_target(testcase)
+        expect_eq(delta, True)
+        expect_eq(hh, 0)
+        expect_eq(mm, 0)
+        expect_eq(ss, 10000)
+
+    return error
+
+
+if __name__ == '__main__':
+    try:
+        main(sys.argv[0], sys.argv[1:])
+    except KeyboardInterrupt:
+        print_err('KeyboardInterrupt', file=sys.stderr)
