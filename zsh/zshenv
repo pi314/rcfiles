@@ -21,6 +21,7 @@ folders=(
     "$HOME/.cargo/bin"
     "$HOME/.rcfiles/bin"
     "$HOME/bin"
+    "$HOME/.local/bin"
 )
 
 # force these path being positioned at start of $PATH
