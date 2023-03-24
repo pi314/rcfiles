@@ -20,7 +20,7 @@
 
 [core]
     editor = vim
-    pager = less -R -S
+    pager = "$(command -v diff-so-fancy || command -v cat) | less --tabs=4 -RFX"
 
 [merge]
     tool = vimdiff
@@ -30,3 +30,24 @@
 
 [init]
     defaultBranch = main
+
+[interactive]
+    diffFilter = diff-so-fancy --patch
+
+[color "diff-highlight"]
+    oldNormal = red bold
+    oldHighlight = red bold 52
+    newNormal = green bold
+    newHighlight = green bold 22
+
+[color "diff"]
+    meta = yellow
+    frag = magenta bold
+    func = 146 bold
+    commit = yellow bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[diff-so-fancy]
+    first-run = false
