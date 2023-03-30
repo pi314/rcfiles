@@ -15,9 +15,7 @@ export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
 folders=(
     "/opt/local/bin"
     "/opt/local/sbin"
-    "/opt/local/share/java/android-sdk-macosx/platform-tools"
-    "/opt/local/Library/Frameworks/Python.framework/Versions/3.6/bin"
-    "$HOME/Library/Python/3.8/bin"
+    "$HOME/Library/Python/3.11/bin"
     "$HOME/.cargo/bin"
     "$HOME/.rcfiles/bin"
     "$HOME/bin"
