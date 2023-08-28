@@ -1,5 +1,4 @@
 mkcd () {
-    arg_parents=''
     arg_verbose=''
     arg_path=''
 
@@ -8,9 +7,6 @@ mkcd () {
             echo 'Usage:' >&2
             echo '  mkcd [-p|--parents] [-v|--verbose] DIRECTORY' >&2
             return 1
-
-        elif [ "$1" = '-p' ] || [ "$1" = '--parents' ]; then
-            arg_parents='-p'
 
         elif [ "$1" = '-v' ] || [ "$1" = '--verbose' ]; then
             arg_verbose='-v'
@@ -32,10 +28,10 @@ mkcd () {
     fi
 
     if [ -n "$arg_verbose" ]; then
-        echo -e '\033[1;30m$\033[m' mkdir $arg_parents $arg_verbose "$arg_path"
+        echo -e '\033[1;30m$\033[m' mkdir $arg_verbose "$arg_path"
     fi
 
-    mkdir $arg_parents $arg_verbose "$arg_path"
+    mkdir $arg_verbose "$arg_path"
 
     if [ ! -d "$arg_path" ]; then
         return 1
