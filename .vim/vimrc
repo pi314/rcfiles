@@ -11,10 +11,10 @@ call plug#begin('~/.vim/plugged')
 
 " Plugins
 Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
+" Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
-Plug 'dhruvasagar/vim-table-mode'
+" Plug 'dhruvasagar/vim-table-mode'
 Plug 'pi314/ime.vim'
 Plug 'pi314/ime-wide.vim'
 Plug 'pi314/ime-braille.vim'
@@ -25,13 +25,14 @@ Plug 'pi314/pi314.asciiart.vim'
 Plug 'pi314/pi314.rst.vim'
 Plug 'pi314/todo-or-not-todo.vim'
 Plug 'zdict/zdict.vim'
-Plug 'rust-lang/rust.vim'
+" Plug 'rust-lang/rust.vim'
 " Plug 'dodie/vim-disapprove-deep-indentation'
-Plug 'breuckelen/vim-resize'
-Plug 'junegunn/vader.vim'
-Plug 'johngrib/vim-game-code-break'
+" Plug 'junegunn/vader.vim'
+" Plug 'johngrib/vim-game-code-break'
 Plug 'pi314/logos.vim'
 Plug 'Yggdroot/indentLine'
+Plug 'mg979/vim-visual-multi'
+Plug 'airblade/vim-gitgutter'
 
 if !empty(glob('~/.vimrc-plugins.local'))
     source ~/.vimrc-plugins.local
@@ -141,6 +142,8 @@ set splitright
 set splitbelow
 
 set pastetoggle=<leader>p
+
+set virtualedit=block
 " -----------------------------------------------------------------------------
 " Options
 " =============================================================================
@@ -281,7 +284,7 @@ else
     nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
 endif
 nnoremap ,<bar> :IndentLinesToggle<CR>
-nnoremap ,* *N
+nnoremap ,* *``
 
 
 function! s:MoveCursorLeftSoftTab ()
@@ -420,6 +423,12 @@ let g:rst_title_length_step = 2
 let g:ime_braille_keys = '3ed4rfcv'
 
 let g:indentLine_color_term = 'darkgrey'
+
+nnoremap ,d     :GitGutterDiffOrig<CR>
+highlight SignColumn                ctermbg=0
+highlight GitGutterAdd    ctermfg=2 ctermbg=0
+highlight GitGutterChange ctermfg=3 ctermbg=0
+highlight GitGutterDelete ctermfg=1 ctermbg=0
 " -----------------------------------------------------------------------------
 " Plugin settings
 " =============================================================================
