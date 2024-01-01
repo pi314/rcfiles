@@ -284,7 +284,9 @@ else
     nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
 endif
 nnoremap ,<bar> :IndentLinesToggle<CR>
-nnoremap ,* *``
+
+nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
+vnoremap ,* "vy:let @/ = '\V' . substitute(@v, "\n", '\\n', 'g') <bar> set hls <bar> echo @/<CR>
 
 
 function! s:MoveCursorLeftSoftTab ()
