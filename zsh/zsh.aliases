@@ -1,6 +1,6 @@
 
 if command -v eza >/dev/null 2>&1 ; then
-    lh="eza --long --header --binary --classify --time-style long-iso --no-quotes"
+    lh="eza --long --header --binary --classify --time-style long-iso --no-quotes --color-scale-mode=fixed"
     alias l1='eza -1 --no-quotes'
     alias l="$lh"
     alias lh="$lh"
