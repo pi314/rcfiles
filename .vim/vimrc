@@ -426,7 +426,27 @@ let g:ime_braille_keys = '3ed4rfcv'
 
 let g:indentLine_color_term = 'darkgrey'
 
-nnoremap ,d     :GitGutterDiffOrig<CR>
+function! s:git_gutter_diff_orig ()
+    if &buftype == 'nofile' && &diff
+        quit
+
+    else
+        let my_gitgutter_buffers = filter(range(1, bufnr('$')), 'getbufvar(v:val, "git_gutter_orig_file") == "' . @% . '"')
+        if len(my_gitgutter_buffers)
+            exec 'bdelete ' . string(my_gitgutter_buffers[0])
+            return
+        endif
+
+        let l:git_gutter_orig_file = @%
+        GitGutterDiffOrig
+        wincmd w
+        let b:git_gutter_orig_file = l:git_gutter_orig_file
+        wincmd w
+
+    endif
+endfunction
+
+nnoremap ,d     :call <SID>git_gutter_diff_orig()<CR>
 highlight SignColumn                ctermbg=0
 highlight GitGutterAdd    ctermfg=2 ctermbg=0
 highlight GitGutterChange ctermfg=3 ctermbg=0
