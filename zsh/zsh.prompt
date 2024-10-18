@@ -8,6 +8,7 @@ green="%{$fg_bold[green]%}"
 yellow="%{$fg_bold[yellow]%}"
 blue="%{$fg_bold[blue]%}"
 magenta="%{$fg_bold[magenta]%}"
+murasaki="%{%K{135}%}"
 purple=$magenta
 cyan="%{$fg_bold[cyan]%}"
 white="%{$fg_bold[white]%}"
@@ -89,9 +90,9 @@ _virtual_env () {
         bname="$(basename ${VIRTUAL_ENV})"
         dname="$(dirname ${VIRTUAL_ENV})"
         if [[ "${dname}" = "${HOME}" ]]; then
-            echo "${blue}[~/${bname}]${end}"
+            echo "${murasaki}[~/${bname}]${end}"
         else
-            echo "${blue}[$(basename ${dname})/${bname}]${end}"
+            echo "${murasaki}[$(basename ${dname})/${bname}]${end}"
         fi
     fi
 }
