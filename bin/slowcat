@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+import sys
+import time
+
+from os.path import basename
+
+
+def print_stderr(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+def error(*args, **kwargs):
+    print_stderr('[error]', *args, **kwargs)
+    exit(1)
+
+
+def usage(prog):
+    prog = basename(prog)
+    print_stderr('Usage:')
+    print_stderr()
+    print_stderr('Sponge mode:')
+    print_stderr('$', prog, 'DELAY')
+    print_stderr()
+    print_stderr('Pipe mode:')
+    print_stderr('$', 'seq 10', '|', prog, 'DELAY', '|', 'xargs', '...')
+    exit(1)
+
+
+def main(prog, argv):
+    if '-h' in argv or '--help' in argv:
+        usage(prog)
+
+    if len(argv) not in (0, 1):
+        usage(prog)
+
+    delay = 1
+
+    if len(sys.argv) == 2:
+        arg = sys.argv[1]
+        try:
+            if '.' in sys.argv[1]:
+                delay = float(arg)
+            else:
+                delay = int(arg)
+        except ValueError:
+            error('Delay must be an integer or a float number')
+
+    if sys.stdin.isatty():
+        sponge_mode = True
+    else:
+        sponge_mode = False
+
+    if sponge_mode:
+        data_source = [line for line in sys.stdin]
+    else:
+        data_source = sys.stdin
+
+    for line in data_source:
+        sys.stdout.write(line)
+        sys.stdout.flush()
+        time.sleep(delay)
+
+
+if __name__ == '__main__':
+    try:
+        main(sys.argv[0], sys.argv[1:])
+    except KeyboardInterrupt:
+        print_stderr('KeyboardInterrupt')
+
+else:
+    raise Exception('import no no')
