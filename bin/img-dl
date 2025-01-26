@@ -264,7 +264,8 @@ def construct_task_list(options, url_list):
         o = ParsedURL(t.url)
         if o.netloc == 'imgur.com':
             o.netloc = 'i.imgur.com'
-            o.path = o.path + t.ext
+            if '.' not in o.path:
+                o.path = o.path + t.ext
             t.url = o.unparse()
 
         elif o.netloc == 'pbs.twimg.com':
@@ -385,6 +386,9 @@ def execute_tasks(options, task_list):
 
 
 def main():
+    if not sys.stdout.isatty():
+        exit(1)
+
     parser = argparse.ArgumentParser(description='img-dl')
     parser.add_argument('-s', '--start', dest='start', help='Starting index number')
     parser.add_argument('-w', '--width', dest='width', help='The width for index number')
