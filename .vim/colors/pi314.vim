@@ -12,7 +12,8 @@ endif
 " GUI Comment : #80a0ff = Light blue
 
 highlight Normal     guifg=Grey80       guibg=Black     gui=None
-highlight Normal     ctermfg=LightGrey  ctermbg=Black   cterm=bold
+" highlight Normal     ctermfg=LightGrey  ctermbg=Black   cterm=bold
+highlight Normal     ctermfg=LightGrey                  cterm=bold
 
 highlight Search     guifg=Black        guibg=Yellow    gui=bold
 highlight Search     ctermfg=Black      ctermbg=Yellow
@@ -64,3 +65,8 @@ highlight TabLineFill   gui=bold    guifg=LightGray     guibg=LightGray
 highlight ExtraWhitespace               guibg=Red
 highlight ExtraWhitespace               ctermbg=Red
 autocmd BufWinEnter * match ExtraWhitespace /\v\s+$/
+
+
+" Diff highlights
+highlight DiffText      ctermfg=black   ctermbg=yellow
+highlight DiffChange                    ctermbg=DarkMagenta

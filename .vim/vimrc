@@ -446,7 +446,7 @@ function! s:git_gutter_diff_orig ()
     endif
 endfunction
 
-nnoremap ,d     :call <SID>git_gutter_diff_orig()<CR>
+nnoremap ,d     :call <SID>git_gutter_diff_orig()<CR>zz
 highlight SignColumn                ctermbg=0
 highlight GitGutterAdd    ctermfg=2 ctermbg=0
 highlight GitGutterChange ctermfg=3 ctermbg=0
