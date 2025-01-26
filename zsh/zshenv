@@ -15,8 +15,7 @@ export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
 folders=(
     "/opt/local/bin"
     "/opt/local/sbin"
-    "$HOME/Library/Python/3.11/bin"
-    "$HOME/.cargo/bin"
+    "/usr/local/sbin"
     "$HOME/.rcfiles/bin"
     "$HOME/bin"
     "$HOME/.local/bin"
@@ -101,6 +100,9 @@ export LS_COLORS='di=01;36:ln=01;35:pi=01;33:ex=01;32'
 # un: A user that’s not you
 # da: Timestamp
 # im: a regular file that is an image
+# vi: a regular file that is a video
+# mu: a regular file that is lossy music
+# lo: a regular file that is lossless music
 # sc: a regular file that is source code
 export EZA_COLORS=\
 'ur=0;32:uw=0;32:ux=0;32:ue=0;32:'\
@@ -113,6 +115,8 @@ export EZA_COLORS=\
 'di=38;5;14:'\
 'im=38;5;135:'\
 'vi=38;5;135:'\
+'mu=38;5;135:'\
+'lo=38;5;135:'\
 'sc=0:'\
 
 export EDITOR=vim

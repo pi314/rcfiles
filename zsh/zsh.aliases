@@ -1,4 +1,3 @@
-
 if command -v eza >/dev/null 2>&1 ; then
     lh="eza --long --header --binary --classify --time-style long-iso --no-quotes --color-scale-mode=fixed"
     alias l1='eza -1 --no-quotes'
@@ -29,15 +28,15 @@ fi
 
 alias sudo='sudo -E'
 
-if command -v python3 >/dev/null 2>&1; then
-    # Hey, there is Python 3 installed, why not use it?
-    alias python=python3
-fi
-
-if command -v pip3 >/dev/null 2>&1; then
-    # There is pip 3 installed, use it
-    alias pip=pip3
-fi
+# if command -v python3 >/dev/null 2>&1; then
+#     # Hey, there is Python 3 installed, why not use it?
+#     alias python=python3
+# fi
+#
+# if command -v pip3 >/dev/null 2>&1; then
+#     # There is pip 3 installed, use it
+#     alias pip=pip3
+# fi
 
 if command -v _pip >/dev/null 2>&1; then
     # Use pip's completion
@@ -55,6 +54,6 @@ alias tor-ssh='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
 
 alias wtf='where'
 
-if command -v bat >/dev/null 2>&1 ; then
-    alias cat='bat'
-fi
+# if command -v bat >/dev/null 2>&1 ; then
+#     alias cat='bat'
+# fi
