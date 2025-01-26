@@ -5,16 +5,23 @@
 #  so that the length of color codes will not be calculate by terminal
 
 black="\[\e[1;30m\]"
-gray="\[\e[37m\]"
-grey=${gray}
 red="\[\e[1;31m\]"
 green="\[\e[1;32m\]"
 yellow="\[\e[1;33m\]"
 blue="\[\e[1;34m\]"
-purple="\[\e[35m\]"
+purple="\[\e[1;35m\]"
 magenta=${purple}
 cyan="\[\e[1;36m\]"
 white="\[\e[1;37m\]"
+d_red="\[\e[31m\]"
+d_green="\[\e[32m\]"
+d_yellow="\[\e[33m\]"
+d_blue="\[\e[34m\]"
+d_magenta="\[\e[35m\]"
+d_purple=$d_magenta
+d_cyan="\[\e[36m\]"
+gray="\[\e[37m\]"
+grey=${gray}
 end="\[\e[m\]"
 
 _last_cmd_succ () {
@@ -26,7 +33,7 @@ _last_cmd_succ () {
 }
 
 _suspend_jobs () {
-    jbs=$(jobs -p | wc -l)
+    jbs="$(jobs -p | wc -l | tr -d ' ')"
     if [ $jbs -ne 0 ]; then
         printf "${blue}jobs:\j${end}"
     fi
@@ -73,14 +80,15 @@ else
 fi
 
 _gen_prompt () {
-    lcs=$(_last_cmd_succ)
+    lcs="$(_last_cmd_succ)"
     gi="$(_git_info)"
-    if [ -n "${gi}" ]; then
-        first_line="${lcs}${gi}\n"
-    else
-        first_line=""
+
+    optinal_info="${gi}$(_suspend_jobs)"
+    if [ -n "${optinal_info}" ]; then
+        first_line="${lcs}${optinal_info}\n"
     fi
-    PS1="${first_line}${lcs}${cyan}\D{%m/%d}${green}[\w]$(_suspend_jobs)${black}[\s\v]${end}\n"\
+
+    PS1="${first_line}${lcs}${cyan}\D{%m/%d}${green}[\w]${black}[\s\v]${end}\n"\
 "${lcs}${cyan}\D{%H:%M}${yellow}\u${end}@${white}\h${end}\$ "
 }
 
