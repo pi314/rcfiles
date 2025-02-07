@@ -1,0 +1,31 @@
+# https://ghostty.org/docs/config/reference
+# cmd + shift + , to reload
+
+# =============================================================================
+# Theme
+# -----------------------------------------------------------------------------
+# ghostty +list-themes
+# /Applications/Ghostty.app/Contents/Resources/ghostty/themes
+# -----------------------------------------------------------------------------
+theme = pi314
+# theme = homebrew
+# theme = zenburned
+# theme = hurtado
+# theme = hybrid
+# theme = iterm2 tango dark
+# theme = materialdarker
+# theme = ubuntu
+# theme = wez
+# theme = deep
+
+font-size = 20
+cursor-style = block
+cursor-text = #010101
+shell-integration = none
+shell-integration-features = false
+
+confirm-close-surface = false
+quit-after-last-window-closed = true
+
+keybind = cmd+up=text:cd ..\n
+keybind = cmd+down=text:cd -\n

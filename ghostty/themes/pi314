@@ -1,0 +1,21 @@
+# Modified from theme 'homebrew'
+palette = 0=#151515
+palette = 1=#A60000
+palette = 2=#00A600
+palette = 3=#999900
+palette = 4=#2B40C8
+palette = 5=#A539AD
+palette = 6=#00A6B2
+palette = 7=#C0C0C0
+palette = 8=#666666
+palette = 9=#FF544D
+palette = 10=#00d900
+palette = 11=#E5E500
+palette = 12=#3F59FF
+palette = 13=#EF68FF
+palette = 14=#00E5E5
+palette = 15=#E5E5E5
+background = 000000
+foreground = C0C0C0
+cursor-color = 23FF18
+selection-invert-fg-bg = true
