@@ -12,6 +12,7 @@
     d = difftool
     root = rev-parse --show-toplevel
     unstage = restore --staged
+    sw = switch -c
 
 [push]
     default = current
