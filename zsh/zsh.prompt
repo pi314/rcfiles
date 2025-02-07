@@ -2,13 +2,13 @@ setopt PROMPT_SUBST
 
 autoload -U colors && colors
 
-black="%{$fg_bold[black]%}"
+black="%{%F{8}%}"
 red="%{$fg_bold[red]%}"
 green="%{$fg_bold[green]%}"
 yellow="%{$fg_bold[yellow]%}"
 blue="%{$fg_bold[blue]%}"
 magenta="%{$fg_bold[magenta]%}"
-murasaki="%{%K{135}%}"
+murasaki="%{%F{135}%}"
 purple=$magenta
 cyan="%{$fg_bold[cyan]%}"
 white="%{$fg_bold[white]%}"
@@ -22,20 +22,21 @@ d_cyan="%{$fg_no_bold[cyan]%}"
 gray="%{$fg_no_bold[white]%}"
 grey=$gray
 end="%{$reset_color%}"
+newline=$'\n'
 
-lcs_str="%(?.${black}.${red})|${end}"
+local lcs_bar="%(?.${black}.${red})|${end}"
 
-_dir_stacks () {
+_dir_stack () {
     depth=$(dirs -p | wc -l | tr -d ' ')
     if [[ $depth -gt 1 ]]; then
-        dir_stack_str=$(printf '%*s' ${depth} | tr ' ' '[')
+        dir_stack_str=$(printf '%*s' ${depth} | tr ' ' ']')
         echo "${d_green}${dir_stack_str:1}"
     fi
 }
 
 _current_path () {
     # show first and last 3 folders if path is deeper than 5 layers
-    echo "$(_dir_stacks)${green}[%6(~:%-1~/.../%3~:%~)]${end}"
+    echo "${green}[%6(~:%-1~/.../%3~:%~)]$(_dir_stack)${end}"
 }
 
 if [[ -n "$(command -v git)" ]]; then
@@ -80,6 +81,7 @@ fi
 
 date_str="${cyan}%D{%m/%d}${end}"
 time_str="${cyan}%D{%H:%M}${end}"   # %D{...} man strftime
+vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
 uname_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
 hostname_str="${white}%m${end}"
@@ -97,30 +99,92 @@ _virtual_env () {
     fi
 }
 
-_refresh_prompt () {
+hook_pre_cmd () {
+    t_cmd_start=$(( $(date +%s) * 1000 ))
+}
+
+hook_post_cmd () {
+    t_cmd_end=$(( $(date +%s) * 1000 ))
+    local delta_ms=$((t_cmd_end - t_cmd_start))
+    local ms=$((delta_ms % 1000))
+    local delta_sec=$((delta_ms / 1000))
+    local SS=$((delta_sec % 60))
+    local MM=$(((delta_sec / 60) % 60))
+    local HH=$((delta_sec / 3600))
+    local DD=$((delta_sec / 3600 / 24))
+
+    local et=""
+    if [ ${DD} -ne 0 ]; then
+        et="${DD} days ${HH} hours ${MM} mins ${SS} secs"
+    elif [ ${HH} -ne 0 ]; then
+        et="${HH} hours ${MM} mins ${SS} secs"
+    elif [ ${MM} -ne 0 ]; then
+        et="${MM} mins ${SS} secs"
+    elif [ ${SS} -ne 0 ]; then
+        et="${SS} secs"
+    else
+        et=""
+    fi
+
+    if [ "${et}" != '' ]; then
+        last_cmd_elapsed_time_ind="Last cmd elapsed: ${et}"
+    else
+        last_cmd_elapsed_time_ind=''
+    fi
+}
+
+hook_pre_prompt () {
+    today=$(date "+%Y%m%d")
+
     case ${KEYMAP} in
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
         viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
     esac
 
-    first_line="$(_virtual_env)$(_git_info)"
+    local jbs=''
     if [[ $#jobstates -ge 1 ]]; then
-        # this cannot be written in function
-        # because $#jobstates does not passed into subshell
-        first_line="${first_line}${blue}jobs:$#jobstates${end}"
+        jbs="${blue}jobs:$#jobstates${end}"
     fi
-    prompt="${lcs_str}${date_str}$(_current_path)${vim_mode_str}
-${lcs_str}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
-    if [[ -n "${first_line}" ]]; then
-        prompt="${lcs_str}${first_line}
-$prompt"
+
+    local p=''
+
+    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
+        p="${newline}${last_cmd_elapsed_time_ind}${newline}"
     fi
+
+    local vg="$(_virtual_env)$(_git_info)"
+    if [ -n "${vg}" ]; then
+        p="${p}${lcs_bar}${vg}${jbs}${newline}"
+    fi
+
+    p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}
+${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+
+    PROMPT="${p}"
 }
 
-zle-keymap-select zle-line-init () {
-    _refresh_prompt
-    today=$(date "+%Y%m%d")
+precmd () {
+    if [ $had_cmd -eq 1 ]; then
+        hook_post_cmd
+    fi
+
+    hook_pre_prompt
+    last_cmd_elapsed_time_ind=''
+    had_cmd=0
+}
+
+preexec () {
+    had_cmd=1
+    hook_pre_cmd
+}
+
+zle-keymap-select () {
+    hook_pre_prompt
     zle reset-prompt
 }
-zle -N zle-line-init
+
 zle -N zle-keymap-select
+
+hook_pre_prompt
+
+had_cmd=0
