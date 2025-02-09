@@ -2,7 +2,8 @@ setopt PROMPT_SUBST
 
 autoload -U colors && colors
 
-black="%{%F{8}%}"
+esc=$'\e'
+black="%{${esc}[38;5;8m%}"
 red="%{$fg_bold[red]%}"
 green="%{$fg_bold[green]%}"
 yellow="%{$fg_bold[yellow]%}"
