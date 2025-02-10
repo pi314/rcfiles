@@ -124,14 +124,10 @@ hook_post_cmd () {
     elif [ ${SS} -ne 0 ]; then
         et="${SS} secs"
     else
-        et=""
+        et='so fast'
     fi
 
-    if [ "${et}" != '' ]; then
-        last_cmd_elapsed_time_ind="Last cmd elapsed: ${et}"
-    else
-        last_cmd_elapsed_time_ind=''
-    fi
+    last_cmd_elapsed_time_ind="Last cmd spent: ${et}"
 }
 
 hook_pre_prompt () {
