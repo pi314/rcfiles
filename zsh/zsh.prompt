@@ -101,11 +101,21 @@ _virtual_env () {
 }
 
 hook_pre_cmd () {
-    t_cmd_start=$(( $(date +%s) * 1000 ))
+    if command -v gdate >/dev/null 2>&1; then
+        t_cmd_start=$(( $(gdate '+%s%3N') ))
+    else
+        t_cmd_start=$(( $(date '+%s000') ))
+    fi
 }
 
 hook_post_cmd () {
-    t_cmd_end=$(( $(date +%s) * 1000 ))
+    if command -v gdate >/dev/null 2>&1; then
+        t_cmd_end=$(( $(gdate '+%s%3N') ))
+        local ms_support=1
+    else
+        t_cmd_end=$(( $(date '+%s000') ))
+        local ms_support=0
+    fi
     local delta_ms=$((t_cmd_end - t_cmd_start))
     local ms=$((delta_ms % 1000))
     local delta_sec=$((delta_ms / 1000))
@@ -123,8 +133,14 @@ hook_post_cmd () {
         et="${MM} mins ${SS} secs"
     elif [ ${SS} -ne 0 ]; then
         et="${SS} secs"
+    elif [ $ms -ne 0 ]; then
+        et="${ms} ms"
     else
-        et='so fast'
+        if [ $ms_support -eq 1 ]; then
+            et="0 ms SO FUCKING FAST"
+        else
+            et='<1 secs'
+        fi
     fi
 
     last_cmd_elapsed_time_ind="Last cmd spent: ${et}"
