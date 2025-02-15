@@ -149,25 +149,26 @@ hook_post_cmd () {
 hook_pre_prompt () {
     today=$(date "+%Y%m%d")
 
+    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
+        echo ''
+        echo "${last_cmd_elapsed_time_ind}"
+    fi
+
     case ${KEYMAP} in
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
         viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
     esac
+
+    local p=''
 
     local jbs=''
     if [[ $#jobstates -ge 1 ]]; then
         jbs="${blue}jobs:$#jobstates${end}"
     fi
 
-    local p=''
-
-    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
-        p="${newline}${last_cmd_elapsed_time_ind}${newline}"
-    fi
-
     local vg="$(_virtual_env)$(_git_info)"
     if [ -n "${vg}" ]; then
-        p="${p}${lcs_bar}${vg}${jbs}${newline}"
+        p="${lcs_bar}${vg}${jbs}${newline}"
     fi
 
     p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}
