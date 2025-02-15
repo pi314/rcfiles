@@ -14,7 +14,7 @@ Plug 'scrooloose/nerdtree'
 " Plug 'jistr/vim-nerdtree-tabs'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
-" Plug 'dhruvasagar/vim-table-mode'
+Plug 'dhruvasagar/vim-table-mode'
 Plug 'pi314/ime.vim'
 Plug 'pi314/ime-wide.vim'
 Plug 'pi314/ime-braille.vim'
@@ -33,6 +33,7 @@ Plug 'pi314/logos.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'mg979/vim-visual-multi'
 Plug 'airblade/vim-gitgutter'
+Plug 'preservim/vim-markdown'
 
 if !empty(glob('~/.vimrc-plugins.local'))
     source ~/.vimrc-plugins.local
@@ -233,7 +234,7 @@ nnoremap <SPACE> :call CleanUnusedBuffers()<CR>
 
 " Handy shortcut to create a scratch buffer
 function! s:new_scratch_buffer ()
-    if bufname('%') == '' && &modified == 0
+    if bufname('%') == '' && &modified == 0 && line('$') == 1 && getline(1) == ''
     else
         tabedit
     endif
@@ -329,6 +330,14 @@ nnoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
 nnoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
 
 
+nnoremap [[ vi[o<esc>
+nnoremap ]] vi[<esc>
+
+
+vnoremap [[ <nop>
+vnoremap ]] <nop>
+
+
 " status line, show plugin modes
 function! VimTableModeStatusString ()
     if exists('*tablemode#IsActive') && tablemode#IsActive()
@@ -397,9 +406,6 @@ nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 " =============================================================================
 " Plugin settings
 " -----------------------------------------------------------------------------
-" vim-table-mode settings ([normal] <leader>tm to enable table mode)
-let g:table_mode_corner_corner = '+'
-let g:table_mode_header_fillchar = '='
 
 let g:todo_next_checkbox = '<C-c>'
 let g:todo_select_checkbox = '<C-k>'
@@ -426,6 +432,9 @@ let g:ime_braille_keys = '3ed4rfcv'
 
 let g:indentLine_color_term = 'darkgrey'
 
+" -------------------------------------------------------------------------
+" airblade/vim-gitgutter
+" -------------------------------------------------------------------------
 function! s:git_gutter_diff_orig ()
     if &buftype == 'nofile' && &diff
         quit
@@ -451,6 +460,23 @@ highlight SignColumn                ctermbg=0
 highlight GitGutterAdd    ctermfg=2 ctermbg=0
 highlight GitGutterChange ctermfg=3 ctermbg=0
 highlight GitGutterDelete ctermfg=1 ctermbg=0
+
+" -------------------------------------------------------------------------
+" preservim/vim-markdown
+" -------------------------------------------------------------------------
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+let g:vim_markdown_folding_disabled = 1
+
+let g:vim_markdown_fenced_languages = ['python', 'shell', 'console=sh']
+
+let g:vim_markdown_follow_anchor = 0
+
+let g:vim_markdown_no_default_key_mappings = 1
+
+nnoremap tj <Plug>Markdown_MoveToNextHeader
+nnoremap tk <Plug>Markdown_MoveToPreviousHeader
+
 " -----------------------------------------------------------------------------
 " Plugin settings
 " =============================================================================
