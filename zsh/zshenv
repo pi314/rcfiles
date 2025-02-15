@@ -19,6 +19,8 @@ folders=(
     "$HOME/.rcfiles/bin"
     "$HOME/bin"
     "$HOME/.local/bin"
+    "/usr/local/opt/ruby/bin"
+    "$HOME/.local/share/gem/ruby/3.4.0/bin"
 )
 
 # force these path being positioned at start of $PATH
