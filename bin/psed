@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+
+import argparse
+import functools
+import re
+import sys
+import itertools
+
+from os.path import exists
+
+
+def print_err(*args, **kwargs):
+    line = ' '.join(str(arg) for arg in args)
+    print('\033[38;5;9m' + line + '\033[m', file=sys.stderr, **kwargs)
+
+
+def main():
+    parser = argparse.ArgumentParser(prog='psed',
+            description='Python mimic of sed that enables you to do sed-things with Python regex.')
+    parser.add_argument('command',
+                        help='command, format: "s/pattern/replacement/flags"')
+    parser.add_argument('files', nargs='*',
+                        help='files')
+
+    args = parser.parse_args()
+
+    cmd_s_regex = re.compile(r'^s(?P<sep>.)(?P<pattern>.*)(?P=sep)(?P<replacement>.*)(?P=sep)(?P<flags>.*)$')
+
+    cmd_s_m = cmd_s_regex.match(args.command)
+    if not cmd_s_m:
+        print_err('Invalid command:', args.command)
+        exit(1)
+
+    invalid_flags = set(cmd_s_m.group('flags')) - set('aiLmsux')
+    if invalid_flags:
+        print_err('Invalid flag:', ', '.join(sorted(invalid_flags)))
+        exit(1)
+
+    if cmd_s_m.group('flags'):
+        flags = functools.reduce(lambda x, y: x|y, ({
+            'a': re.ASCII,
+            'i': re.IGNORECASE,
+            'L': re.LOCALE,
+            'm': re.MULTILINE,
+            's': re.DOTALL,
+            'u': re.UNICODE,
+            'x': re.VERBOSE,
+            }.get(flag) for flag in set(cmd_s_m.group('flags'))))
+    else:
+        flags = 0
+
+    replacement = cmd_s_m.group('replacement').replace(r'\0', r'\g<0>')
+
+    cmd_s = re.compile(cmd_s_m.group('pattern'), flags)
+    if args.files:
+        errors = False
+        for path in args.files:
+            if not exists(path):
+                print_err('No such file or directory:', path)
+                errors = True
+        if errors:
+            sys.exit(1)
+
+        def file_iterator(path):
+            with open(path, 'r') as f:
+                for line in f:
+                    yield line.rstrip('\n')
+
+        data_source = itertools.chain.from_iterable(
+                map(file_iterator, args.files))
+    else:
+        data_source = sys.stdin
+
+    for line in data_source:
+        line = line.rstrip('\n')
+        try:
+            print(cmd_s.sub(replacement, line))
+        except re.error:
+            print_err(line)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print_err('KeyboardInterrupt')
