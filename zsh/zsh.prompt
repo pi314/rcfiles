@@ -121,7 +121,7 @@ hook_post_cmd () {
     local delta_sec=$((delta_ms / 1000))
     local SS=$((delta_sec % 60))
     local MM=$(((delta_sec / 60) % 60))
-    local HH=$((delta_sec / 3600))
+    local HH=$(((delta_sec / 3600) % 24))
     local DD=$((delta_sec / 3600 / 24))
 
     local et=""
@@ -132,7 +132,11 @@ hook_post_cmd () {
     elif [ ${MM} -ne 0 ]; then
         et="${MM} mins ${SS} secs"
     elif [ ${SS} -ne 0 ]; then
-        et="${SS} secs"
+        if [ $ms -ne 0 ]; then
+            et="${SS}.${ms} secs"
+        else
+            et="${SS} secs"
+        fi
     elif [ $ms -ne 0 ]; then
         et="${ms} ms"
     else
