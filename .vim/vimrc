@@ -182,7 +182,7 @@ nnoremap t* :tabn 8<CR>
 nnoremap t( :tabn 9<CR>
 
 " Insert a new line in normal mode, I just lazy
-nnoremap <expr> <CR> &ma ? "o\<ESC>" : "\<CR>"
+nnoremap <expr> <CR> &ma ? "o\<ESC>0\"_D" : "\<CR>"
 
 " map these by hand
 inoremap <C-h> <BS>
@@ -246,6 +246,9 @@ nnoremap ,s :call <SID>new_scratch_buffer()<CR>
 " Handy shortcut to trim trailing spaces
 nnoremap <silent> ,t :%s/\v\s+$//e<CR>
 vnoremap <silent> ,t :s/\v\s+$//e<CR>
+
+" Hide Q mapping
+nnoremap Q <nop>
 
 " =============================================================================
 " Handy function to toggle all window in all tabs
