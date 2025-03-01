@@ -171,7 +171,7 @@ hook_pre_prompt () {
     fi
 
     local vg="$(_virtual_env)$(_git_info)"
-    if [ -n "${vg}" ]; then
+    if [ -n "${vg}" ] || [ -n "${jbs}" ] ; then
         p="${lcs_bar}${vg}${jbs}${newline}"
     fi
 
