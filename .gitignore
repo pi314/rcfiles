@@ -1,8 +1,9 @@
 .DS_Store
-.vim/.netrwhist
-.vim/plugged/*
-.vim/local/*
-.vim/tmp/*
+
+vim/.netrwhist
+vim/plugged/*
+vim/local/*
+vim/tmp/*
 
 *.swp
 *.swo
