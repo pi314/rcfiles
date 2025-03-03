@@ -4,9 +4,8 @@ if [ -t 0 ]; then
     if [ $# -eq 0 ]; then
         vim '+set buftype=nofile'
     else
-        vim '+set tabpagemax=1000' '+tab ball' "$@"
+        vim '+set tabpagemax=100' '+tab ball' "$@"
     fi
 else
-    PWD="$(pwd)"
-    cd "$PWD" && vim '+set buftype=nofile' -
+    vim - '+set buftype=nofile' '+ExpandFileListToTab'
 fi

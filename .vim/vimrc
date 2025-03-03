@@ -30,10 +30,11 @@ Plug 'zdict/zdict.vim'
 " Plug 'junegunn/vader.vim'
 " Plug 'johngrib/vim-game-code-break'
 Plug 'pi314/logos.vim'
-Plug 'Yggdroot/indentLine'
+Plug 'preservim/vim-indent-guides'
 Plug 'mg979/vim-visual-multi'
 Plug 'airblade/vim-gitgutter'
 Plug 'preservim/vim-markdown'
+Plug 'pi314/markdont.vim', { 'frozen': 1 }
 
 if !empty(glob('~/.vimrc-plugins.local'))
     source ~/.vimrc-plugins.local
@@ -145,6 +146,13 @@ set splitbelow
 set pastetoggle=<leader>p
 
 set virtualedit=block
+
+" Mouse settings
+set mouse=a
+set ttymouse=sgr
+
+set t_BE=
+
 " -----------------------------------------------------------------------------
 " Options
 " =============================================================================
@@ -272,6 +280,16 @@ function! s:toggle_opt (option, scope)
 
     exec 'set '. a:option .'?'
 endfunction
+
+function! s:set_opt (option, enable)
+    if a:enable
+        exec 'set '. a:option
+    else
+        exec 'set no'. a:option
+    endif
+
+    exec 'set '. a:option .'?'
+endfunction
 " -----------------------------------------------------------------------------
 nnoremap ,C     :call <SID>toggle_opt('cursorline', 'all')<CR>
 nnoremap ,c     :call <SID>toggle_opt('cursorline', 1)<CR>
@@ -280,6 +298,9 @@ nnoremap ,w     :call <SID>toggle_opt('wrap', 1)<CR>
 nnoremap ,W     :call <SID>toggle_opt('wrap', 'all')<CR>
 
 nnoremap ,i     :call <SID>toggle_opt('ignorecase', 1)<CR>
+
+nnoremap ,z     :call <SID>toggle_opt('foldenable', 1)<CR>
+nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
 " =============================================================================
 
 if has("win32")
@@ -287,7 +308,6 @@ if has("win32")
 else
     nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
 endif
-nnoremap ,<bar> :IndentLinesToggle<CR>
 
 nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
 vnoremap ,* "vy:let @/ = '\V' . substitute(@v, "\n", '\\n', 'g') <bar> set hls <bar> echo @/<CR>
@@ -401,8 +421,64 @@ function! s:highlight_pane ()
     let &colorcolumn=join(range(1, winwidth(0)), ',')
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
+
 " -----------------------------------------------------------------------------
 " Mappings
+" =============================================================================
+
+" =============================================================================
+" Special settings
+" -----------------------------------------------------------------------------
+
+" Load template file when creating new files
+augroup templates
+    autocmd!
+    autocmd BufNewFile *.py r $HOME/.vim/templates/template.py | 1d
+    autocmd BufNewFile *.c r $HOME/.vim/templates/template.c | 1d
+    autocmd BufNewFile *.cpp r $HOME/.vim/templates/template.cpp | 1d
+augroup END
+
+
+function! s:jump_to_filename_linenum (fname)
+    let l:match = matchlist(a:fname, '\v^(%(\f|/)+):(\d+)$')
+
+    if len(l:match) && len(l:match[1]) && len(l:match[2])
+        exec 'edit ' . l:match[1]
+        call cursor(l:match[2], 1)
+        normal! zz^
+    endif
+endfunction
+
+augroup fnamelinenum
+    autocmd!
+    autocmd BufNewFile * nested call s:jump_to_filename_linenum(@%)
+augroup END
+
+function! ExpandFileListToTab ()
+    if &buftype != 'nofile'
+        return
+    endif
+
+    " echom getline(1)
+    " return
+
+    let files = []
+    for i in range(1, line('$'))
+        let line = getline(i)
+        let m = matchlist(line, '\v^(.*):([0-9]+)(:.*)?$')
+        if m != []
+            execute '$tabe +'. m[2] .' '. m[1]
+            normal zz
+            tabn
+        endif
+    endfor
+
+    quit
+endfunction
+command! ExpandFileListToTab call ExpandFileListToTab()
+
+" -----------------------------------------------------------------------------
+" Special settings
 " =============================================================================
 
 
@@ -432,8 +508,6 @@ let g:rst_title_style = 'shorten'
 let g:rst_title_length_step = 2
 
 let g:ime_braille_keys = '3ed4rfcv'
-
-let g:indentLine_color_term = 'darkgrey'
 
 " -------------------------------------------------------------------------
 " airblade/vim-gitgutter
@@ -477,8 +551,17 @@ let g:vim_markdown_follow_anchor = 0
 
 let g:vim_markdown_no_default_key_mappings = 1
 
-nnoremap tj <Plug>Markdown_MoveToNextHeader
-nnoremap tk <Plug>Markdown_MoveToPreviousHeader
+" -------------------------------------------------------------------------
+" preservim/vim-indent-guides
+" -------------------------------------------------------------------------
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_guide_size = 1
+nnoremap <silent> ,<bar> <Plug>IndentGuidesToggle
+
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=235
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
+
 
 " -----------------------------------------------------------------------------
 " Plugin settings
