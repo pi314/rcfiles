@@ -465,9 +465,9 @@ function! ExpandFileListToTab ()
     let files = []
     for i in range(1, line('$'))
         let line = getline(i)
-        let m = matchlist(line, '\v^(.*):([0-9]+)(:.*)?$')
+        let m = matchlist(line, '\v^(.*)(:([0-9]+):.*)?$')
         if m != []
-            execute '$tabe +'. m[2] .' '. m[1]
+            execute '$tabe +'. m[3] .' '. m[1]
             normal zz
             tabn
         endif
