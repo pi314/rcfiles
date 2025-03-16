@@ -120,7 +120,8 @@ set laststatus=2
 set wildmenu
 set wildmode=longest:list,full  " zsh-like completion
 
-set scrolloff=5
+set scrolloff=4
+set sidescrolloff=4
 
 " tell vim don't create {filename}~
 set nobackup
@@ -304,7 +305,7 @@ nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
 " =============================================================================
 
 if has("win32")
-    nnoremap ,v :tabedit $HOME/vimfiles/vimrc<CR>
+    nnoremap ,v :tabedit $HOME/vimfiles<CR>
 else
     nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
 endif
@@ -465,9 +466,9 @@ function! ExpandFileListToTab ()
     let files = []
     for i in range(1, line('$'))
         let line = getline(i)
-        let m = matchlist(line, '\v^(.*)(:([0-9]+):.*)?$')
+        let m = matchlist(line, '\v^([^:]*)%(:([0-9]+)%(:.*)?)?$')
         if m != []
-            execute '$tabe +'. m[3] .' '. m[1]
+            execute '$tabe +'. m[2] .' '. m[1]
             normal zz
             tabn
         endif
@@ -483,7 +484,7 @@ command! ExpandFileListToTab call ExpandFileListToTab()
 
 
 " =============================================================================
-" Plugin settings
+" Plugin settings {
 " -----------------------------------------------------------------------------
 
 let g:todo_next_checkbox = '<C-c>'
@@ -508,6 +509,13 @@ let g:rst_title_style = 'shorten'
 let g:rst_title_length_step = 2
 
 let g:ime_braille_keys = '3ed4rfcv'
+
+" -------------------------------------------------------------------------
+" 'dhruvasagar/vim-table-mode'
+" -------------------------------------------------------------------------
+let g:table_mode_disable_mappings = 1
+let g:table_mode_disable_tableize_mappings = 1
+nnoremap <bar><bar> <cmd>TableModeToggle<CR>
 
 " -------------------------------------------------------------------------
 " airblade/vim-gitgutter
@@ -544,6 +552,7 @@ endfunction
 nnoremap <expr> ,gp <SID>toggle_git_preview_hunk()
 nnoremap ,ga <Plug>(GitGutterStageHunk)
 nnoremap ,gu <Plug>(GitGutterUndoHunk)
+nnoremap ,gr <cmd>GitGutter<CR>
 
 " -------------------------------------------------------------------------
 " preservim/vim-markdown
@@ -558,6 +567,9 @@ let g:vim_markdown_follow_anchor = 0
 
 let g:vim_markdown_no_default_key_mappings = 1
 
+" markdont
+let g:markdown_fenced_languages = ['python', 'shell=sh', 'console=sh', 'vim']
+
 " -------------------------------------------------------------------------
 " preservim/vim-indent-guides
 " -------------------------------------------------------------------------
@@ -570,7 +582,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=235
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235
 
 " -----------------------------------------------------------------------------
-" Plugin settings
+" Plugin settings }
 " =============================================================================
 
 
