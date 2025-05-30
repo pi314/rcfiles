@@ -19,10 +19,13 @@ highlight Search     guifg=Black        guibg=Yellow    gui=bold
 highlight Search     ctermfg=Black      ctermbg=Yellow
 
 highlight Visual     guifg=#404040                      gui=bold
-highlight Visual                                        cterm=reverse
+highlight Visual     ctermfg=NONE       ctermbg=NONE    cterm=reverse
 
 highlight Cursor     guifg=Black        guibg=Green     gui=bold
 highlight Cursor     ctermfg=Black      ctermbg=Green   cterm=bold
+
+highlight CursorLine                    ctermbg=239     cterm=NONE
+highlight CursorLineNr                  ctermbg=239     cterm=NONE
 
 highlight Special    guifg=Orange
 highlight Special    ctermfg=Red
