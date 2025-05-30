@@ -8,7 +8,7 @@
     ls = ls-files
     ci = commit -v
     co = checkout
-    st = status
+    st = status -s
     d = difftool
     root = rev-parse --show-toplevel
     unstage = restore --staged
