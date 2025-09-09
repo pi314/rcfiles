@@ -3,7 +3,7 @@
 import sys
 import time
 
-from os.path import basename
+from os.path import basename, exists
 
 
 def print_stderr(*args, **kwargs):
@@ -31,35 +31,55 @@ def main(prog, argv):
     if '-h' in argv or '--help' in argv:
         usage(prog)
 
-    if len(argv) not in (0, 1):
-        usage(prog)
-
     delay = 1
+    files = []
 
-    if len(sys.argv) == 2:
-        arg = sys.argv[1]
-        try:
-            if '.' in sys.argv[1]:
-                delay = float(arg)
+    while argv:
+        if argv[0] in ('-d', '--delay'):
+            argv.pop(0)
+            try:
+                if '.' in argv[0]:
+                    delay = float(argv[0])
+                else:
+                    delay = int(argv[0])
+            except ValueError:
+                error('Delay must be an integer or a float number')
+
+        elif argv[0] == '-':
+            files.append(sys.stdin)
+
+        elif argv[0].startswith('-'):
+            error('Unknown option:', argv[0])
+
+        else:
+            if exists(argv[0]):
+                files.append(argv[0])
             else:
-                delay = int(arg)
-        except ValueError:
-            error('Delay must be an integer or a float number')
+                error('File not exists:', argv[0])
 
-    if sys.stdin.isatty():
-        sponge_mode = True
-    else:
-        sponge_mode = False
+        argv.pop(0)
 
-    if sponge_mode:
-        data_source = [line for line in sys.stdin]
-    else:
-        data_source = sys.stdin
+    if not files:
+        files.append(sys.stdin)
 
-    for line in data_source:
-        sys.stdout.write(line)
-        sys.stdout.flush()
-        time.sleep(delay)
+    try:
+        file = None
+        for path in files:
+            if path is sys.stdin:
+                file = sys.stdin
+            else:
+                file = open(path, 'r', encoding='utf-8')
+
+            for line in file:
+                sys.stdout.write(line)
+                sys.stdout.flush()
+                time.sleep(delay)
+
+            file.close()
+    except:
+        if file:
+            file.close()
+        sys.exit(1)
 
 
 if __name__ == '__main__':
