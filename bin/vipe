@@ -13,8 +13,6 @@ import subprocess as sub
 import sys
 import tempfile
 
-
-
 def main():
     lines = []
     stdin_backup = sys.stdin
@@ -46,8 +44,6 @@ def main():
 
     for line in lines:
         sys.stdout.write(line)
-
-
 
 if __name__ == '__main__':
     try:
