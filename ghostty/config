@@ -18,6 +18,9 @@ theme = pi314
 # theme = wez
 # theme = deep
 
+background-opacity = 0.7
+#background-blur = true
+
 font-family = Menlo, Lantinghei TC
 font-size = 20
 cursor-style = block
