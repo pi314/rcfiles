@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess as sub
+
+
+def print_stderr(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
+def main(prog, argv):
+    if argv:
+        sub.call(['open'] + argv)
+        sys.exit(0)
+
+    if sys.stdin.isatty():
+        sub.call(['open', '.'])
+        sys.exit(0)
+
+    files = []
+    for line in sys.stdin:
+        files.append(line.rstrip('\r\n'))
+    sub.call(['open'] + files)
+
+if __name__ == '__main__':
+    try:
+        main(sys.argv[0], sys.argv[1:])
+    except KeyboardInterrupt:
+        print_stderr('KeyboardInterrupt')
+    except sub.CalledProcessError:
+        sys.exit(1)
