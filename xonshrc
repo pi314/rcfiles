@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import xonsh
 
 import os
@@ -9,14 +7,10 @@ import subprocess as sub
 import sys
 import unicodedata
 
-from xonsh.completers.tools import RichCompletion
 from datetime import datetime
-from prompt_toolkit.key_binding import vi_state
 from shutil import which
 
-
-$VI_MODE = True
-# $UPDATE_PROMPT_ON_KEYPRESS = True
+from xonsh.completers.tools import RichCompletion
 
 
 color = lambda c: lambda s: '{' + c + '}' + str(s) + '{RESET}'
@@ -66,7 +60,8 @@ class run:
 # -----------------------------------------------------------------------------
 
 prompt_xonsh_version = black('[xonsh-{}]'.format(xonsh.__version__, ))
-prompt_py_ver = black('py{}.{}'.format(sys.version_info.major, sys.version_info.minor))
+py_ver = 'py{}.{}'.format(sys.version_info.major, sys.version_info.minor)
+prompt_py_ver = black(py_ver)
 
 
 def lrtn(pos=1):
@@ -100,25 +95,6 @@ def prompt_cwd():
 
     # return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[' + shrinkuser(cwd) + ']')
     return dark_green(('[' * len(xonsh.dirstack.DIRSTACK)) + '[{cwd}]')
-
-
-def vi_mode():
-    state = __xonsh__.shell.shell.prompter.app.vi_state
-    mode = state.input_mode
-
-    if mode == vi_state.InputMode.INSERT:
-        return black('[' + prompt_py_ver + ']')
-
-    elif mode == vi_state.InputMode.INSERT_MULTIPLE:
-        ret = 'INSERT_MULTIPLE'
-    elif mode == vi_state.InputMode.NAVIGATION:
-        ret = 'NORMAL'
-    elif mode == vi_state.InputMode.REPLACE:
-        ret = 'REPLACE'
-    else:
-        ret = 'NORMAL'
-
-    return cyan('[' + ret + ']')
 
 
 def prompt_venv():
@@ -174,8 +150,9 @@ def prompt_git_info():
 
 
 def prompt_jobs():
-    if xonsh.jobs.XSH.all_jobs:
-        return dark_blue('jobs:' + str(len(xonsh.jobs.XSH.all_jobs)))
+    pass
+    # if xonsh.jobs.XSH.all_jobs:
+    #     return dark_blue('jobs:' + str(len(xonsh.jobs.XSH.all_jobs)))
 
 
 def prompt_user():
@@ -209,17 +186,21 @@ $PROMPT = prompt_full
 aliases['up'] = 'cd ..'
 
 
-if which('exa'):
-    _lh = ['exa', '--long', '--header', '--binary', '--classify', '--time-style', 'long-iso']
+if which('eza'):
+    _lh = 'eza --long --header --binary --classify --time-style long-iso --no-quotes --color-scale-mode=fixed'.split()
     aliases['lh'] = _lh
     aliases['l'] = _lh
     aliases['la'] = _lh + ['-a']
     aliases['lt'] = _lh + ['--tree']
-    aliases['l1'] = 'exa -1'
+    aliases['l1'] = 'eza -1'
 
-
-if which('bat'):
-    aliases['cat'] = 'bat'
+else:
+    _lsl = ['ls', '-l']
+    aliases['lh'] = _lsl
+    aliases['l'] = _lsl
+    aliases['la'] = _lsl + ['-a']
+    aliases['lt'] = _lsl + ['--tree']
+    aliases['l1'] = 'ls -1'
 
 
 def _o(args):
@@ -427,7 +408,7 @@ except:
     $COMPLETIONS_MENU_ROWS = 10
 
 
-![completer remove cd]
+# ![completer remove cd]
 ![completer remove path]
 ![completer remove environment_vars]
 
