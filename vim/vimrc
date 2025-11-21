@@ -307,7 +307,7 @@ nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
 if has("win32")
     nnoremap ,v :tabedit $HOME/vimfiles<CR>
 else
-    nnoremap ,v :tabedit $HOME/.vim/vimrc<CR>
+    nnoremap ,v :tabedit $HOME/.vim<CR>
 endif
 
 nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
@@ -437,6 +437,7 @@ augroup templates
     autocmd BufNewFile *.py r $HOME/.vim/templates/template.py | 1d
     autocmd BufNewFile *.c r $HOME/.vim/templates/template.c | 1d
     autocmd BufNewFile *.cpp r $HOME/.vim/templates/template.cpp | 1d
+    autocmd BufNewFile *.html r $HOME/.vim/templates/template.html | 1d
 augroup END
 
 
@@ -491,11 +492,13 @@ let g:todo_next_checkbox = '<C-c>'
 let g:todo_select_checkbox = '<C-k>'
 
 " change nerdtree arrows
-let g:NERDTreeMapOpenInTab = 'tt'
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '~'
 let g:nerdtree_tabs_open_on_gui_startup = 0
 
+" -------------------------------------------------------------------------
+" pi314/ime.vim
+" -------------------------------------------------------------------------
 let g:ime_plugins = ['builtin_boshiamy', 'builtin_kana', 'zhuyin', 'pinyin', 'builtin_chewing', 'builtin_unicode']
 let g:ime_plugins += ['emoji', 'runes', 'wide', 'braille']
 " let g:ime_select_mode_style = 'window'
