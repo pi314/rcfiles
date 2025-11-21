@@ -259,6 +259,13 @@ vnoremap <silent> ,t :s/\v\s+$//e<CR>
 " Hide Q mapping
 nnoremap Q <nop>
 
+onoremap a' 2i'
+onoremap a" 2i"
+onoremap a` 2i`
+xnoremap a' 2i'
+xnoremap a" 2i"
+xnoremap a` 2i`
+
 " =============================================================================
 " Handy function to toggle all window in all tabs
 " -----------------------------------------------------------------------------
