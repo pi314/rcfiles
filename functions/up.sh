@@ -1,17 +1,18 @@
-up_help () {
+_up_help () {
+    dollar="\033[38;5;135m$\033[m"
     echo 'Usage:'
-    echo '    up -h             -- show this help page and exit'
-    echo '    up                -- same as cd ..'
-    echo '    up dir            -- cd up to folder named dir'
-    echo '    up dir subdir     -- cd up to folder named dir, then cd to subdir'
-    echo '    up /some/path     -- same as cd /some/path'
-    echo '    up /some/path dir -- same as cd /some/path/dir'
+    echo "${dollar}" 'up -h             -- show this help page and exit'
+    echo "${dollar}" 'up                -- same as cd ..'
+    echo "${dollar}" 'up dir            -- cd up to folder named dir'
+    echo "${dollar}" 'up dir subdir     -- cd up to folder named dir, then cd to subdir'
+    echo "${dollar}" 'up /some/path     -- same as cd /some/path'
+    echo "${dollar}" 'up /some/path dir -- same as cd /some/path/dir'
 }
 
 
 up () {
     if [ "$1" = '-h' ] || [ $# -gt 2 ]; then
-        up_help
+        _up_help
         return 1
     fi
 
