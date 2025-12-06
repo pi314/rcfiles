@@ -37,5 +37,5 @@ shell-integration-features = false
 confirm-close-surface = false
 quit-after-last-window-closed = true
 
-keybind = cmd+up=text:\x15cd ..\n
-keybind = cmd+down=text:\x15cd -\n
+keybind = cmd+up=text:\x15cd..\n
+keybind = cmd+down=text:\x15cd-\n
