@@ -80,8 +80,6 @@ else
     }
 fi
 
-date_str="${cyan}%D{%m/%d}${end}"
-time_str="${cyan}%D{%H:%M}${end}"   # %D{...} man strftime
 vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
 uname_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
@@ -174,6 +172,10 @@ hook_pre_prompt () {
     if [ -n "${vg}" ] || [ -n "${jbs}" ] ; then
         p="${lcs_bar}${vg}${jbs}${newline}"
     fi
+
+    # Update date/time str here as zsh %D{} refreshes when terminal resize
+    date_str="${cyan}$(date +'%m/%d')${end}"
+    time_str="${cyan}$(date +'%H:%M')${end}"
 
     p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}
 ${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
