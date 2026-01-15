@@ -29,7 +29,7 @@ cd-- () {
 
     case "$CWD_PROBE/" in
         "$CWD"*)
-            echo "$PWD\033[38;5;135m${CWD_PROBE:${#PWD}}\033[m"
+            echo -e "$PWD\033[38;5;135m${CWD_PROBE:${#PWD}}\033[m"
                 ;;
         *)  echo Path incorrect
             return 1 ;;

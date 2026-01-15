@@ -17,14 +17,15 @@ cd++ () {
 
     case "$CWD_PROBE/" in
         "$CWD"*)
-            down="${${CWD_PROBE:${#PWD}}#/}"
-            down="${down%%/*}"
+            down="${CWD_PROBE:${#PWD}}" # substring
+            down="${down#/}"            # trim leading slash
+            down="${down%%/*}"          # trim everything after first slash
 
             if [ -d "$down" ]; then
                 cd "$down"
             fi
 
-            echo "$PWD\033[38;5;135m${CWD_PROBE:${#PWD}}\033[m"
+            echo -e "$PWD\033[38;5;135m${CWD_PROBE:${#PWD}}\033[m"
             ;;
         *)
             echo 'CWD_PROBE does not under PWD'
