@@ -13,13 +13,14 @@ cd-- () {
     else
         CWD="$PWD/"
     fi
+
     case "$CWD_PROBE/" in
         "$CWD"*) ;;
         "$CWD") ;;
-        *)  CWD_PROBE="$PWD";;
+        *) CWD_PROBE="$PWD" ;;
     esac
 
-    cd ..
+    cd "$(dirname "${PWD}")"
 
     if [ "$PWD" = '/' ]; then
         CWD="/"
