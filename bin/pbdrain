@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+
+import sys
+import argparse
+import threading
+import subprocess
+
+
+def main():
+    parser = argparse.ArgumentParser(
+            prog='pbpoll',
+            description='Poll clipboard with pbcopy and pbpaste and print to stdout',
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-i', '--interval', help='polling interval in seconds', type=float, default=0.2)
+
+    args = parser.parse_args()
+
+    stop = threading.Event()
+    def pb_thread():
+        # Clean up clipboard
+        subprocess.run(['pbcopy'], stdin=subprocess.DEVNULL)
+
+        prev_output = None
+        while not stop.is_set():
+            # Poll clipboard with pbpaste
+            output = subprocess.check_output(['pbpaste'], encoding='utf-8')
+            if not output or output == prev_output:
+                stop.wait(args.interval)
+                continue
+
+            prev_output = output
+
+            # Strip a single trailing newline if present
+            if output[-1] == '\n':
+                output = output[:-1]
+
+            # Print copied lines, this compensate the stripped trailing newline
+            for line in output.split('\n'):
+                print(line)
+
+            # Instead of time.sleep(), use threading.Event() that is interruptable
+            stop.wait(args.interval)
+
+    def pb_thread_entry():
+        try:
+            pb_thread()
+        except:
+            pass
+
+    t = threading.Thread(target=pb_thread_entry, daemon=True)
+    t.start()
+
+    try:
+        input()
+    except:
+        pass
+
+    stop.set()
+
+    try:
+        t.join()
+    except:
+        pass
+
+
+if __name__ == '__main__':
+    main()
