@@ -311,11 +311,18 @@ nnoremap ,z     :call <SID>toggle_opt('foldenable', 1)<CR>
 nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
 " =============================================================================
 
-if has("win32")
-    nnoremap ,v :tabedit $HOME/vimfiles<CR>
-else
-    nnoremap ,v :tabedit $HOME/.vim<CR>
-endif
+function! s:edit_vimrc ()
+    if !(bufname('%') == '' && &modified == 0 && line('$') == 1 && getline(1) == '')
+        tabedit
+    endif
+
+    if has("win32")
+        edit $HOME/vimfiles
+    else
+        edit $HOME/.vim
+    endif
+endfunction
+nnoremap ,v :call <SID>edit_vimrc()<CR>
 
 nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
 vnoremap ,* "vy:let @/ = '\V' . substitute(@v, "\n", '\\n', 'g') <bar> set hls <bar> echo @/<CR>
