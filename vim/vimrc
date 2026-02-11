@@ -537,27 +537,28 @@ nnoremap <bar><bar> <cmd>TableModeToggle<CR>
 " -------------------------------------------------------------------------
 " airblade/vim-gitgutter
 " -------------------------------------------------------------------------
-function! s:git_gutter_diff_orig ()
+function! s:git_gutter_diff()
     if &buftype == 'nofile' && &diff
         quit
-
-    else
-        let my_gitgutter_buffers = filter(range(1, bufnr('$')), 'getbufvar(v:val, "git_gutter_orig_file") == "' . @% . '"')
-        if len(my_gitgutter_buffers)
-            exec 'bdelete ' . string(my_gitgutter_buffers[0])
-            return
-        endif
-
-        let git_gutter_orig_file = @%
-        GitGutterDiffOrig
-        wincmd p
-        let b:git_gutter_orig_file = git_gutter_orig_file
-        wincmd p
-
+        return
     endif
-endfunction
 
-nnoremap ,d     :call <SID>git_gutter_diff_orig()<CR>zz
+    let thisfile = fnameescape(@%)
+    let my_gitgutter_buffers = filter(
+                \ range(1, bufnr('$')),
+                \ 'getbufvar(v:val, "git_gutter_associate_file") == thisfile')
+    if len(my_gitgutter_buffers)
+        exec 'bdelete ' . string(my_gitgutter_buffers[0])
+        return
+    endif
+
+    GitGutterDiffOrig
+    wincmd p
+    let b:git_gutter_associate_file = thisfile
+    wincmd p
+endfunction
+nnoremap ,d :call <SID>git_gutter_diff()<CR>zz
+
 highlight SignColumn                ctermbg=0
 highlight GitGutterAdd    ctermfg=2 ctermbg=0
 highlight GitGutterChange ctermfg=3 ctermbg=0
@@ -567,9 +568,11 @@ function! s:toggle_git_preview_hunk ()
     return gitgutter#hunk#is_preview_window_open() ? "\<c-w>z" : "\<Plug>(GitGutterPreviewHunk)"
 endfunction
 nnoremap <expr> ,gp <SID>toggle_git_preview_hunk()
+
+nnoremap <Plug> <Plug>(GitGutterPreviewHunk)
 nnoremap ,ga <Plug>(GitGutterStageHunk)
 nnoremap ,gu <Plug>(GitGutterUndoHunk)
-nnoremap ,gr <cmd>GitGutter<CR>
+nnoremap ,gr <cmd>GitGutterAll<CR>
 
 " -------------------------------------------------------------------------
 " preservim/vim-markdown
