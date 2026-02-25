@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+if command -v eza >/dev/null 2>&1 && false; then
+    eza -1 --no-quotes --tree "$@"
+elif command -v tree >/dev/null 2>&1 && false; then
+    tree "$@"
+elif command -v fd >/dev/null 2>&1 && false; then
+    fd --color=always "$@" | sort
+else
+    if [ $# -eq 0 ]; then
+        find . | sort
+    else
+        find "$@" | sort
+    fi
+fi

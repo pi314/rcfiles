@@ -1,42 +1,6 @@
-if command -v eza >/dev/null 2>&1 ; then
-    lh="eza --long --header --binary --classify --time-style long-iso --no-quotes --color-scale-mode=fixed"
-    alias l1='eza -1 --no-quotes'
-    alias l="$lh"
-    alias lh="$lh"
-    alias la="$lh -a"
-    alias lt="$lh --tree"
-else
-    if [[ $LS_VERSION == "BSD" ]]; then
-        ls='LC_ALL=C /usr/bin/env ls -GFv'
-    else
-        ls='ls --color=auto'
-    fi
-    alias l1="$ls -1"
-    alias ls1="$ls -1"
-    alias l="$ls -l"
-    alias la="$ls -al"
-    alias lh="$ls -lh"
-fi
-
 alias grep='grep --color=auto'
 
-if [[ "$ZSH_KERNEL_TYPE" == "CYGWIN" ]]; then
-    alias open='cygstart'
-    alias ping="cygstart cmd /K ping"
-    alias startx=startxwin
-fi
-
 alias sudo='sudo -E'
-
-# if command -v python3 >/dev/null 2>&1; then
-#     # Hey, there is Python 3 installed, why not use it?
-#     alias python=python3
-# fi
-#
-# if command -v pip3 >/dev/null 2>&1; then
-#     # There is pip 3 installed, use it
-#     alias pip=pip3
-# fi
 
 if command -v _pip >/dev/null 2>&1; then
     # Use pip's completion
@@ -46,14 +10,4 @@ fi
 alias -s py=python
 alias -s sh=sh
 
-if [[ "$ZSH_KERNEL_TYPE" == "FreeBSD" ]]; then
-    alias nc='nc -N'
-fi
-
-alias tor-ssh='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
-
 alias wtf='where'
-
-# if command -v bat >/dev/null 2>&1 ; then
-#     alias cat='bat'
-# fi

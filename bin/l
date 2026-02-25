@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if command -v eza >/dev/null 2>&1 ; then
+    exec eza --long --header --binary --classify --time-style long-iso --no-quotes --color-scale-mode=fixed "$@"
+else
+    exec ls -l "$@"
+fi
