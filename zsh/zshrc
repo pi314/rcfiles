@@ -7,6 +7,12 @@ source $HOME/.zshenv
 ###############################################################################
 fpath=($HOME/.rcfiles/zsh/completions "${fpath[@]}")
 
+zstyle ':completion:*:*:git:*' script $HOME/.rcfiles/zsh/completions/git-completion.bash
+
+if type brew &>/dev/null; then
+    FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+fi
+
 autoload -Uz compinit
 compinit -u
 
