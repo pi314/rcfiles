@@ -13,6 +13,7 @@ fi
 export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
 
 folders=(
+    "/opt/homebrew/bin"
     "/opt/local/bin"
     "/opt/local/sbin"
     "/usr/local/sbin"
