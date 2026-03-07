@@ -1,5 +1,5 @@
 " =============================================================================
-" Plug initialization
+" Plug initialization {
 " -----------------------------------------------------------------------------
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -42,11 +42,11 @@ endif
 
 call plug#end()
 " -----------------------------------------------------------------------------
-" Plug initialization
+" Plug initialization }
 " =============================================================================
 
 " =============================================================================
-" Options
+" Options {
 " -----------------------------------------------------------------------------
 
 " Encoding settings
@@ -155,12 +155,12 @@ set ttymouse=sgr
 set t_BE=
 
 " -----------------------------------------------------------------------------
-" Options
+" Options }
 " =============================================================================
 
 
 " =============================================================================
-" Mappings
+" Mappings {
 " -----------------------------------------------------------------------------
 
 " move moving between long wrapped lines
@@ -259,12 +259,33 @@ vnoremap <silent> ,t :s/\v\s+$//e<CR>
 " Hide Q mapping
 nnoremap Q <nop>
 
+" Sane mappings for va' va" va`
 onoremap a' 2i'
 onoremap a" 2i"
 onoremap a` 2i`
 xnoremap a' 2i'
 xnoremap a" 2i"
 xnoremap a` 2i`
+
+" Tmux-like break-pane and join-pane for window
+nnoremap <C-w>! <C-w>T
+
+function! MyMappingSplitWindow ()
+    if tabpagenr() == tabpagenr('$')
+        return
+    endif
+
+    vnew
+    tabn
+    let bufnr = bufnr()
+    tabp
+    exec 'buffer ' . bufnr
+
+    tabn
+    close
+    tabp
+endfunction
+nnoremap <silent> <C-w>@ :call MyMappingSplitWindow()<CR>
 
 " =============================================================================
 " Handy function to toggle all window in all tabs
@@ -457,11 +478,11 @@ nnoremap ;; :call MyMappingSaveOrReload()<CR>
 inoremap ;j <cmd>:call MyMappingSaveOrReload()<CR>
 
 " -----------------------------------------------------------------------------
-" Mappings
+" Mappings }
 " =============================================================================
 
 " =============================================================================
-" Special settings
+" Special settings {
 " -----------------------------------------------------------------------------
 
 " Load template file when creating new files
@@ -513,7 +534,7 @@ endfunction
 command! ExpandFileListToTab call ExpandFileListToTab()
 
 " -----------------------------------------------------------------------------
-" Special settings
+" Special settings }
 " =============================================================================
 
 
