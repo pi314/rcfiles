@@ -488,10 +488,11 @@ inoremap ;j <cmd>:call MyMappingSaveOrReload()<CR>
 " Load template file when creating new files
 augroup templates
     autocmd!
-    autocmd BufNewFile *.py r $HOME/.vim/templates/template.py | 1d
-    autocmd BufNewFile *.c r $HOME/.vim/templates/template.c | 1d
-    autocmd BufNewFile *.cpp r $HOME/.vim/templates/template.cpp | 1d
-    autocmd BufNewFile *.html r $HOME/.vim/templates/template.html | 1d
+    for fpath in globpath($HOME . '/.vim/templates', 'template.*', 0, 1)
+        let fname = fnamemodify(fpath, ':t')
+        let suffix = matchlist(fname, '\v^template\.(.*)$')[1]
+        exec 'autocmd BufNewFile *.' . suffix . ' r ' . fpath . ' | 1d'
+    endfor
 augroup END
 
 
