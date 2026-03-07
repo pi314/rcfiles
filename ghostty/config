@@ -28,7 +28,7 @@ background-opacity = 0.7
 #font-family = Menlo
 font-family = "jf open 粉圓"
 
-font-size = 20
+font-size = 18
 cursor-style = block
 cursor-text = #010101
 shell-integration = none
@@ -39,3 +39,4 @@ quit-after-last-window-closed = true
 
 keybind = cmd+up=text:\x15cd--\n
 keybind = cmd+down=text:\x15cd++\n
+keybind = cmd+quote=text:\x27
