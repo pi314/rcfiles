@@ -437,6 +437,25 @@ function! s:highlight_pane ()
 endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
+
+function! MyMappingSaveOrReload ()
+    if &filetype == 'nerdtree'
+        call feedkeys('R')
+        return
+    endif
+
+    if &modified
+        write
+    else
+        let winview = winsaveview()
+        edit
+        call winrestview(winview)
+    endif
+endfunction
+nnoremap ;j :call MyMappingSaveOrReload()<CR>
+nnoremap ;; :call MyMappingSaveOrReload()<CR>
+inoremap ;j <cmd>:call MyMappingSaveOrReload()<CR>
+
 " -----------------------------------------------------------------------------
 " Mappings
 " =============================================================================
