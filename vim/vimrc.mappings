@@ -1,0 +1,303 @@
+" move moving between long wrapped lines
+" must use nnoremap = no recursive map
+" nnoremap k gk
+" nnoremap j gj
+" vnoremap k gk
+" vnoremap j gj
+
+nnoremap th :tabp<CR>
+nnoremap tl :tabn<CR>
+nnoremap tt :tabe<SPACE>
+if exists(':tabm')
+    nnoremap tp :tabm -1<CR>
+    nnoremap tn :tabm +1<CR>
+else
+    nnoremap tp :execute "tabmove" (tabpagenr()-2)<CR>
+    nnoremap tn :execute "tabmove" (tabpagenr()+1)<CR>
+endif
+nnoremap t! :tabn 1<CR>
+nnoremap t@ :tabn 2<CR>
+nnoremap t# :tabn 3<CR>
+nnoremap t$ :tabn 4<CR>
+nnoremap t% :tabn 5<CR>
+nnoremap t^ :tabn 6<CR>
+nnoremap t& :tabn 7<CR>
+nnoremap t* :tabn 8<CR>
+nnoremap t( :tabn 9<CR>
+
+" Insert a new line in normal mode, I just lazy
+nnoremap <expr> <CR> &ma ? "o\<ESC>0\"_D" : "\<CR>"
+
+" map these by hand
+inoremap <C-h> <BS>
+nnoremap <C-h> <BS>
+
+" hot key for macro register ``q`` / ``z``
+" Do register ``q`` / ``z``
+nnoremap dq @q
+nnoremap dz @z
+
+" redraw syntax highlighting
+nnoremap <leader><C-l> :syntax sync fromstart<CR>
+
+" redraw, also wipe search highlighting
+nnoremap <C-l> :noh<CR><C-l>
+
+" convenient copy to system clipboard
+vnoremap Y "*ygv<ESC>
+nnoremap Y "*y
+vnoremap y ygv<ESC>
+
+" QUIT!
+command! Q execute "q!"
+command! Qa execute "qa!"
+command! QA execute "qa!"
+
+" WRITE!
+cnoremap w!! w !sudo tee %
+
+" open file in new tab
+nnoremap gF <C-w>gF
+
+" indenting in visual mode
+vnoremap > >gv
+vnoremap < <gv
+
+nnoremap gp `[V`]
+
+
+function! CleanUnusedBuffers ()
+    for l:bnr in range(1, bufnr('$'))
+        if bufexists(l:bnr) && !bufloaded(l:bnr)
+            execute "bwipeout ". l:bnr
+        endif
+    endfor
+endfunction
+nnoremap <SPACE> :call CleanUnusedBuffers()<CR>
+
+
+" Handy shortcut to create a scratch buffer
+function! s:new_scratch_buffer ()
+    if bufname('%') == '' && &modified == 0 && line('$') == 1 && getline(1) == ''
+    else
+        tabedit
+    endif
+    set buftype=nofile
+endfunction
+nnoremap ,s :call <SID>new_scratch_buffer()<CR>
+
+
+" Handy shortcut to trim trailing spaces
+nnoremap <silent> ,t :%s/\v\s+$//e<CR>
+vnoremap <silent> ,t :s/\v\s+$//e<CR>
+
+" Hide Q mapping
+nnoremap Q <nop>
+
+" Sane mappings for va' va" va`
+onoremap a' 2i'
+onoremap a" 2i"
+onoremap a` 2i`
+xnoremap a' 2i'
+xnoremap a" 2i"
+xnoremap a` 2i`
+
+" Tmux-like break-pane and join-pane for window
+nnoremap <C-w>! <C-w>T
+
+function! MyMappingSplitWindow ()
+    if tabpagenr() == tabpagenr('$')
+        return
+    endif
+
+    vnew
+    tabn
+    let bufnr = bufnr()
+    tabp
+    exec 'buffer ' . bufnr
+
+    tabn
+    close
+    tabp
+endfunction
+nnoremap <silent> <C-w>@ :call MyMappingSplitWindow()<CR>
+
+" =============================================================================
+" Handy function to toggle all window in all tabs
+" -----------------------------------------------------------------------------
+function! s:toggle_opt (option, scope)
+    if a:scope == 'all'
+        let l:my_tab_id = tabpagenr()
+        exec 'let l:option_value = &'. a:option
+        if !(l:option_value)
+            exec 'tabdo windo set '. a:option
+        else
+            exec 'tabdo windo set no'. a:option
+        endif
+
+        exec 'tabn '. l:my_tab_id
+
+    else
+        exec 'set '. a:option .'!'
+
+    endif
+
+    exec 'set '. a:option .'?'
+endfunction
+
+function! s:set_opt (option, enable)
+    if a:enable
+        exec 'set '. a:option
+    else
+        exec 'set no'. a:option
+    endif
+
+    exec 'set '. a:option .'?'
+endfunction
+" -----------------------------------------------------------------------------
+nnoremap ,C     :call <SID>toggle_opt('cursorline', 'all')<CR>
+nnoremap ,c     :call <SID>toggle_opt('cursorline', 1)<CR>
+
+nnoremap ,w     :call <SID>toggle_opt('wrap', 1)<CR>
+nnoremap ,W     :call <SID>toggle_opt('wrap', 'all')<CR>
+
+nnoremap ,i     :call <SID>toggle_opt('ignorecase', 1)<CR>
+
+nnoremap ,z     :call <SID>toggle_opt('foldenable', 1)<CR>
+nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
+" =============================================================================
+
+function! s:edit_vimrc ()
+    if !(bufname('%') == '' && &modified == 0 && line('$') == 1 && getline(1) == '')
+        tabedit
+    endif
+
+    if has("win32")
+        edit $HOME/vimfiles
+    else
+        edit $HOME/.vim
+    endif
+endfunction
+nnoremap ,v :call <SID>edit_vimrc()<CR>
+
+nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
+vnoremap ,* "vy:let @/ = '\V' . substitute(@v, "\n", '\\n', 'g') <bar> set hls <bar> echo @/<CR>
+
+
+function! s:MoveCursorLeftSoftTab ()
+    let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
+    let l:pos = col('.') - 1
+
+    let l:ts = &softtabstop
+    if l:ts == 0
+        let l:ts = &tabstop
+    endif
+
+    if l:left_indent < l:pos
+        return "\<Left>"
+    elseif l:pos % l:ts == 0
+        return repeat("\<Left>", l:ts)
+    else
+        return repeat("\<Left>", l:pos % l:ts)
+    endif
+endfunction
+function! s:MoveCursorRightSoftTab ()
+    let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
+    let l:pos = col('.') - 1
+
+    let l:ts = &softtabstop
+    if l:ts == 0
+        let l:ts = &tabstop
+    endif
+
+    if l:left_indent <= l:pos
+        return "\<Right>"
+    elseif (l:left_indent - l:pos) <= l:ts
+        return repeat("\<Right>", (l:left_indent - l:pos))
+    else
+        return repeat("\<Right>", l:ts - (l:pos % l:ts))
+    endif
+endfunction
+inoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
+inoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
+nnoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
+nnoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
+
+
+nnoremap [[ vi[o<esc>
+nnoremap ]] vi[<esc>
+
+
+vnoremap [[ <nop>
+vnoremap ]] <nop>
+
+
+" Resize window interactively
+function! s:resize_mode ()
+    let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l'}
+    let l:cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
+    let l:statusline_usage = 'Resize: HJKL hjkl q <space>'
+    let l:statusline_user = &l:statusline
+    let l:cc = &colorcolumn
+    call s:highlight_pane()
+    let &l:statusline = l:statusline_usage
+    redrawstatus
+    try
+        while 1
+            let l:key = nr2char(getchar())
+            if l:key == 'q' || l:key == 'Q' || l:key == ' '
+                break
+            elseif has_key(l:cmd_resize, l:key)
+                let l:winnr_cur = winnr()
+                if l:key == 'H' || l:key == 'L'
+                    wincmd l
+                    let l:winnr_probe = winnr()
+                elseif l:key == 'J' || l:key == 'K'
+                    wincmd j
+                    let l:winnr_probe = winnr()
+                endif
+                execute l:winnr_cur .'wincmd w'
+                execute 'wincmd '. l:cmd_resize[(l:key)][(l:winnr_cur == l:winnr_probe)]
+                call s:highlight_pane()
+            elseif has_key(l:cmd_focus, l:key)
+                let &l:statusline = l:statusline_user
+                let &colorcolumn = l:cc
+                execute 'wincmd '. l:cmd_focus[(l:key)]
+                let &l:statusline = l:statusline_usage
+                let l:cc = &colorcolumn
+                call s:highlight_pane()
+            endif
+            redraw
+        endwhile
+    catch
+    endtry
+    let &l:statusline = l:statusline_user
+    let &colorcolumn = l:cc
+endfunction
+function! s:highlight_pane ()
+    let &colorcolumn=join(range(1, winwidth(0)), ',')
+endfunction
+nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
+
+
+function! MyMappingSaveOrReload ()
+    if &buftype == 'nofile'
+        return
+    endif
+
+    if &filetype == 'nerdtree'
+        call feedkeys('R')
+        return
+    endif
+
+    if &modified
+        write
+    else
+        let winview = winsaveview()
+        edit
+        call winrestview(winview)
+    endif
+endfunction
+nnoremap <silent> ;j :call MyMappingSaveOrReload()<CR>
+nnoremap <silent> ;; :call MyMappingSaveOrReload()<CR>
+inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>

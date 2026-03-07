@@ -1,0 +1,109 @@
+" -------------------------------------------------------------------------
+" pi314/todo-or-not-todo.vim
+" -------------------------------------------------------------------------
+let g:todo_next_checkbox = '<C-c>'
+let g:todo_select_checkbox = '<C-k>'
+
+
+" -------------------------------------------------------------------------
+" pi314/ime.vim
+" -------------------------------------------------------------------------
+let g:ime_plugins = ['builtin_boshiamy', 'builtin_kana', 'zhuyin', 'pinyin', 'builtin_chewing', 'builtin_unicode']
+let g:ime_plugins += ['emoji', 'runes', 'wide', 'braille']
+" let g:ime_select_mode_style = 'window'
+let g:ime_boshiamy_custom_table = '~/.boshiamy.table'
+let g:ime_phonetic_custom_table = '~/.phonetic.table'
+let g:ime_enable_ime_buffer = 1
+
+let g:rst_style = 0
+
+let g:rst_title_style = 'shorten'
+let g:rst_title_length_step = 2
+
+let g:ime_braille_keys = '3ed4rfcv'
+
+
+" -------------------------------------------------------------------------
+" scrooloose/nerdtree
+" -------------------------------------------------------------------------
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '~'
+let g:nerdtree_tabs_open_on_gui_startup = 0
+
+
+" -------------------------------------------------------------------------
+" 'dhruvasagar/vim-table-mode'
+" -------------------------------------------------------------------------
+let g:table_mode_disable_mappings = 1
+let g:table_mode_disable_tableize_mappings = 1
+nnoremap <bar><bar> <cmd>TableModeToggle<CR>
+
+
+" -------------------------------------------------------------------------
+" airblade/vim-gitgutter
+" -------------------------------------------------------------------------
+function! s:git_gutter_diff()
+    if &buftype == 'nofile' && &diff
+        quit
+        return
+    endif
+
+    let thisfile = fnameescape(@%)
+    let my_gitgutter_buffers = filter(
+                \ range(1, bufnr('$')),
+                \ 'getbufvar(v:val, "git_gutter_associate_file") == thisfile')
+    if len(my_gitgutter_buffers)
+        exec 'bdelete ' . string(my_gitgutter_buffers[0])
+        return
+    endif
+
+    GitGutterDiffOrig
+    wincmd p
+    let b:git_gutter_associate_file = thisfile
+    wincmd p
+endfunction
+nnoremap ,d :call <SID>git_gutter_diff()<CR>zz
+
+highlight SignColumn                ctermbg=0
+highlight GitGutterAdd    ctermfg=2 ctermbg=0
+highlight GitGutterChange ctermfg=3 ctermbg=0
+highlight GitGutterDelete ctermfg=1 ctermbg=0
+
+function! s:toggle_git_preview_hunk ()
+    return gitgutter#hunk#is_preview_window_open() ? "\<c-w>z" : "\<Plug>(GitGutterPreviewHunk)"
+endfunction
+nnoremap <expr> ,gp <SID>toggle_git_preview_hunk()
+
+nnoremap <Plug> <Plug>(GitGutterPreviewHunk)
+nnoremap ,ga <Plug>(GitGutterStageHunk)
+nnoremap ,gu <Plug>(GitGutterUndoHunk)
+nnoremap ,gr <cmd>GitGutterAll<CR>
+
+
+" -------------------------------------------------------------------------
+" preservim/vim-markdown
+" -------------------------------------------------------------------------
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+let g:vim_markdown_folding_disabled = 1
+
+let g:vim_markdown_fenced_languages = ['python', 'shell', 'console=sh']
+
+let g:vim_markdown_follow_anchor = 0
+
+let g:vim_markdown_no_default_key_mappings = 1
+
+" markdont
+let g:markdown_fenced_languages = ['python', 'shell=sh', 'console=sh', 'vim']
+
+
+" -------------------------------------------------------------------------
+" preservim/vim-indent-guides
+" -------------------------------------------------------------------------
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_guide_size = 1
+nnoremap <silent> ,<bar> <Plug>IndentGuidesToggle
+
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=235
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=235

@@ -1,0 +1,117 @@
+" Encoding settings
+let $LANG="zh_TW.UTF-8"
+set encoding=utf8
+set langmenu=zh_TW.UTF-8
+try
+    language message zh_TW.UTF-8
+catch /E197/
+    language message en_US.UTF-8
+endtry
+
+if has("win32")
+    "reload menu with UTF-8 encoding
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
+    set guifont=Consolas:h14:cANSI
+endif
+
+if has("gui_macvim") && has("gui_running")
+    set guifont=Menlo:h18
+endif
+
+set fileformat=unix
+
+set ambiwidth=single
+
+" Show mode on bottom-left
+set showmode
+
+" Show command on bottom-right
+set showcmd
+
+
+set incsearch
+set hlsearch
+set colorcolumn=80  " put a vertical line on column 80
+
+let macvim_skip_colorscheme = 1
+
+colorscheme pi314
+
+
+" status line, show plugin modes
+function! VimTableModeStatusString ()
+    if exists('*tablemode#IsActive') && tablemode#IsActive()
+        return '[table]'
+    endif
+    return ''
+endfunction
+
+if !empty(glob('~/.vim/plugged/ime.vim'))
+    set statusline=%<%{ime#icon()}%{VimTableModeStatusString()}%f\ %h%m%r%=%y\ %-14.(%l,%c%V%)\ %P
+endif
+
+
+" Tab charactor related settings
+set expandtab       " changes user pressed TAB to spaces
+set smarttab
+set nosmartindent
+set autoindent
+set tabstop=4       " changes the width of the TAB character
+set shiftwidth=4    " >>, <<, == width and automatic indent width
+set softtabstop=4
+set listchars=tab:>-
+set list
+
+set wrap
+
+" Ignore case on searching
+set ignorecase
+
+" Show the coordinate of cursor
+set ruler
+
+" Enable backspace
+set backspace=indent,eol,start
+
+" Show line numbers
+set number
+
+" Status line
+set laststatus=2
+set wildmenu
+set wildmode=longest:list,full  " zsh-like completion
+
+set scrolloff=4
+set sidescrolloff=4
+
+" tell vim don't create {filename}~
+set nobackup
+set nowritebackup
+if exists('+persistent_undo')
+    " tell vim don't create .{filename}.un~
+    set noundofile
+endif
+
+" set fold method as marker
+set foldmethod=marker
+
+" Funny Setting
+set norightleft
+
+" Disable X11 clipboard, it help vim not hanging on start
+set clipboard=exclude:.*
+
+" new vertical split appear on right hand side
+set splitright
+set splitbelow
+
+set pastetoggle=<leader>p
+
+set virtualedit=block
+
+" Mouse settings
+set mouse=a
+set ttymouse=sgr
+
+set t_BE=

@@ -1,0 +1,54 @@
+
+" Load template file when creating new files
+augroup templates
+    autocmd!
+    for fpath in globpath($HOME . '/.vim/templates', 'template.*', 0, 1)
+        let fname = fnamemodify(fpath, ':t')
+        let suffix = matchlist(fname, '\v^template\.(.*)$')[1]
+        exec 'autocmd BufNewFile *.' . suffix . ' r ' . fpath . ' | 1d'
+    endfor
+augroup END
+
+
+function! s:jump_to_filename_linenum (fname)
+    let l:match = matchlist(a:fname, '\v^(%(\f|/)+):(\d+)$')
+
+    if len(l:match) && len(l:match[1]) && len(l:match[2])
+        exec 'edit ' . l:match[1]
+        call cursor(l:match[2], 1)
+        normal! zz^
+    endif
+endfunction
+
+augroup fnamelinenum
+    autocmd!
+    autocmd BufNewFile * nested call s:jump_to_filename_linenum(@%)
+augroup END
+
+
+function! ExpandFileListToTab ()
+    if &buftype != 'nofile'
+        return
+    endif
+
+    " echom getline(1)
+    " return
+
+    for i in range(1, line('$'))
+        let line = getline(i)
+        let m = matchlist(line, '\v^([^:]*)%(:([0-9]+)%(:.*)?)?$')
+        if m != []
+            if empty(m[2])
+                exec '$tabe '. m[1]
+            else
+                exec '$tabe +'. m[2] .' '. m[1]
+                normal zz
+            endif
+
+            tabn
+        endif
+    endfor
+
+    quit
+endfunction
+command! ExpandFileListToTab call ExpandFileListToTab()
