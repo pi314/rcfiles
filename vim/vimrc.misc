@@ -1,4 +1,3 @@
-
 " Load template file when creating new files
 augroup templates
     autocmd!
@@ -33,6 +32,21 @@ function! ExpandFileListToTab ()
 
     " echom getline(1)
     " return
+
+    let has_error = v:false
+    for i in range(1, line('$'))
+        let line = getline(i)
+        if !filereadable(line)
+            echohl Error
+            echom 'File not readable: '. line
+            echohl None
+            let has_error = v:true
+        endif
+    endfor
+
+    if has_error
+        return
+    endif
 
     for i in range(1, line('$'))
         let line = getline(i)
