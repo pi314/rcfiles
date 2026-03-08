@@ -2,10 +2,23 @@
 
 if [ -t 0 ]; then
     if [ $# -eq 0 ]; then
+        # $ v
+        # Open a scratch buffer
         vim '+set buftype=nofile'
     else
+        # $ v file file file
+        # Open files
         vim '+set tabpagemax=100' '+tab ball' "$@"
     fi
+
 else
-    vim - '+set buftype=nofile' '+ExpandFileListToTab'
+    if [ "$1" = '-' ]; then
+        # $ cmd | v -
+        # Collect stdin into a scratch buffer
+        vim - '+set buftype=nofile'
+    else
+        # $ ag ... | v
+        # Collect file list from stdin and open them
+        vim - '+set buftype=nofile' '+ExpandFileListToTab'
+    fi
 fi
