@@ -111,3 +111,4 @@ zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
 KEYTIMEOUT=1
+setopt autocd
