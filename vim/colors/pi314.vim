@@ -24,8 +24,8 @@ highlight Visual     ctermfg=NONE       ctermbg=NONE    cterm=reverse
 highlight Cursor     guifg=Black        guibg=Green     gui=bold
 highlight Cursor     ctermfg=Black      ctermbg=Green   cterm=bold
 
-highlight CursorLine                    ctermbg=239     cterm=NONE
-highlight CursorLineNr                  ctermbg=239     cterm=NONE
+highlight CursorLine                    ctermbg=236     cterm=NONE
+highlight CursorLineNr                  ctermbg=236     cterm=NONE
 
 highlight Special    guifg=Orange
 highlight Special    ctermfg=Red
@@ -65,11 +65,11 @@ highlight TabLineFill   gui=bold    guifg=LightGray     guibg=LightGray
 
 
 " Trailing spaces
-highlight ExtraWhitespace               guibg=Red
-highlight ExtraWhitespace               ctermbg=Red
+highlight ExtraWhitespace   guibg=Red
+highlight ExtraWhitespace   ctermbg=Red
 autocmd BufWinEnter * match ExtraWhitespace /\v\s+$/
 
 
 " Diff highlights
-highlight DiffText      ctermfg=black   ctermbg=yellow
+highlight DiffText      ctermfg=yellow  ctermbg=None  cterm=reverse
 highlight DiffChange                    ctermbg=DarkMagenta
