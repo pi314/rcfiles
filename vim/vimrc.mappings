@@ -301,3 +301,7 @@ endfunction
 nnoremap <silent> ;j :call MyMappingSaveOrReload()<CR>
 nnoremap <silent> ;; :call MyMappingSaveOrReload()<CR>
 inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>
+
+
+" Handy shortcut that shows highlight group under cursor
+nnoremap <leader>h :echom map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')<CR>
