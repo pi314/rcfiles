@@ -3,46 +3,50 @@
 " =============================================================================
 let s:vimrc_dir = expand('<sfile>:p:h') . '/'
 
-function! s:include_opt (fpath)
-    if !empty(a:fpath) && filereadable(a:fpath)
-        exec 'source ' . expand(a:fpath)
+function! s:include (fpath)
+    let fpath = expand(a:fpath)
+    if !filereadable(fpath)
+        return v:false
     endif
+
+    exec 'source ' . expand(fpath)
+    return v:true
 endfunction
 
 
 " =============================================================================
 " Plug initialization
 " =============================================================================
-call s:include_opt(s:vimrc_dir . 'vimrc.plugins')
+call s:include(s:vimrc_dir . 'vimrc.plugins')
 
-call s:include_opt('~/.vimrc-plugins.local')
+call s:include('~/.vimrc-plugins.local')
 
 
 " =============================================================================
 " Options
 " =============================================================================
-call s:include_opt(s:vimrc_dir . 'vimrc.options')
+call s:include(s:vimrc_dir . 'vimrc.options')
 
 
 " =============================================================================
 " Mappings {
 " =============================================================================
-call s:include_opt(s:vimrc_dir . 'vimrc.mappings')
+call s:include(s:vimrc_dir . 'vimrc.mappings')
 
 
 " =============================================================================
 " Special settings {
 " =============================================================================
-call s:include_opt(s:vimrc_dir . 'vimrc.misc')
+call s:include(s:vimrc_dir . 'vimrc.misc')
 
 
 " =============================================================================
 " Plugin settings
 " =============================================================================
-call s:include_opt(s:vimrc_dir . 'vimrc.plugin-settings')
+call s:include(s:vimrc_dir . 'vimrc.plugin-settings')
 
 
 " =============================================================================
 " .vimrc.local
 " =============================================================================
-call s:include_opt('~/.vimrc.local')
+call s:include('~/.vimrc.local')
