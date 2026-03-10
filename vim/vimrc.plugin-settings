@@ -87,14 +87,14 @@ let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 let g:vim_markdown_folding_disabled = 1
 
-let g:vim_markdown_fenced_languages = ['python', 'shell', 'console=sh']
+let g:vim_markdown_fenced_languages = ['python', 'shell', 'console']
 
 let g:vim_markdown_follow_anchor = 0
 
 let g:vim_markdown_no_default_key_mappings = 1
 
 " markdont
-let g:markdown_fenced_languages = ['python', 'shell=sh', 'console=sh', 'vim']
+let g:markdown_fenced_languages = ['python', 'shell=sh', 'console', 'vim']
 
 
 " -------------------------------------------------------------------------

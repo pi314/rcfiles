@@ -30,7 +30,7 @@ Plug 'pi314/logos.vim'
 Plug 'preservim/vim-indent-guides'
 Plug 'mg979/vim-visual-multi'
 Plug 'airblade/vim-gitgutter'
-Plug 'preservim/vim-markdown'
+" Plug 'preservim/vim-markdown'
 Plug 'pi314/markdont.vim', { 'frozen': 1 }
 
 if !empty(glob('~/.vimrc-plugins.local'))
