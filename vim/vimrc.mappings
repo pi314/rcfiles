@@ -304,4 +304,16 @@ inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>
 
 
 " Handy shortcut that shows highlight group under cursor
-nnoremap <leader>h :echom map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')<CR>
+function! MyMappingLeaderH ()
+    for hlgroup_id in synstack(line('.'), col('.'))
+        let hlgroup_name = synIDattr(hlgroup_id, "name")
+        exec 'highlight ' . hlgroup_name
+
+        let hlgroup_linked_id = synIDtrans(hlgroup_id)
+        if hlgroup_linked_id && hlgroup_linked_id != hlgroup_id
+            exec 'highlight ' . synIDattr(hlgroup_linked_id, "name")
+        endif
+    endfor
+    return ''
+endfunction
+nnoremap <silent> <leader>h :call MyMappingLeaderH()<CR>
