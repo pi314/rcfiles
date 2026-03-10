@@ -43,6 +43,10 @@ highlight Type                                          gui=NONE
 highlight Type       ctermfg=Green
 
 
+highlight Error ctermfg=15  ctermbg=1       cterm=NONE
+highlight Error guifg=Black guibg=DarkRed   gui=NONE
+
+
 " Vertical line color settings
 highlight ColorColumn guibg=Blue
 highlight ColorColumn ctermbg=Blue
