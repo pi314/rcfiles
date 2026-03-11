@@ -298,8 +298,22 @@ function! MyMappingSaveOrReload ()
         call winrestview(winview)
     endif
 endfunction
+
+function! MyMappingSaveOrReloadAllWindows ()
+    let winnr = winnr()
+    windo call MyMappingSaveOrReload()
+    exec winnr . 'wincmd w'
+endfunction
+
+function! MyMappingSaveOrReloadAllTabs ()
+    let tabnr = tabpagenr()
+    tabdo call MyMappingSaveOrReloadAllWindows()
+    exec 'tabn ' . tabnr
+endfunction
+
 nnoremap <silent> ;j :call MyMappingSaveOrReload()<CR>
 nnoremap <silent> ;; :call MyMappingSaveOrReload()<CR>
+nnoremap <silent> <C-w>;; :call MyMappingSaveOrReloadAllTabs()<CR>
 inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>
 
 
