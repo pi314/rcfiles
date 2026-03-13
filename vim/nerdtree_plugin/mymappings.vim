@@ -1,9 +1,10 @@
 function! MyMappingNerdTreeLeftKey (node)
     if a:node.path.isDirectory && a:node.isOpen
-        if a:node.getCascadeRoot().path.str() . '/' == getline('.')
+        if synIDattr(synID(line('.'), col('.'), v:false), 'name') == 'NERDTreeCWD'
+            " This workaround is so fucking stupid lol
             " The dirnode is root node, close all children
             call g:NERDTreeKeyMap.Invoke(g:NERDTreeMapCloseChildren)
-            normal! ^
+            call s:position_cursor()
         else
             " The dirnode is open, close it
             call a:node.close()
@@ -45,6 +46,11 @@ endfunction
 
 
 function! s:position_cursor ()
+    if synIDattr(synID(line('.'), col('.'), v:false), 'name') == 'NERDTreeCWD'
+        normal! ^
+        return
+    endif
+
     let del = stridx(getline('.'), g:NERDTreeNodeDelimiter)
     if del != -1
         call cursor(line('.'), del + 1)
