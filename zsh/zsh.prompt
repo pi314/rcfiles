@@ -43,13 +43,13 @@ _current_path () {
 if [[ -n "$(command -v git)" ]]; then
     # Oh yes, we really have git
     _git_info () {
-        local branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        local branch_name="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
         if [[ -n "$branch_name" ]]; then
             # we are now in a git repo
-            local repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+            local repo_root="$(git rev-parse --show-toplevel 2>/dev/null)"
             local repo_name=""
             if [[ -n "$repo_root" ]]; then
-                repo_name="$(basename $repo_root):"
+                repo_name="$(/usr/bin/basename $repo_root):"
             fi
 
             if [[ -f "$repo_root/.git/refs/stash" ]]; then
@@ -57,7 +57,7 @@ if [[ -n "$(command -v git)" ]]; then
                 local stashes_stack_str=$(printf '%*s' ${stashes_count} | tr ' ' '(')
             fi
 
-            local is_bare=$(git rev-parse --is-bare-repository 2>/dev/null)
+            local is_bare="$(git rev-parse --is-bare-repository 2>/dev/null)"
             if [[ "$is_bare" == "true" ]]; then
                 local color=${blue}
                 branch_name='=BARE='
