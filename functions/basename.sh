@@ -1,0 +1,7 @@
+basename () {
+    if [ -t 0 ]; then
+        /usr/bin/basename "$@"
+    else
+        xargs -I{} /usr/bin/basename '{}'
+    fi
+}

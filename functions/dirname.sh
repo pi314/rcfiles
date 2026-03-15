@@ -1,0 +1,7 @@
+dirname () {
+    if [ -t 0 ]; then
+        /usr/bin/dirname "$@"
+    else
+        xargs -I{} /usr/bin/dirname '{}'
+    fi
+}
