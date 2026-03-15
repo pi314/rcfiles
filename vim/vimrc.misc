@@ -36,7 +36,14 @@ function! ExpandFileListToTab ()
     let has_error = v:false
     for i in range(1, line('$'))
         let line = getline(i)
-        if !filereadable(line)
+        let m = matchlist(line, '\v^([^:]*)%(:([0-9]+)%(:.*)?)?$')
+        if m != []
+            let fpath = m[1]
+        else
+            let fpath = line
+        endif
+
+        if !filereadable(fpath)
             echohl Error
             echom 'File not readable: '. line
             echohl None
