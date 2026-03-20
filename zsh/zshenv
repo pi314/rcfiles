@@ -100,7 +100,7 @@ export EZA_COLORS=\
 
 export EDITOR=vim
 export PAGER=less
-export LESS=-r
+export LESS="-R --mouse"
 
 encode=en_US.UTF-8
 export LANG=$encode
