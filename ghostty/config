@@ -40,3 +40,10 @@ quit-after-last-window-closed = true
 keybind = cmd+up=text:\x15cd--\n
 keybind = cmd+down=text:\x15cd++\n
 keybind = cmd+quote=text:\x27
+
+# Mimic some key encoding of Kitty Keyboard Protocol (KKP)
+# https://github.com/ghostty-org/ghostty/discussions/5071
+# This isn't a problem in ghostty-tmux-zsh, only in ghostty-zsh
+keybind=ctrl+left_bracket=text:\x1b
+keybind=ctrl+i=text:\x09
+keybind=ctrl+m=text:\x0d
