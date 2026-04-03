@@ -26,6 +26,7 @@ highlight Cursor     ctermfg=Black      ctermbg=Green   cterm=bold
 
 highlight CursorLine                    ctermbg=236     cterm=NONE
 highlight CursorLineNr                  ctermbg=236     cterm=NONE
+highlight CursorColumn                  ctermbg=236     cterm=NONE
 
 highlight Special    guifg=Orange
 highlight Special    ctermfg=Red
