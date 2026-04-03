@@ -78,6 +78,7 @@ nnoremap <Plug> <Plug>(GitGutterPreviewHunk)
 nnoremap ,ga <Plug>(GitGutterStageHunk)
 nnoremap ,gu <Plug>(GitGutterUndoHunk)
 nnoremap ,gr <cmd>GitGutterAll<CR>
+nnoremap ,gA :!git add %<CR><CR>
 
 
 " -------------------------------------------------------------------------
