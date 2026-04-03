@@ -9,4 +9,5 @@ if !exists('myfiletype_autocmd_loaded')
     au BufNewFile,BufRead /etc/*       setlocal ts=8
     au BufNewFile,BufRead /var/tmp/*   setlocal ts=8
     au BufNewFile,BufRead .tmux.conf   setf tmux
+    au BufNewFile,BufRead */git/config   setf gitconfig
 endif
