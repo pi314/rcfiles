@@ -30,14 +30,17 @@ nnoremap t) :tabn $<CR>
 " Insert a new line in normal mode, I just lazy
 nnoremap <expr> <CR> &ma ? "o\<ESC>0\"_D" : "\<CR>"
 
+
 " map these by hand
 inoremap <C-h> <BS>
 nnoremap <C-h> <BS>
+
 
 " hot key for macro register ``q`` / ``z``
 " Do register ``q`` / ``z``
 nnoremap dq @q
 nnoremap dz @z
+
 
 " redraw syntax highlighting
 nnoremap <leader><C-l> :syntax sync fromstart<CR>
@@ -45,21 +48,26 @@ nnoremap <leader><C-l> :syntax sync fromstart<CR>
 " redraw, also wipe search highlighting
 nnoremap <C-l> :noh<CR><C-l>
 
+
 " convenient copy to system clipboard
 vnoremap Y "*ygv<ESC>
 nnoremap Y "*y
 vnoremap y ygv<ESC>
+
 
 " QUIT!
 command! Q execute "q!"
 command! Qa execute "qa!"
 command! QA execute "qa!"
 
+
 " WRITE!
 cnoremap w!! w !sudo tee %
 
+
 " open file in new tab
 nnoremap gF <C-w>gF
+
 
 " indenting in visual mode
 vnoremap > >gv
@@ -75,6 +83,7 @@ function! CleanUnusedBuffers ()
         endif
     endfor
 endfunction
+
 nnoremap <SPACE> :call CleanUnusedBuffers()<CR>
 
 
@@ -86,6 +95,7 @@ function! s:new_scratch_buffer ()
     endif
     set buftype=nofile
 endfunction
+
 nnoremap ,s :call <SID>new_scratch_buffer()<CR>
 
 
@@ -93,8 +103,10 @@ nnoremap ,s :call <SID>new_scratch_buffer()<CR>
 nnoremap <silent> ,t :%s/\v\s+$//e<CR>
 vnoremap <silent> ,t :s/\v\s+$//e<CR>
 
+
 " Hide Q mapping
 nnoremap Q <nop>
+
 
 " Sane mappings for va' va" va`
 onoremap a' 2i'
@@ -104,10 +116,11 @@ xnoremap a' 2i'
 xnoremap a" 2i"
 xnoremap a` 2i`
 
+
 " Tmux-like break-pane and join-pane for window
 nnoremap <C-w>! <C-w>T
 
-function! MyMappingSplitWindow ()
+function! MyMappingMergeWindowFromNextTab ()
     if tabpagenr() == tabpagenr('$')
         return
     endif
@@ -122,7 +135,8 @@ function! MyMappingSplitWindow ()
     close
     tabp
 endfunction
-nnoremap <silent> <C-w>@ :call MyMappingSplitWindow()<CR>
+nnoremap <silent> <C-w>@ :call MyMappingMergeWindowFromNextTab()<CR>
+
 
 " =============================================================================
 " Handy function to toggle all window in all tabs
@@ -169,6 +183,7 @@ nnoremap ,z     :call <SID>toggle_opt('foldenable', 1)<CR>
 nnoremap z0     :call <SID>set_opt('foldenable', v:false)<CR>
 " =============================================================================
 
+
 function! s:edit_vimrc ()
     if !(bufname('%') == '' && &modified == 0 && line('$') == 1 && getline(1) == '')
         tabedit
@@ -180,6 +195,7 @@ function! s:edit_vimrc ()
         edit $HOME/.vim
     endif
 endfunction
+
 nnoremap ,v :call <SID>edit_vimrc()<CR>
 
 nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
@@ -203,6 +219,7 @@ function! s:MoveCursorLeftSoftTab ()
         return repeat("\<Left>", l:pos % l:ts)
     endif
 endfunction
+
 function! s:MoveCursorRightSoftTab ()
     let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
     let l:pos = col('.') - 1
@@ -220,6 +237,7 @@ function! s:MoveCursorRightSoftTab ()
         return repeat("\<Right>", l:ts - (l:pos % l:ts))
     endif
 endfunction
+
 inoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
 inoremap <expr> <Right> <SID>MoveCursorRightSoftTab()
 nnoremap <expr> <Left>  <SID>MoveCursorLeftSoftTab()
@@ -276,9 +294,11 @@ function! s:resize_mode ()
     let &l:statusline = l:statusline_user
     let &colorcolumn = l:cc
 endfunction
+
 function! s:highlight_pane ()
     let &colorcolumn=join(range(1, winwidth(0)), ',')
 endfunction
+
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
 
@@ -333,4 +353,5 @@ function! MyMappingLeaderH ()
     endfor
     return ''
 endfunction
+
 nnoremap <silent> <leader>h :call MyMappingLeaderH()<CR>
