@@ -198,10 +198,56 @@ endfunction
 
 nnoremap ,v :call <SID>edit_vimrc()<CR>
 
-nnoremap ,* :let @/ = expand('<cword>') <bar> set hls <bar> echo @/<CR>
-vnoremap ,* "vy:let @/ = '\V' . substitute(@v, "\n", '\\n', 'g') <bar> set hls <bar> echo @/<CR>
+
+" Highlight the word under cursor
+function! MyMapping_highlight_word_under_cursor (mode)
+    let cmds = []
+
+    if a:mode == 'n'
+        let cword = expand('<cword>')
+
+    elseif a:mode == 'v'
+        normal! gv
+        let reg_v = @v
+        normal! "vy
+        let cword = '\V' . substitute(escape(@v, '\'), "\n", '\\n', 'g')
+        let @v = reg_v
+
+    else
+        return ''
+    endif
+
+    let slash_reg = @/
+    let @/ = cword
+
+    if cword != slash_reg || !v:hlsearch
+        call add(cmds, 'set hls')
+        if a:mode == 'n'
+            call add(cmds, 'echo @/')
+        endif
+
+    else
+        call add(cmds, 'noh')
+    endif
+
+    return join(cmds, "\<bar>")
+endfunction
+
+nnoremap <Plug>(MyMappingRightMouse) :exec MyMapping_highlight_word_under_cursor('n')<CR>
+xnoremap <silent> <Plug>(MyMappingRightMouse) <Esc>:exec MyMapping_highlight_word_under_cursor('v')<CR>
+
+nmap ,* <Plug>(MyMappingRightMouse)
+xmap ,* <Plug>(MyMappingRightMouse)
+
+nmap <RightMouse> <LeftMouse><Plug>(MyMappingRightMouse)
+xmap <RightMouse> <Plug>(MyMappingRightMouse)
 
 
+nnoremap <C-LeftMouse> <nop>
+nnoremap <C-RightMouse> <nop>
+
+
+" Arrow left/right
 function! s:MoveCursorLeftSoftTab ()
     let l:left_indent = strlen(matchlist(getline('.'), '\v^ *')[0])
     let l:pos = col('.') - 1
