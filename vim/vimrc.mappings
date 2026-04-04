@@ -386,6 +386,30 @@ nnoremap <silent> <C-w>;; :call MyMappingSaveOrReloadAllTabs()<CR>
 inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>
 
 
+function! MyMapping_inc (count)
+    let line = getline('.')
+    let char = matchstr(line, '\%'.col('.').'c.')
+
+    let wide_num_table = ['０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
+    let num = index(wide_num_table, char)
+    if num != -1
+        let pos = col('.') - 1
+        let left = strpart(line, 0, pos)
+        let newnum = num + (a:count * v:count1)
+        if newnum < 0 || len(wide_num_table) <= newnum
+            let newnum = num
+        endif
+        let right = wide_num_table[newnum] . strpart(line, pos + strlen(char))
+        if left . right != line
+            call setline(line('.'), left . right)
+        endif
+    endif
+endfunction
+
+nnoremap + <cmd>call MyMapping_inc(1)<CR>
+nnoremap - <cmd>call MyMapping_inc(-1)<CR>
+
+
 " Handy shortcut that shows highlight group under cursor
 function! MyMappingLeaderH ()
     for hlgroup_id in synstack(line('.'), col('.'))
