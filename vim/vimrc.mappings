@@ -24,6 +24,8 @@ nnoremap t^ :tabn 6<CR>
 nnoremap t& :tabn 7<CR>
 nnoremap t* :tabn 8<CR>
 nnoremap t( :tabn 9<CR>
+nnoremap t) :tabn $<CR>
+
 
 " Insert a new line in normal mode, I just lazy
 nnoremap <expr> <CR> &ma ? "o\<ESC>0\"_D" : "\<CR>"
