@@ -98,6 +98,7 @@ _virtual_env () {
     fi
 }
 
+
 hook_pre_cmd () {
     if command -v gdate >/dev/null 2>&1; then
         t_cmd_start=$(( $(gdate '+%s%3N') ))
@@ -105,6 +106,7 @@ hook_pre_cmd () {
         t_cmd_start=$(( $(date '+%s000') ))
     fi
 }
+
 
 hook_post_cmd () {
     if command -v gdate >/dev/null 2>&1; then
@@ -148,13 +150,9 @@ hook_post_cmd () {
     last_cmd_elapsed_time_ind="Last cmd spent: ${et}"
 }
 
+
 hook_pre_prompt () {
     today=$(date "+%Y%m%d")
-
-    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
-        echo ''
-        echo "${last_cmd_elapsed_time_ind}"
-    fi
 
     case ${KEYMAP} in
         vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
@@ -163,6 +161,11 @@ hook_pre_prompt () {
 
     local p=''
 
+    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
+        p="${p}${newline}"
+        p="${p}${last_cmd_elapsed_time_ind}${newline}"
+    fi
+
     local jbs=''
     if [[ $#jobstates -ge 1 ]]; then
         jbs="${blue}jobs:$#jobstates${end}"
@@ -170,33 +173,37 @@ hook_pre_prompt () {
 
     local vg="$(_virtual_env)$(_git_info)"
     if [ -n "${vg}" ] || [ -n "${jbs}" ] ; then
-        p="${lcs_bar}${vg}${jbs}${newline}"
+        p="${p}${lcs_bar}${vg}${jbs}${newline}"
     fi
 
     # Update date/time str here as zsh %D{} refreshes when terminal resize
-    date_str="${cyan}$(date +'%m/%d')${end}"
-    time_str="${cyan}$(date +'%H:%M')${end}"
+    local date_str="${cyan}$(date +'%m/%d')${end}"
+    local time_str="${cyan}$(date +'%H:%M')${end}"
 
-    p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}
-${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+    p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}${newline}"
+    p="${p}${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
     PROMPT="${p}"
 }
 
+
 precmd () {
     if [ $had_cmd -eq 1 ]; then
         hook_post_cmd
+    else
+        last_cmd_elapsed_time_ind=''
     fi
 
     hook_pre_prompt
-    last_cmd_elapsed_time_ind=''
     had_cmd=0
 }
+
 
 preexec () {
     had_cmd=1
     hook_pre_cmd
 }
+
 
 zle-keymap-select () {
     hook_pre_prompt
@@ -204,6 +211,7 @@ zle-keymap-select () {
 }
 
 zle -N zle-keymap-select
+
 
 hook_pre_prompt
 
