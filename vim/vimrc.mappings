@@ -282,6 +282,7 @@ endfunction
 nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
 
 
+" Handy shortcut to write/reload file
 function! MyMappingSaveOrReload ()
     if &buftype == 'nofile'
         return
@@ -294,11 +295,11 @@ function! MyMappingSaveOrReload ()
 
     if &modified
         write
-    else
-        let winview = winsaveview()
-        edit
-        call winrestview(winview)
     endif
+
+    let winview = winsaveview()
+    edit
+    call winrestview(winview)
 endfunction
 
 function! MyMappingSaveOrReloadAllWindows ()
