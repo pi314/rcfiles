@@ -21,6 +21,28 @@ sort: original	#按 字詞  排序 輸入original,以 字詞頻  排序 輸入 b
 ９	9
 ０	0
 
+⁰	,sup
+¹	,sup
+²	,sup
+³	,sup
+⁴	,sup
+⁵	,sup
+⁶	,sup
+⁷	,sup
+⁸	,sup
+⁹	,sup
+
+₀	,sub
+₁	,sub
+₂	,sub
+₃	,sub
+₄	,sub
+₅	,sub
+₆	,sub
+₇	,sub
+₈	,sub
+₉	,sub
+
 Ａ	A
 Ｂ	B
 Ｃ	C
