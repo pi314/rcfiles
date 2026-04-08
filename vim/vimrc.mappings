@@ -227,6 +227,7 @@ function! MyMapping_highlight_word_under_cursor (mode)
         endif
 
     else
+        call add(cmds, 'echo ""')
         call add(cmds, 'noh')
     endif
 
