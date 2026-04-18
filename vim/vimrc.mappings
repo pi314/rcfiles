@@ -368,7 +368,15 @@ function! MyMappingSaveOrReload ()
     endif
 
     let winview = winsaveview()
-    edit
+
+    setlocal autoread
+    exec 'checktime ' . bufnr()
+    set autoread<
+
+    if exists(':GitGutter')
+        :GitGutter
+    endif
+
     call winrestview(winview)
 endfunction
 
