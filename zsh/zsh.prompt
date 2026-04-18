@@ -35,9 +35,18 @@ _dir_stack () {
     fi
 }
 
-_current_path () {
-    # show first and last 3 folders if path is deeper than 5 layers
-    echo "${green}[%6(~:%-1~/.../%3~:%~)]$(_dir_stack)${end}"
+_cwd_ind () {
+    if [ "$_prompt_mode" = 'short' ] || [ "$_prompt_mode" = 'shorter' ]; then
+        # only show folder name
+        echo -n "${green}[%1~]$(_dir_stack)${end}"
+
+    elif command -v _cwd_ind_custom >/dev/null 2>&1; then
+        echo -n "${green}$(_cwd_ind_custom)$(_dir_stack)${end}"
+
+    else
+        # show first and last 3 folders if path is deeper than 5 layers
+        echo -n "${green}[%6(~:%-1~/.../%3~:%~)]$(_dir_stack)${end}"
+    fi
 }
 
 if [[ -n "$(command -v git)" ]]; then
@@ -80,7 +89,6 @@ else
     }
 fi
 
-vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
 uname_str="${yellow}%n${end}"
 at_str="${gray}@${end}"
 hostname_str="${white}%m${end}"
@@ -154,34 +162,72 @@ hook_post_cmd () {
 hook_pre_prompt () {
     today=$(date "+%Y%m%d")
 
-    case ${KEYMAP} in
-        vicmd)      local vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}" ;;
-        viins|main) local vim_mode_str="${black}[zsh$ZSH_VERSION]${end}" ;;
+    # vim mode and zsh version info
+    local vim_mode_str=''
+    case "${KEYMAP}" in
+        (vicmd)
+            vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}"
+            ;;
+
+        (viins|main|)
+            if [[ "$ZLE_STATE" = *'overwrite'* ]]; then
+                vim_mode_str="${murasaki}[zsh$ZSH_VERSION]${end}"
+            else
+                vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
+            fi
+            ;;
     esac
 
-    local p=''
-
-    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
-        p="${p}${newline}"
-        p="${p}${last_cmd_elapsed_time_ind}${newline}"
-    fi
-
+    # jobs info
     local jbs=''
     if [[ $#jobstates -ge 1 ]]; then
         jbs="${blue}jobs:$#jobstates${end}"
     fi
 
-    local vg="$(_virtual_env)$(_git_info)"
-    if [ -n "${vg}" ] || [ -n "${jbs}" ] ; then
-        p="${p}${lcs_bar}${vg}${jbs}${newline}"
+    # virtual env, git, and jobs info
+    local vgj="$(_virtual_env)$(_git_info)${jbs}"
+    local vgjl=''
+    if [ -n "${vgj}" ] ; then
+        vgjl="${lcs_bar}${vgj}${newline}"
     fi
 
     # Update date/time str here as zsh %D{} refreshes when terminal resize
     local date_str="${cyan}$(date +'%m/%d')${end}"
     local time_str="${cyan}$(date +'%H:%M')${end}"
 
-    p="${p}${lcs_bar}${date_str}$(_current_path)${vim_mode_str}${newline}"
-    p="${p}${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+    # start to compose prompt string
+    local p=''
+
+    # last command elapsed time
+    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
+        if [ "$_prompt_padding" = '1' ] || [ "$_prompt_padding" = '2' ]; then
+            p="${newline}"
+        fi
+
+        if [ "$_prompt_padding" = '2' ]; then
+            p="${p}${last_cmd_elapsed_time_ind}${newline}"
+        fi
+    fi
+
+    if [ "$_prompt_mode" = 'min' ]; then
+        p="%(?..${red})%(!.#.$)${end} "
+
+    elif [ "$_prompt_mode" = 'shorter' ]; then
+        p=''
+        p="${p}${vgjl}"
+        p="${p}${lcs_bar}$(_cwd_ind)${uid_str} "
+
+    elif [ "$_prompt_mode" = 'short' ]; then
+        p="${p}${vgjl}"
+        p="${p}${lcs_bar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
+        p="${p}${lcs_bar}${time_str}${uname_str}${uid_str} "
+
+    else
+        p="${p}${vgjl}"
+        p="${p}${lcs_bar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
+        p="${p}${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+
+    fi
 
     PROMPT="${p}"
 }
@@ -216,3 +262,93 @@ zle -N zle-keymap-select
 hook_pre_prompt
 
 had_cmd=0
+
+
+_prompt_padding='2'
+_prompt_mode='full'
+
+function prompt () {
+    if [ $# -eq 0 ]; then
+        echo "mode: $_prompt_mode"
+        echo "padding: $_prompt_padding"
+        return 0
+    fi
+
+    if [ "$1" = '-h' ] || [ "$1" = '--help' ] || [ "$1" = 'help' ]; then
+        echo 'full'
+        echo 'short'
+        echo 'shorter'
+        echo 'min'
+        echo - -
+        echo '+'
+        echo 'padding / padding=1 / padding=2 / padding=yes'
+        echo 'padding=0 / padding=no'
+        return 1
+    fi
+
+    if [ "$1" = 'mode' ]; then
+        echo "$_prompt_mode"
+        return 0
+    fi
+
+    if [ "$1" = 'padding' ]; then
+        echo "$_prompt_padding"
+        return 0
+    fi
+
+    local mode="$1"
+
+    case "$1" in
+        (padding)
+            echo "$_prompt_padding"
+            return 0
+            ;;
+
+        (padding=1)
+            _prompt_padding='1'
+            return 0
+            ;;
+
+        (padding=2|padding=yes)
+            _prompt_padding='2'
+            return 0
+            ;;
+
+        (padding=0|padding=no)
+            _prompt_padding='0'
+            return 0
+            true
+            ;;
+
+        (-) true
+            case "$_prompt_mode" in
+                (full) mode='short' ;;
+                (short) mode='shorter' ;;
+                (shorter) mode='min' ;;
+                (min) mode='min' ;;
+                (*) return 1 ;;
+            esac
+            ;;
+
+        (+) true
+            case "$_prompt_mode" in
+                (full) mode='full' ;;
+                (short) mode='full' ;;
+                (shorter) mode='short' ;;
+                (min) mode='shorter' ;;
+                (*) return 1 ;;
+            esac
+            ;;
+    esac
+
+    case "$mode" in
+        (full) true ;;
+        (short) true ;;
+        (shorter) true ;;
+        (min) true ;;
+        (*) echo "Invalid mode: $mode"; return 1 ;;
+    esac
+
+    _prompt_mode="$mode"
+    prompt
+}
