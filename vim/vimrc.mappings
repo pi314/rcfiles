@@ -400,21 +400,29 @@ inoremap <silent> ;j <cmd>:call MyMappingSaveOrReload()<CR>
 
 function! MyMapping_inc (count)
     let line = getline('.')
-    let char = matchstr(line, '\%'.col('.').'c.')
+    let col = col('.')
+    if col <= 0
+        return
+    endif
+
+    let pos = col - 1
 
     let wide_num_table = ['０', '１', '２', '３', '４', '５', '６', '７', '８', '９']
-    let num = index(wide_num_table, char)
-    if num != -1
-        let pos = col('.') - 1
-        let left = strpart(line, 0, pos)
+    let match_pos = match(line, '[' . join(wide_num_table, '') . ']', pos)
+    if match_pos != -1
+        let match_col = match_pos + 1
+        let char = matchstr(line, '\%' . match_col . 'c.')
+        let num = index(wide_num_table, char)
+        let left = strpart(line, 0, match_pos)
         let newnum = num + (a:count * v:count1)
         if newnum < 0 || len(wide_num_table) <= newnum
             let newnum = num
         endif
-        let right = wide_num_table[newnum] . strpart(line, pos + strlen(char))
+        let right = wide_num_table[newnum] . strpart(line, match_pos + strlen(char))
         if left . right != line
             call setline(line('.'), left . right)
         endif
+        call cursor(line('.'), match_col)
     endif
 endfunction
 
