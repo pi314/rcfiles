@@ -80,6 +80,12 @@ nnoremap ,gu <Plug>(GitGutterUndoHunk)
 nnoremap ,gr <cmd>GitGutterAll<CR>
 nnoremap ,gA :!git add %<CR><CR>
 
+" Vim sees <A-Left> as <Esc>b
+nnoremap <Esc>b<Esc>b <Plug>(GitGutterStageHunk)
+
+" Vim sees <A-Right> as <Esc>f
+nnoremap <Esc>f<Esc>f <Plug>(GitGutterStageHunk)
+
 
 " -------------------------------------------------------------------------
 " preservim/vim-markdown

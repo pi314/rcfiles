@@ -28,6 +28,7 @@ nnoremap t) :tabn $<CR>
 
 nmap <A-up> [c
 nmap <A-down> ]c
+" <A-left> and <A-right> are in vimrc.plugin-settings
 
 
 " Insert a new line in normal mode, I just lazy
@@ -441,7 +442,6 @@ function! MyMappingLeaderH ()
             exec 'highlight ' . synIDattr(hlgroup_linked_id, "name")
         endif
     endfor
-    return ''
 endfunction
 
-nnoremap <silent> <leader>h :call MyMappingLeaderH()<CR>
+nnoremap <silent> <leader>h <cmd>call MyMappingLeaderH()<CR>
