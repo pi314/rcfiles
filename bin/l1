@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 if command -v eza >/dev/null 2>&1 ; then
-    eza -1 --no-quotes "$@"
+    eza -1 --no-quotes -X "$@"
 else
     ls -1 "$@"
 fi
