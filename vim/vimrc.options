@@ -86,7 +86,7 @@ set wildmode=longest:list,full  " zsh-like completion
 " Movement settings
 set scrolloff=4
 set sidescrolloff=4
-set matchpairs+=<:>,【:】,「:」,『:』
+set matchpairs+=<:>,【:】,「:」,『:』,（:）
 
 " tell vim don't create {filename}~
 set nobackup
