@@ -151,6 +151,9 @@ hook_post_cmd () {
         fi
 
         last_cmd_elapsed_time_ind="Last cmd spent: ${et}"
+
+    else
+        last_cmd_elapsed_time_ind=""
     fi
 }
 
@@ -194,7 +197,4 @@ hook_pre_prompt () {
     p="${p}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
     PS1="$p"
-#     PS1="pre=${t_pre_cmd}, post=${t_post_cmd}\n"\
-# "${first_line}${bar}${date_str}${green}[\w]${jbs}${black}[\s\v]${end}\n"\
-# "${bar}${time_str}${uname_str}@${hostname_str}\$ "
 }
