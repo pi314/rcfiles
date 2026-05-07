@@ -37,8 +37,8 @@ shell-integration-features = false
 confirm-close-surface = false
 quit-after-last-window-closed = true
 
-keybind = cmd+up=text:\x15cd--\n
-keybind = cmd+down=text:\x15cd++\n
+keybind = cmd+up=csi:1;5A
+keybind = cmd+down=csi:1;5B
 keybind = cmd+quote=text:\x27
 
 # Mimic some key encoding of Kitty Keyboard Protocol (KKP)

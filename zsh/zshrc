@@ -110,5 +110,21 @@ autoload edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
 
+function myzw-cd-up () {
+    cd-- >/dev/null
+    hook_pre_prompt
+    zle reset-prompt
+}
+zle -N myzw-cd-up
+bindkey "\e[1;5A" myzw-cd-up
+
+function myzw-cd-down () {
+    cd++ >/dev/null
+    hook_pre_prompt
+    zle reset-prompt
+}
+zle -N myzw-cd-down
+bindkey "\e[1;5B" myzw-cd-down
+
 KEYTIMEOUT=1
 setopt autocd
