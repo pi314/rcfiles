@@ -28,15 +28,18 @@ cd++ () {
 
             new=""
             if [ -z "$down" ]; then
-                dirs="$(find . -type d -depth 1 | wc -l | tr -d ' ' 2>/dev/null)"
-                if [ "$dirs" = "1" ]; then
-                    down="$(find . -type d -depth 1 2>/dev/null)"
-                    down="${down#./}"
+                subdirs="$(find . -type d -depth 1 -maxdepth 1)"
+                subdir_count="$(echo ${subdirs} | wc -l | tr -d ' ' 2>/dev/null)"
+                if [ "$subdir_count" = "1" ]; then
+                    down="${subdirs#./}"
                     new="\033[32m/${down}\033[m"
                 fi
             fi
 
-            if [ -d "$down" ]; then
+            if [ -z "$down" ]; then
+                gone=0
+                color=""
+            elif [ -d "$down" ]; then
                 cd "$down"
                 gone=0
                 color="\033[38;5;135m"
@@ -57,4 +60,6 @@ cd++ () {
             fi
             ;;
     esac
+
+    export CWD_PROBE
 }

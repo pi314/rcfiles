@@ -20,7 +20,7 @@ cd-- () {
         *) CWD_PROBE="$PWD" ;;
     esac
 
-    cd "$(dirname "${PWD}")"
+    builtin cd "$(/usr/bin/dirname "${PWD}")"
 
     if [ "$PWD" = '/' ]; then
         CWD="/"
