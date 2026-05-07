@@ -54,6 +54,45 @@ bind '"\ej"':shell-backward-word
 bind '"\ek"':shell-forward-word
 
 
+function store_readline () {
+    READLINE_LINE_OLD="$READLINE_LINE"
+    READLINE_POINT_OLD="$READLINE_POINT"
+    READLINE_LINE=''
+    READLINE_POINT=0
+}
+
+function restore_readline () {
+    READLINE_LINE="$READLINE_LINE_OLD"
+    READLINE_POINT="$READLINE_POINT_OLD"
+}
+
+function redraw_ps1 () {
+    bash_prompt_lines=$(( $(echo "${PS1@P}" | wc -l | tr -d ' ') - 1 ))
+    for i in $(seq ${bash_prompt_lines}); do
+        printf "\e[A\r\e[K"
+    done
+    hook_pre_prompt
+    printf "${PS1@P}\r\033[K"
+}
+
+function my_cd_up () {
+    store_readline
+    cd-- >/dev/null
+    redraw_ps1
+    restore_readline
+}
+
+function my_cd_down () {
+    store_readline
+    cd++ >/dev/null
+    redraw_ps1
+    restore_readline
+}
+
+bind -x '"\e[1;5A": "my_cd_up"'
+bind -x '"\e[1;5B": "my_cd_down"'
+
+
 ###############################################################################
 # bashlocal
 ###############################################################################
