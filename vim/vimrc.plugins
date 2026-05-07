@@ -28,7 +28,7 @@ Plug 'zdict/zdict.vim'
 " Plug 'johngrib/vim-game-code-break'
 Plug 'pi314/logos.vim'
 Plug 'preservim/vim-indent-guides'
-Plug 'mg979/vim-visual-multi'
+" Plug 'mg979/vim-visual-multi'
 Plug 'airblade/vim-gitgutter'
 " Plug 'preservim/vim-markdown'
 Plug 'pi314/markdont.vim', { 'frozen': 1 }
