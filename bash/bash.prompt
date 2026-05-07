@@ -4,7 +4,7 @@
 # color codes needs to be wrapped by \[ and \]
 #  so that the length of color codes will not be calculate by terminal
 
-black="\[\e[1;30m\]"
+black="\[\e[38;5;238m\]"
 red="\[\e[1;31m\]"
 green="\[\e[1;32m\]"
 yellow="\[\e[1;33m\]"
@@ -23,21 +23,38 @@ d_cyan="\[\e[36m\]"
 gray="\[\e[37m\]"
 grey=${gray}
 end="\[\e[m\]"
+newline=$'\n'
 
-_last_cmd_succ () {
-    if [ "$(echo $?)" -eq 0 ]; then
+
+_bar () {
+    if [ "$1" = '0' ]; then
         printf "${black}|${end}"
     else
         printf "${red}|${end}"
     fi
 }
 
+
 _suspend_jobs () {
     jbs="$(jobs -p | wc -l | tr -d ' ')"
     if [ $jbs -ne 0 ]; then
-        printf "${blue}jobs:\j${end}"
+        printf "${blue}(jobs:\j)${end}"
     fi
 }
+
+
+_virtual_env () {
+    if [ -n "${VIRTUAL_ENV}" ]; then
+        bname="$(basename ${VIRTUAL_ENV})"
+        dname="$(dirname ${VIRTUAL_ENV})"
+        if [ "${dname}" = "${HOME}" ]; then
+            echo "${murasaki}[~/${bname}]${end}"
+        else
+            echo "${murasaki}[$(basename ${dname})/${bname}]${end}"
+        fi
+    fi
+}
+
 
 if [ -n "$(command -v git)" ]; then
     # Oh yes, we really have git
@@ -79,17 +96,105 @@ else
     }
 fi
 
-_gen_prompt () {
-    lcs="$(_last_cmd_succ)"
-    gi="$(_git_info)"
 
-    optinal_info="${gi}$(_suspend_jobs)"
-    if [ -n "${optinal_info}" ]; then
-        first_line="${lcs}${optinal_info}\n"
+now_ns () {
+    if command -v gdate >/dev/null 2>&1; then
+        gdate '+%s%3N'
+    else
+        date '+%s000'
     fi
-
-    PS1="${first_line}${lcs}${cyan}\D{%m/%d}${green}[\w]${black}[\s\v]${end}\n"\
-"${lcs}${cyan}\D{%H:%M}${yellow}\u${end}@${white}\h${end}\$ "
 }
 
-PROMPT_COMMAND=_gen_prompt
+
+PS0='${PS0:$((t_pre_cmd="$(now_ns)", 0)):0}'
+PROMPT_COMMAND='_lcs=$?; hook_post_cmd; hook_pre_prompt $_lcs; t_pre_cmd=""'
+
+
+# =============================================================================
+# Hooks for high level logic
+# =============================================================================
+
+# Not possible before bash 5.3
+# hook_pre_cmd () {
+# }
+
+
+hook_post_cmd () {
+    t_post_cmd="$(now_ns)"
+
+    if [ -n "${t_pre_cmd}" ]; then
+        local delta_ms=$((t_post_cmd - t_pre_cmd))
+        local ms=$((delta_ms % 1000))
+        local delta_sec=$((delta_ms / 1000))
+        local SS=$((delta_sec % 60))
+        local MM=$(((delta_sec / 60) % 60))
+        local HH=$(((delta_sec / 3600) % 24))
+        local DD=$((delta_sec / 3600 / 24))
+
+        local et=""
+        if [ ${DD} -ne 0 ]; then
+            et="${DD} days ${HH} hours ${MM} mins ${SS} secs"
+        elif [ ${HH} -ne 0 ]; then
+            et="${HH} hours ${MM} mins ${SS} secs"
+        elif [ ${MM} -ne 0 ]; then
+            et="${MM} mins ${SS} secs"
+        elif [ ${SS} -ne 0 ]; then
+            if [ $ms -ne 0 ]; then
+                et="${SS}.${ms} secs"
+            else
+                et="${SS} secs"
+            fi
+        elif [ $ms -ne 0 ]; then
+            et="${ms} ms"
+        else
+            et='<1 secs'
+        fi
+
+        last_cmd_elapsed_time_ind="Last cmd spent: ${et}"
+    fi
+}
+
+
+hook_pre_prompt () {
+    bar="$(_bar $1)"
+
+    local bash_version_str="${black}[\s\v]${end}"
+
+    # jobs info
+    local jbs=$(_suspend_jobs)
+
+    # virtual env, git, and jobs info
+    local vg="$(_virtual_env)$(_git_info)"
+    local vgl=''
+    if [ -n "${vg}" ] ; then
+        vgl="${bar}${vg}${newline}"
+    fi
+
+    # date/time str
+    local date_str="${cyan}\D{%m/%d}${end}"
+    local time_str="${cyan}\D{%H:%M}${end}"
+
+    local uname_str="${yellow}\u${end}"
+    local hostname_str="${white}\h${end}"
+    local uid_str='\$'
+
+    local cwd_str="${green}[\w]${end}"
+
+    # start to compose prompt string
+    local p=''
+
+    # last command elapsed time
+    if [ -n "${last_cmd_elapsed_time_ind}" ]; then
+        p="${newline}"
+        p="${p}${last_cmd_elapsed_time_ind}${newline}"
+    fi
+
+    p="${p}${vgl}"
+    p="${p}${bar}${date_str}${cwd_str}${bash_version_str}${newline}"
+    p="${p}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+
+    PS1="$p"
+#     PS1="pre=${t_pre_cmd}, post=${t_post_cmd}\n"\
+# "${first_line}${bar}${date_str}${green}[\w]${jbs}${black}[\s\v]${end}\n"\
+# "${bar}${time_str}${uname_str}@${hostname_str}\$ "
+}
