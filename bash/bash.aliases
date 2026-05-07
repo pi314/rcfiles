@@ -31,5 +31,3 @@ if [ $LS_VERSION == "BSD" ]; then
 else
     alias ls='ls --color=auto'
 fi
-alias l='ls -l'
-alias la='l -a'
