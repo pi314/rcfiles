@@ -4,8 +4,9 @@ cd++ () {
         return 1
     fi
 
-    if [ -z "$CWD_PROBE" ]; then
-        CWD_PROBE="$PWD"
+    if [ -z "$CWD_TRAIL" ]; then
+        CWD_TRAIL="$PWD"
+        CWD_SHADOW=''
     fi
 
     if [ "$PWD" = '/' ]; then
@@ -14,52 +15,55 @@ cd++ () {
         CWD="$PWD/"
     fi
 
-    case "$CWD_PROBE/" in
-        "$CWD"*) ;;
-        "$CWD") ;;
-        *) CWD_PROBE="$PWD" ;;
-    esac
+    # Derailed, realign
+    if ! startswith "$CWD_TRAIL/" "$CWD"; then
+        CWD_TRAIL="$PWD"
+        CWD_SHADOW=''
+    fi
 
-    case "$CWD_PROBE/" in
-        "$CWD"*)
-            down="${CWD_PROBE:${#PWD}}" # substring
-            down="${down#/}"            # trim leading slash
-            down="${down%%/*}"          # trim everything after first slash
+    local down
+    down="${CWD_SHADOW#/}"  # lstrip leading slash
+    down="${down%%/*}"      # rstrip everything after first slash
 
-            new=""
-            if [ -z "$down" ]; then
-                subdirs="$(find . -type d -depth 1 -maxdepth 1)"
-                subdir_count="$(echo ${subdirs} | wc -l | tr -d ' ' 2>/dev/null)"
-                if [ "$subdir_count" = "1" ]; then
-                    down="${subdirs#./}"
-                    new="\033[32m/${down}\033[m"
-                fi
-            fi
+    new=""
+    if [ -z "$down" ]; then
+        subdirs="$(find . -type d -maxdepth 1 -mindepth 1)"
+        subdir_count=$(( "$(echo ${subdirs} | wc -l 2>/dev/null)" ))
+        if [ $subdir_count -eq 1 ]; then
+            down="${subdirs#./}"
+            new="\033[32m/${down}\033[m"
+        fi
+    fi
 
-            if [ -z "$down" ]; then
-                gone=0
-                color=""
-            elif [ -d "$down" ]; then
-                cd "$down"
-                gone=0
-                color="\033[38;5;135m"
-            else
-                gone=1
-                color="\033[38;5;9m"
-            fi
+    # Reaching the end of the trail
+    if [ -z "$down" ]; then
+        echo "${PWD}"
+        CWD_SHADOW=''
+        return 0
+    fi
 
-            if [ -n "${new}" ]; then
-                echo -e "${CWD_PROBE}${new}"
-                CWD_PROBE="${PWD}"
-            else
-                echo -e "${PWD}${color}${CWD_PROBE:${#PWD}}\033[m${new}"
-            fi
+    # The trail is gone
+    if [ ! -d "$down" ]; then
+        echo -e "${PWD}\033[38;5;9m${CWD_SHADOW}"
+        CWD_TRAIL="${PWD}"
+        CWD_SHADOW=''
+        return 1
+    fi
 
-            if [ $gone -eq 1 ]; then
-                CWD_PROBE="${PWD}"
-            fi
-            ;;
-    esac
+    builtin cd "$down"
 
-    export CWD_PROBE
+    CWD_SHADOW="${CWD_SHADOW#/${down}}"   # lstrip first component
+
+    local murasaki
+    local end
+    murasaki="\033[38;5;135m"
+    end="\033[m"
+
+    if [ -n "${new}" ]; then
+        # Trail extended
+        echo -e "${CWD_TRAIL}${new}"
+        CWD_TRAIL="${PWD}"
+    else
+        echo -e "${PWD}${murasaki}${CWD_SHADOW}${end}${new}"
+    fi
 }

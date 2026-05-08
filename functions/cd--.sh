@@ -4,8 +4,9 @@ cd-- () {
         return 1
     fi
 
-    if [ -z "$CWD_PROBE" ]; then
-        CWD_PROBE="$PWD"
+    if [ -z "$CWD_TRAIL" ]; then
+        CWD_TRAIL="$PWD"
+        CWD_SHADOW=''
     fi
 
     if [ "$PWD" = '/' ]; then
@@ -14,11 +15,10 @@ cd-- () {
         CWD="$PWD/"
     fi
 
-    case "$CWD_PROBE/" in
-        "$CWD"*) ;;
-        "$CWD") ;;
-        *) CWD_PROBE="$PWD" ;;
-    esac
+    if ! startswith "$CWD_TRAIL/" "$CWD"; then
+        CWD_TRAIL="$PWD"
+        CWD_SHADOW=''
+    fi
 
     builtin cd "$(/usr/bin/dirname "${PWD}")"
 
@@ -28,13 +28,15 @@ cd-- () {
         CWD="$PWD/"
     fi
 
-    case "$CWD_PROBE/" in
-        "$CWD"*)
-            echo -e "$PWD\033[38;5;135m${CWD_PROBE:${#PWD}}\033[m"
-                ;;
-        *)  echo Path incorrect
-            return 1 ;;
-    esac
+    if ! startswith "$CWD_TRAIL/" "$CWD"; then
+        return 1
+    fi
 
-    export CWD_PROBE
+    CWD_SHADOW="${CWD_TRAIL:${#PWD}}"    # substring
+
+    local murasaki
+    local end
+    murasaki="\033[38;5;135m"
+    end="\033[m"
+    echo -e "${PWD}${murasaki}${CWD_SHADOW}${end}"
 }
