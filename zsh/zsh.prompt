@@ -36,6 +36,12 @@ _dir_stack () {
 }
 
 _cwd_ind () {
+    if [ "$PWD" = '/' ]; then
+        CWD="/"
+    else
+        CWD="$PWD/"
+    fi
+
     if ! startswith "${CWD_TRAIL}/" "$CWD"; then
         CWD_SHADOW=''
     fi
