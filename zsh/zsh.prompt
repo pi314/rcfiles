@@ -107,6 +107,36 @@ _virtual_env () {
 }
 
 
+precmd () {
+    if [ $had_cmd -eq 1 ]; then
+        hook_post_cmd
+    else
+        last_cmd_elapsed_time_ind=''
+    fi
+
+    hook_pre_prompt
+    had_cmd=0
+}
+
+
+preexec () {
+    had_cmd=1
+    hook_pre_cmd
+}
+
+
+zle-keymap-select () {
+    hook_pre_prompt
+    zle reset-prompt
+}
+
+zle -N zle-keymap-select
+
+
+# =============================================================================
+# Hooks
+# =============================================================================
+
 hook_pre_cmd () {
     if command -v gdate >/dev/null 2>&1; then
         t_cmd_start=$(( $(gdate '+%s%3N') ))
@@ -233,37 +263,6 @@ hook_pre_prompt () {
 }
 
 
-precmd () {
-    if [ $had_cmd -eq 1 ]; then
-        hook_post_cmd
-    else
-        last_cmd_elapsed_time_ind=''
-    fi
-
-    hook_pre_prompt
-    had_cmd=0
-}
-
-
-preexec () {
-    had_cmd=1
-    hook_pre_cmd
-}
-
-
-zle-keymap-select () {
-    hook_pre_prompt
-    zle reset-prompt
-}
-
-zle -N zle-keymap-select
-
-
-hook_pre_prompt
-
-had_cmd=0
-
-
 _prompt_padding='2'
 _prompt_mode='full'
 
@@ -352,3 +351,8 @@ function prompt () {
     _prompt_mode="$mode"
     prompt
 }
+
+
+hook_pre_prompt
+
+had_cmd=0
