@@ -67,26 +67,27 @@ function restore_readline () {
 }
 
 function redraw_ps1 () {
-    bash_prompt_lines=$(( $(echo "${PS1@P}" | wc -l | tr -d ' ') - 1 ))
-    for i in $(seq ${bash_prompt_lines}); do
-        printf "\e[A\r\e[K"
-    done
+    local drift="\e[$(( ${bash_prompt_lines} - 1 ))A"
     hook_pre_prompt
-    printf "${PS1@P}\r\033[K"
+    printf "${drift}${PS1@P}\r\033[K"
 }
 
 function my_cd_up () {
+    printf "\033[?25l"
     store_readline
     cd-- >/dev/null
     redraw_ps1
     restore_readline
+    printf "\033[?25h"
 }
 
 function my_cd_down () {
+    printf "\033[?25l"
     store_readline
     cd++ >/dev/null
     redraw_ps1
     restore_readline
+    printf "\033[?25h"
 }
 
 bind -x '"\e[1;5A": "my_cd_up"'

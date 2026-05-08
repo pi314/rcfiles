@@ -24,6 +24,8 @@ gray="\[\e[37m\]"
 grey=${gray}
 end="\[\e[m\]"
 newline=$'\n'
+K="\[\e[K\]"
+knewline="${K}${newline}"
 
 
 _bar () {
@@ -40,6 +42,37 @@ _suspend_jobs () {
     if [ $jbs -ne 0 ]; then
         printf "${blue}(jobs:\j)${end}"
     fi
+}
+
+
+_dir_stack () {
+    depth=$(dirs -p | wc -l | tr -d ' ')
+    if [[ $depth -gt 1 ]]; then
+        dir_stack_str=$(printf '%*s' ${depth} | tr ' ' ']')
+        echo "${d_green}${dir_stack_str:1}"
+    fi
+}
+
+
+_cwd_ind () {
+    if [ "$PWD" = '/' ]; then
+        CWD="/"
+    else
+        CWD="$PWD/"
+    fi
+
+    if ! startswith "${CWD_TRAIL}/" "$CWD"; then
+        CWD_SHADOW=''
+    fi
+
+    if [ ! -d "${CWD_TRAIL}" ]; then
+        local shadow_color="\033[0;31m"  # dark shade of red
+    else
+        local shadow_color="\033[38;5;22m" # dark shade of green
+    fi
+
+    # show first and last 3 folders if path is deeper than 5 layers
+    echo -n "${green}[$(shrinkuser ${PWD})${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
 }
 
 
@@ -97,7 +130,7 @@ else
 fi
 
 
-now_ns () {
+now_ms () {
     if command -v gdate >/dev/null 2>&1; then
         gdate '+%s%3N'
     else
@@ -106,7 +139,7 @@ now_ns () {
 }
 
 
-PS0='${PS0:$((t_pre_cmd="$(now_ns)", 0)):0}'
+PS0='${PS0:$((t_pre_cmd="$(now_ms)", 0)):0}'
 PROMPT_COMMAND='_lcs=$?; hook_post_cmd; hook_pre_prompt $_lcs; t_pre_cmd=""'
 
 
@@ -120,7 +153,7 @@ PROMPT_COMMAND='_lcs=$?; hook_post_cmd; hook_pre_prompt $_lcs; t_pre_cmd=""'
 
 
 hook_post_cmd () {
-    t_post_cmd="$(now_ns)"
+    t_post_cmd="$(now_ms)"
 
     if [ -n "${t_pre_cmd}" ]; then
         local delta_ms=$((t_post_cmd - t_pre_cmd))
@@ -168,10 +201,6 @@ hook_pre_prompt () {
 
     # virtual env, git, and jobs info
     local vg="$(_virtual_env)$(_git_info)"
-    local vgl=''
-    if [ -n "${vg}" ] ; then
-        vgl="${bar}${vg}${newline}"
-    fi
 
     # date/time str
     local date_str="${cyan}\D{%m/%d}${end}"
@@ -181,20 +210,26 @@ hook_pre_prompt () {
     local hostname_str="${white}\h${end}"
     local uid_str='\$'
 
-    local cwd_str="${green}[\w]${end}"
-
     # start to compose prompt string
     local p=''
+    bash_prompt_lines=1
 
     # last command elapsed time
     if [ -n "${last_cmd_elapsed_time_ind}" ]; then
-        p="${newline}"
-        p="${p}${last_cmd_elapsed_time_ind}${newline}"
+        p="${knewline}"
+        p="${p}${last_cmd_elapsed_time_ind}${knewline}"
+        bash_prompt_lines=$(( $bash_prompt_lines + 2 ))
     fi
 
-    p="${p}${vgl}"
-    p="${p}${bar}${date_str}${cwd_str}${bash_version_str}${newline}"
+    if [ -n "${vg}" ] ; then
+        p="${p}${bar}${vg}${knewline}"
+        bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
+    fi
+
+    p="${p}${bar}${date_str}$(_cwd_ind)${bash_version_str}${knewline}"
     p="${p}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
-    PS1="$p"
+    bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
+
+    PS1="${p}${K}"
 }
