@@ -36,16 +36,26 @@ _dir_stack () {
 }
 
 _cwd_ind () {
+    if ! startswith "${CWD_TRAIL}/" "$CWD"; then
+        CWD_SHADOW=''
+    fi
+
+    if [ ! -d "${CWD_TRAIL}" ]; then
+        local shadow_color="%{%F{1}%}"
+    else
+        local shadow_color="%{%F{22}%}"
+    fi
+
     if [ "$_prompt_mode" = 'short' ] || [ "$_prompt_mode" = 'shorter' ]; then
         # only show folder name
         echo -n "${green}[%1~]$(_dir_stack)${end}"
 
     elif command -v _cwd_ind_custom >/dev/null 2>&1; then
-        echo -n "${green}$(_cwd_ind_custom)$(_dir_stack)${end}"
+        echo -n "${green}[$(_cwd_ind_custom)${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
 
     else
         # show first and last 3 folders if path is deeper than 5 layers
-        echo -n "${green}[%6(~:%-1~/.../%3~:%~)]$(_dir_stack)${end}"
+        echo -n "${green}[%6(~:%-1~/.../%3~:%~)${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
     fi
 }
 
@@ -137,32 +147,37 @@ zle -N zle-keymap-select
 # Hooks
 # =============================================================================
 
-hook_pre_cmd () {
+now_ms () {
     if command -v gdate >/dev/null 2>&1; then
-        t_cmd_start=$(( $(gdate '+%s%3N') ))
+        echo $(( $(gdate '+%s%3N') ))
     else
-        t_cmd_start=$(( $(date '+%s000') ))
+        echo $(( $(date '+%s000') ))
     fi
 }
 
 
-hook_post_cmd () {
-    if command -v gdate >/dev/null 2>&1; then
-        t_cmd_end=$(( $(gdate '+%s%3N') ))
-        local ms_support=1
-    else
-        t_cmd_end=$(( $(date '+%s000') ))
-        local ms_support=0
-    fi
-    local delta_ms=$((t_cmd_end - t_cmd_start))
-    local ms=$((delta_ms % 1000))
-    local delta_sec=$((delta_ms / 1000))
-    local SS=$((delta_sec % 60))
-    local MM=$(((delta_sec / 60) % 60))
-    local HH=$(((delta_sec / 3600) % 24))
-    local DD=$((delta_sec / 3600 / 24))
+hook_pre_cmd () {
+    t_cmd_start=$(now_ms)
+}
 
-    local et=""
+
+hook_post_cmd () {
+    t_cmd_end=$(now_ms)
+    if endswith "${t_cmd_end}" '000'; then
+        local ms_support=0
+    else
+        local ms_support=1
+    fi
+
+    local delta_ms=$(( t_cmd_end - t_cmd_start ))
+    local ms=$(( delta_ms % 1000 ))
+    local delta_sec=$(( delta_ms / 1000 ))
+    local SS=$(( delta_sec % 60 ))
+    local MM=$(( (delta_sec / 60) % 60 ))
+    local HH=$(( (delta_sec / 3600) % 24 ))
+    local DD=$(( delta_sec / 3600 / 24 ))
+
+    local et=''
     if [ ${DD} -ne 0 ]; then
         et="${DD} days ${HH} hours ${MM} mins ${SS} secs"
     elif [ ${HH} -ne 0 ]; then
