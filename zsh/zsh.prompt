@@ -41,9 +41,9 @@ _cwd_ind () {
     fi
 
     if [ ! -d "${CWD_TRAIL}" ]; then
-        local shadow_color="%{%F{1}%}"
+        local shadow_color="\033[0;31m"  # dark shade of red
     else
-        local shadow_color="%{%F{22}%}"
+        local shadow_color="\033[38;5;22m" # dark shade of green
     fi
 
     if [ "$_prompt_mode" = 'short' ] || [ "$_prompt_mode" = 'shorter' ]; then
