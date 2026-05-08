@@ -53,7 +53,7 @@ cd++ () {
     builtin cd "$down"
 
     CWD_SHADOW="${CWD_SHADOW#/}"    # lstrip leading slash (may or may not present)
-    CWD_SHADOW="${CWD_SHADOW#${down}}"   # lstrip first component
+    CWD_SHADOW="${CWD_SHADOW:${#down}}"   # lstrip first component
 
     local murasaki
     local end
