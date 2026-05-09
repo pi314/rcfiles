@@ -1,70 +1,55 @@
 cd++ () {
-    if [ -z "$PWD" ]; then
-        echo 'PWD is empty'
-        return 1
-    fi
+    local dgreen
+    local red
+    local murasaki
+    local end
+    red="\033[38;5;9m"
+    dgreen="\033[0;32m"
+    murasaki="\033[38;5;135m"
+    end="\033[m"
 
-    if [ -z "$CWD_TRAIL" ]; then
-        CWD_TRAIL="$PWD"
-        CWD_SHADOW=''
-    fi
-
-    if [ "$PWD" = '/' ]; then
-        CWD="/"
-    else
-        CWD="$PWD/"
-    fi
-
-    # Derailed, realign
-    if ! startswith "$CWD_TRAIL/" "$CWD"; then
-        CWD_TRAIL="$PWD"
-        CWD_SHADOW=''
-    fi
+    cwd
 
     local down
     down="${CWD_SHADOW#/}"  # lstrip leading slash
     down="${down%%/*}"      # rstrip everything after first slash
 
-    new=""
+    extend=""
     if [ -z "$down" ]; then
         subdirs="$(find . -type d -maxdepth 1 -mindepth 1)"
         subdir_count=$(( "$(echo ${subdirs} | wc -l 2>/dev/null)" ))
         if [ $subdir_count -eq 1 ]; then
             down="${subdirs#./}"
-            new="\033[32m/${down}\033[m"
+            extend="/${down}"
         fi
     fi
 
     # Reaching the end of the trail
     if [ -z "$down" ]; then
         echo "${PWD}"
-        CWD_SHADOW=''
+        cwd
         return 0
     fi
 
     # The trail is gone
     if [ ! -d "$down" ]; then
-        echo -e "${PWD}\033[38;5;9m${CWD_SHADOW}"
+        echo -e "${PWD}${red}${CWD_SHADOW}"
         CWD_TRAIL="${PWD}"
         CWD_SHADOW=''
+        cwd
         return 1
     fi
 
     builtin cd "$down"
 
-    CWD_SHADOW="${CWD_SHADOW#/}"    # lstrip leading slash (may or may not present)
-    CWD_SHADOW="${CWD_SHADOW:${#down}}"   # lstrip first component
+    cwd
 
-    local murasaki
-    local end
-    murasaki="\033[38;5;135m"
-    end="\033[m"
-
-    if [ -n "${new}" ]; then
+    if [ -n "${extend}" ]; then
         # Trail extended
-        echo -e "${CWD_TRAIL}${new}"
-        CWD_TRAIL="${PWD}"
-    else
-        echo -e "${PWD}${murasaki}${CWD_SHADOW}${end}${new}"
+        echo -e "${PWD:0:$(( ${#PWD} - ${#extend} ))}${dgreen}${extend}${end}"
+    fi
+
+    if [ -z "${extend}" ]; then
+        echo -e "${PWD}${murasaki}${CWD_SHADOW}${end}"
     fi
 }

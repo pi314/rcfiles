@@ -1,24 +1,5 @@
 cd-- () {
-    if [ -z "$PWD" ]; then
-        echo 'PWD is empty'
-        return 1
-    fi
-
-    if [ -z "$CWD_TRAIL" ]; then
-        CWD_TRAIL="$PWD"
-        CWD_SHADOW=''
-    fi
-
-    if [ "$PWD" = '/' ]; then
-        CWD="/"
-    else
-        CWD="$PWD/"
-    fi
-
-    if ! startswith "$CWD_TRAIL/" "$CWD"; then
-        CWD_TRAIL="$PWD"
-        CWD_SHADOW=''
-    fi
+    cwd
 
     builtin cd "$(/usr/bin/dirname "${PWD}")"
 
@@ -28,11 +9,7 @@ cd-- () {
         CWD="$PWD/"
     fi
 
-    if ! startswith "$CWD_TRAIL/" "$CWD"; then
-        return 1
-    fi
-
-    CWD_SHADOW="${CWD_TRAIL:${#PWD}}"    # substring
+    cwd
 
     local murasaki
     local end
