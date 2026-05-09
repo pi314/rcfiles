@@ -36,32 +36,23 @@ _dir_stack () {
 }
 
 _cwd_ind () {
-    if [ "$PWD" = '/' ]; then
-        CWD="/"
-    else
-        CWD="$PWD/"
-    fi
-
-    if ! startswith "${CWD_TRAIL}/" "$CWD"; then
-        CWD_SHADOW=''
-    fi
-
-    if [ ! -d "${CWD_TRAIL}" ]; then
-        local shadow_color="\033[0;31m"  # dark shade of red
-    else
-        local shadow_color="\033[38;5;22m" # dark shade of green
-    fi
+    cwd -q
 
     if [ "$_prompt_mode" = 'short' ] || [ "$_prompt_mode" = 'shorter' ]; then
         # only show folder name
         echo -n "${green}[%1~]$(_dir_stack)${end}"
+        return 0
+    fi
 
-    elif command -v _cwd_ind_custom >/dev/null 2>&1; then
-        echo -n "${green}[$(_cwd_ind_custom)${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
+    local dred="\033[0;31m"  # dark shade of red
+    local dgreen="\033[38;5;22m" # dark shade of green
+
+    if command -v _cwd_ind_custom >/dev/null 2>&1; then
+        echo -n "${green}[$(_cwd_ind_custom)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${end}"
 
     else
         # show first and last 3 folders if path is deeper than 5 layers
-        echo -n "${green}[%6(~:%-1~/.../%3~:%~)${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
+        echo -n "${green}[%6(~:%-1~/.../%3~:%~)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${end}"
     fi
 }
 
