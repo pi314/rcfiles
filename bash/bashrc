@@ -19,6 +19,16 @@ fi
 
 
 ###############################################################################
+# Functions
+###############################################################################
+if [ -d $HOME/.rcfiles/functions ]; then
+    for i in $(ls $HOME/.rcfiles/functions/); do
+        source $HOME/.rcfiles/functions/$i
+    done
+fi
+
+
+###############################################################################
 # Prompt
 ###############################################################################
 if [ -f $HOME/.rcfiles/bash/bash.prompt ]; then
@@ -31,16 +41,6 @@ fi
 ###############################################################################
 if [ -f $HOME/.rcfiles/bash/bash.aliases ]; then
     source $HOME/.rcfiles/bash/bash.aliases
-fi
-
-
-###############################################################################
-# Functions
-###############################################################################
-if [ -d $HOME/.rcfiles/functions ]; then
-    for i in $(ls $HOME/.rcfiles/functions/); do
-        source $HOME/.rcfiles/functions/$i
-    done
 fi
 
 

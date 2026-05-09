@@ -55,24 +55,12 @@ _dir_stack () {
 
 
 _cwd_ind () {
-    if [ "$PWD" = '/' ]; then
-        CWD="/"
-    else
-        CWD="$PWD/"
-    fi
+    cwd -q
 
-    if ! startswith "${CWD_TRAIL}/" "$CWD"; then
-        CWD_SHADOW=''
-    fi
+    local dred="\033[0;31m"  # dark shade of red
+    local dgreen="\033[38;5;22m" # dark shade of green
 
-    if [ ! -d "${CWD_TRAIL}" ]; then
-        local shadow_color="\033[0;31m"  # dark shade of red
-    else
-        local shadow_color="\033[38;5;22m" # dark shade of green
-    fi
-
-    # show first and last 3 folders if path is deeper than 5 layers
-    echo -n "${green}[$(shrinkuser ${PWD})${shadow_color}${CWD_SHADOW}${green}]$(_dir_stack)${end}"
+    echo -n "${green}[$(shrinkuser ${PWD})${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${end}"
 }
 
 
