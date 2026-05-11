@@ -5,16 +5,24 @@
 # =============================================================================
 # Completions
 # =============================================================================
-if [ -f $HOME/.rcfiles/bash/bash.completions ]; then
-    source $HOME/.rcfiles/bash/bash.completions
+if [ -f "$HOME/.rcfiles/bash/bash.completions" ]; then
+    source "$HOME/.rcfiles/bash/bash.completions"
+fi
+
+
+# =============================================================================
+# Colors
+# =============================================================================
+if [ -f "$HOME/.rcfiles/bash/bash.colors" ]; then
+    source "$HOME/.rcfiles/bash/bash.colors"
 fi
 
 
 # =============================================================================
 # Env
 # =============================================================================
-if [ -f $HOME/.rcfiles/bash/bashenv ]; then
-    source $HOME/.rcfiles/bash/bashenv
+if [ -f "$HOME/.rcfiles/bash/bashenv" ]; then
+    source "$HOME/.rcfiles/bash/bashenv"
 fi
 
 
@@ -22,8 +30,8 @@ fi
 # Functions
 # =============================================================================
 if [ -d $HOME/.rcfiles/functions ]; then
-    for i in $(ls $HOME/.rcfiles/functions/); do
-        source $HOME/.rcfiles/functions/$i
+    for i in "$HOME/.rcfiles/functions/"* ; do
+        source "$i"
     done
 fi
 
@@ -31,16 +39,16 @@ fi
 # =============================================================================
 # Prompt
 # =============================================================================
-if [ -f $HOME/.rcfiles/bash/bash.prompt ]; then
-    source $HOME/.rcfiles/bash/bash.prompt
+if [ -f "$HOME/.rcfiles/bash/bash.prompt" ]; then
+    source "$HOME/.rcfiles/bash/bash.prompt"
 fi
 
 
 # =============================================================================
 # Aliases
 # =============================================================================
-if [ -f $HOME/.rcfiles/bash/bash.aliases ]; then
-    source $HOME/.rcfiles/bash/bash.aliases
+if [ -f "$HOME/.rcfiles/bash/bash.aliases" ]; then
+    source "$HOME/.rcfiles/bash/bash.aliases"
 fi
 
 
@@ -68,7 +76,7 @@ function restore_readline () {
 
 function redraw_ps1 () {
     local drift="\e[$(( ${bash_prompt_lines} - 1 ))A"
-    hook_pre_prompt
+    hook_pre_prompt $_lcs
     printf "${drift}${PS1@P}\r\033[K"
 }
 
@@ -97,6 +105,6 @@ bind -x '"\e[1;5B": "my_cd_down"'
 # =============================================================================
 # bashlocal
 # =============================================================================
-if [ -f ~/.bashlocal ]; then
-    source ~/.bashlocal
+if [ -f "$HOME/.bashlocal" ]; then
+    source "$HOME/.bashlocal"
 fi
