@@ -13,14 +13,14 @@ purple="\[\e[1;35m\]"
 magenta=${purple}
 cyan="\[\e[1;36m\]"
 white="\[\e[1;37m\]"
-d_red="\[\e[31m\]"
-d_green="\[\e[32m\]"
-d_yellow="\[\e[33m\]"
-d_blue="\[\e[34m\]"
-d_magenta="\[\e[35m\]"
+d_red="\[\e[0;31m\]"
+d_green="\[\e[0;32m\]"
+d_yellow="\[\e[0;33m\]"
+d_blue="\[\e[0;34m\]"
+d_magenta="\[\e[0;35m\]"
 d_purple=$d_magenta
-d_cyan="\[\e[36m\]"
-gray="\[\e[37m\]"
+d_cyan="\[\e[0;36m\]"
+gray="\[\e[0;37m\]"
 grey=${gray}
 end="\[\e[m\]"
 newline=$'\n'
@@ -185,7 +185,7 @@ hook_pre_prompt () {
     local bash_version_str="${black}[\s\v]${end}"
 
     # jobs info
-    local jbs=$(_suspend_jobs)
+    local jobs_str="$(_suspend_jobs)"
 
     # virtual env, git, and jobs info
     local vg="$(_virtual_env)$(_git_info)"
@@ -195,6 +195,7 @@ hook_pre_prompt () {
     local time_str="${cyan}\D{%H:%M}${end}"
 
     local uname_str="${yellow}\u${end}"
+    local at_str='@'
     local hostname_str="${white}\h${end}"
     local uid_str='\$'
 
@@ -214,7 +215,7 @@ hook_pre_prompt () {
         bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
     fi
 
-    p="${p}${bar}${date_str}$(_cwd_ind)${bash_version_str}${knewline}"
+    p="${p}${bar}${date_str}$(_cwd_ind)${jobs_str}${bash_version_str}${knewline}"
     p="${p}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
     bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
