@@ -9,9 +9,6 @@ venv () {
         target="${HOME}/.venv"
     fi
 
-    murasaki="\033[38;5;135m"
-    nocolor="\033[m"
-
     if [ ! -d "${target}" ]; then
         echo "Creating venv ${murasaki}${target}${nocolor} ..."
         python -m venv "${target}"
