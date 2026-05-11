@@ -1,40 +1,43 @@
 if [[ -f /etc/profile ]]; then
-    backup_PATH=$PATH
-    PATH=''
-    source /etc/profile
+    function {
+        local backup_PATH="$PATH"
+        PATH=''
+        source /etc/profile
 
-    if [[ -z $PATH ]]; then
-        # /etc/profile is empty
-        PATH=$backup_PATH
-    fi
+        if [[ -z $PATH ]]; then
+            # /etc/profile is empty
+            PATH="$backup_PATH"
+        fi
+    }
 fi
 
 # https://gpanders.com/blog/the-definitive-guide-to-using-tmux-256color-on-macos/
-export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
+export TERMINFO_DIRS="$TERMINFO_DIRS":"$HOME/.local/share/terminfo"
 
-folders=(
-    "/opt/homebrew/bin"
-    "/opt/homebrew/sbin"
-    "/opt/homebrew/Cellar/ruby/4.0.1/bin"
-    "/opt/local/bin"
-    "/opt/local/sbin"
-    "/usr/local/sbin"
-    "$HOME/.rcfiles/bin"
-    "$HOME/bin"
-    "$HOME/.local/bin"
-)
+function {
+    local folders=(
+        "/opt/homebrew/bin"
+        "/opt/homebrew/sbin"
+        "/opt/homebrew/Cellar/ruby/4.0.1/bin"
+        "/opt/local/bin"
+        "/opt/local/sbin"
+        "/usr/local/sbin"
+        "$HOME/.rcfiles/bin"
+        "$HOME/.local/bin"
+        "$HOME/bin"
+    )
 
-# force these path being positioned at start of $PATH
-for i in $folders; do
-    if [[ -d $i ]]; then
-        PATH=$(echo $PATH | sed "s|:$i||")
-        if [[ $PATH != $i* ]]; then
+    # force these path being positioned at start of $PATH
+    local i
+    for i in $folders; do
+        PATH="$(echo "$PATH" | sed "s|:$i||")"
+        if [[ "$PATH" != "$i"* ]]; then
             PATH="$i:$PATH"
         fi
-    fi
-done
+    done
 
-export PATH
+    export PATH
+}
 
 export GOPATH="$HOME/bin/gopath"
 
@@ -67,7 +70,7 @@ export LSCOLORS='GxFxcxDxCxegedabagacad'
 # ln: symbolic links
 # pi: Named pipe
 # ex: Executable file
-export LS_COLORS='di=01;36:ln=01;35:pi=01;33:ex=01;32'
+export LS_COLORS='di=1;36:ln=1;35:pi=1;33:ex=1;32'
 
 # See https://github.com/eza-community/eza/blob/main/man/eza_colors.5.md
 # ur/uw/ux/ue: User rwx bit
@@ -97,18 +100,21 @@ export EZA_COLORS=\
 'mu=38;5;135:'\
 'lo=38;5;135:'\
 'sc=0:'\
+EZA_COLORS="${EZA_COLORS%:}" # trim trailing ':'
 
 export EDITOR=vim
 export PAGER=less
-export LESS="-R --mouse"
+export LESS='-R --mouse'
 
-encode=en_US.UTF-8
-export LANG=$encode
-export LANGUAGE=$encode
-export LC_CTYPE=$encode
-export LC_NUMERIC=$encode
-export LC_TIME=$encode
-export LC_COLLATE=$encode
-export LC_MONETARY=$encode
-export LC_MESSAGES=$encode
-export LC_ALL=$encode
+function {
+    local encoding='en_US.UTF-8'
+    export LANG=$encoding
+    export LANGUAGE=$encoding
+    export LC_CTYPE=$encoding
+    export LC_NUMERIC=$encoding
+    export LC_TIME=$encoding
+    export LC_COLLATE=$encoding
+    export LC_MONETARY=$encoding
+    export LC_MESSAGES=$encoding
+    export LC_ALL=$encoding
+}
