@@ -1,31 +1,7 @@
 setopt PROMPT_SUBST
 
-autoload -U colors && colors
-
-esc=$'\e'
-black="%{${esc}[38;5;8m%}"
-red="%{$fg_bold[red]%}"
-green="%{$fg_bold[green]%}"
-yellow="%{$fg_bold[yellow]%}"
-blue="%{$fg_bold[blue]%}"
-magenta="%{$fg_bold[magenta]%}"
-murasaki="%{%F{135}%}"
-purple=$magenta
-cyan="%{$fg_bold[cyan]%}"
-white="%{$fg_bold[white]%}"
-d_red="%{$fg_no_bold[red]%}"
-d_green="%{$fg_no_bold[green]%}"
-d_yellow="%{$fg_no_bold[yellow]%}"
-d_blue="%{$fg_no_bold[blue]%}"
-d_magenta="%{$fg_no_bold[magenta]%}"
-d_purple=$d_magenta
-d_cyan="%{$fg_no_bold[cyan]%}"
-gray="%{$fg_no_bold[white]%}"
-grey=$gray
-end="%{$reset_color%}"
-newline=$'\n'
-
-local lcs_bar="%(?.${black}.${red})|${end}"
+# $? bar
+local qbar="%(?.${black}.${red})┃${nocolor}"
 
 _dir_stack () {
     depth=$(dirs -p | wc -l | tr -d ' ')
@@ -40,7 +16,7 @@ _cwd_ind () {
 
     if [ "$_prompt_mode" = 'short' ] || [ "$_prompt_mode" = 'shorter' ]; then
         # only show folder name
-        echo -n "${green}[%1~]$(_dir_stack)${end}"
+        echo -n "${green}[%1~]$(_dir_stack)${nocolor}"
         return 0
     fi
 
@@ -48,11 +24,11 @@ _cwd_ind () {
     local dgreen="\033[38;5;22m" # dark shade of green
 
     if command -v _cwd_ind_custom >/dev/null 2>&1; then
-        echo -n "${green}[$(_cwd_ind_custom)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${end}"
+        echo -n "${green}[$(_cwd_ind_custom)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${nocolor}"
 
     else
         # show first and last 3 folders if path is deeper than 5 layers
-        echo -n "${green}[%6(~:%-1~/.../%3~:%~)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${end}"
+        echo -n "${green}[%6(~:%-1~/.../%3~:%~)${dgreen}${CWD_SHADOW}${dred}${CWD_GONE}${green}]$(_dir_stack)${nocolor}"
     fi
 }
 
@@ -69,25 +45,25 @@ if [[ -n "$(command -v git)" ]]; then
             fi
 
             if [[ -f "$repo_root/.git/refs/stash" ]]; then
-                local stashes_count=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
-                local stashes_stack_str=$(printf '%*s' ${stashes_count} | tr ' ' '(')
+                local stashes_count="$(git stash list 2>/dev/null | wc -l | tr -d ' ')"
+                local stashes_stack_str="$(printf '%*s' ${stashes_count} | tr ' ' '(')"
             fi
 
             local is_bare="$(git rev-parse --is-bare-repository 2>/dev/null)"
             if [[ "$is_bare" == "true" ]]; then
-                local color=${blue}
+                local color="${blue}"
                 branch_name='=BARE='
             elif [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
                 # This repo is clean
-                local color=${blue}
+                local color="${blue}"
             elif [[ -z "$(git status -s -uno 2>/dev/null)" ]]; then
                 # This repo is dirty, but no modify on tracked files
-                local color=${magenta}
+                local color="${magenta}"
             else
                 # This repo is dirty
-                local color=${red}
+                local color="${red}"
             fi
-            echo "${color}${stashes_stack_str}($repo_name${branch_name})${end}"
+            echo "${color}${stashes_stack_str}($repo_name${branch_name})${nocolor}"
         fi
     }
 else
@@ -96,9 +72,9 @@ else
     }
 fi
 
-uname_str="${yellow}%n${end}"
-at_str="${gray}@${end}"
-hostname_str="${white}%m${end}"
+uname_str="${yellow}%n${nocolor}"
+at_str="${gray}@${nocolor}"
+hostname_str="${white}%m${nocolor}"
 uid_str="%(!.#.>)"
 
 _virtual_env () {
@@ -106,9 +82,9 @@ _virtual_env () {
         bname="$(basename ${VIRTUAL_ENV})"
         dname="$(dirname ${VIRTUAL_ENV})"
         if [[ "${dname}" = "${HOME}" ]]; then
-            echo "${murasaki}[~/${bname}]${end}"
+            echo "${murasaki}[~/${bname}]${nocolor}"
         else
-            echo "${murasaki}[$(basename ${dname})/${bname}]${end}"
+            echo "${murasaki}[$(basename "${dname}")/${bname}]${nocolor}"
         fi
     fi
 }
@@ -208,14 +184,14 @@ hook_pre_prompt () {
     local vim_mode_str=''
     case "${KEYMAP}" in
         (vicmd)
-            vim_mode_str="${cyan}:zsh$ZSH_VERSION:${end}"
+            vim_mode_str="${cyan}:zsh$ZSH_VERSION:${nocolor}"
             ;;
 
         (viins|main|)
             if [[ "$ZLE_STATE" = *'overwrite'* ]]; then
-                vim_mode_str="${murasaki}[zsh$ZSH_VERSION]${end}"
+                vim_mode_str="${murasaki}[zsh$ZSH_VERSION]${nocolor}"
             else
-                vim_mode_str="${black}[zsh$ZSH_VERSION]${end}"
+                vim_mode_str="${black}[zsh$ZSH_VERSION]${nocolor}"
             fi
             ;;
     esac
@@ -223,19 +199,19 @@ hook_pre_prompt () {
     # jobs info
     local jbs=''
     if [[ $#jobstates -ge 1 ]]; then
-        jbs="${blue}jobs:$#jobstates${end}"
+        jbs="${blue}(jobs:$#jobstates)${nocolor}"
     fi
 
     # virtual env, git, and jobs info
     local vgj="$(_virtual_env)$(_git_info)${jbs}"
     local vgjl=''
     if [ -n "${vgj}" ] ; then
-        vgjl="${lcs_bar}${vgj}${newline}"
+        vgjl="${qbar}${vgj}${newline}"
     fi
 
     # Update date/time str here as zsh %D{} refreshes when terminal resize
-    local date_str="${cyan}$(date +'%m/%d')${end}"
-    local time_str="${cyan}$(date +'%H:%M')${end}"
+    local date_str="${cyan}$(date +'%m/%d')${nocolor}"
+    local time_str="${cyan}$(date +'%H:%M')${nocolor}"
 
     # start to compose prompt string
     local p=''
@@ -252,22 +228,22 @@ hook_pre_prompt () {
     fi
 
     if [ "$_prompt_mode" = 'min' ]; then
-        p="%(?..${red})%(!.#.$)${end} "
+        p="%(?..${red})%(!.#.$)${nocolor} "
 
     elif [ "$_prompt_mode" = 'shorter' ]; then
         p=''
         p="${p}${vgjl}"
-        p="${p}${lcs_bar}$(_cwd_ind)${uid_str} "
+        p="${p}${qbar}$(_cwd_ind)${uid_str} "
 
     elif [ "$_prompt_mode" = 'short' ]; then
         p="${p}${vgjl}"
-        p="${p}${lcs_bar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
-        p="${p}${lcs_bar}${time_str}${uname_str}${uid_str} "
+        p="${p}${qbar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
+        p="${p}${qbar}${time_str}${uname_str}${uid_str} "
 
     else
         p="${p}${vgjl}"
-        p="${p}${lcs_bar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
-        p="${p}${lcs_bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+        p="${p}${qbar}${date_str}$(_cwd_ind)${vim_mode_str}${newline}"
+        p="${p}${qbar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
     fi
 
