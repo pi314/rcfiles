@@ -13,15 +13,6 @@ fi
 
 
 # =============================================================================
-# Modules
-# =============================================================================
-autoload -U colors && colors
-
-autoload -Uz compinit
-compinit -u
-
-
-# =============================================================================
 # Completions
 # =============================================================================
 fpath=($HOME/.rcfiles/zsh/completions "${fpath[@]}")
@@ -31,6 +22,9 @@ zstyle ':completion:*:*:git:*' script "$HOME/.rcfiles/zsh/completions/git-comple
 if type brew &>/dev/null; then
     FPATH="$(brew --prefix)"/share/zsh-completions:"$FPATH"
 fi
+
+autoload -Uz compinit
+compinit -u
 
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-colors "${(s.:.)EZA_COLORS}:${(s.:.)LS_COLORS}"
