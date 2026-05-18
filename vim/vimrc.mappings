@@ -378,6 +378,10 @@ function! MyMappingSaveOrReload ()
         :GitGutter
     endif
 
+    if &diff
+        :diffupdate
+    endif
+
     call winrestview(winview)
 endfunction
 
