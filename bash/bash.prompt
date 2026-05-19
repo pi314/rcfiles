@@ -158,7 +158,7 @@ hook_post_cmd () {
 hook_pre_prompt () {
     bar="$(_bar $1)"
 
-    local bash_version_str="${black}[\s\v]${end}"
+    local bash_version_str="${black}[bash\v]${end}"
 
     # jobs info
     local jobs_str="$(_suspend_jobs)"

@@ -62,44 +62,51 @@ bind '"\ej"':shell-backward-word
 bind '"\ek"':shell-forward-word
 
 
-function store_readline () {
-    READLINE_LINE_OLD="$READLINE_LINE"
-    READLINE_POINT_OLD="$READLINE_POINT"
-    READLINE_LINE=''
-    READLINE_POINT=0
-}
+if [ ${BASH_VERSINFO[0]}${BASH_VERSINFO[1]} -gt 43 ]; then
+    function store_readline () {
+        READLINE_LINE_OLD="$READLINE_LINE"
+        READLINE_POINT_OLD="$READLINE_POINT"
+        READLINE_LINE=''
+        READLINE_POINT=0
+    }
 
-function restore_readline () {
-    READLINE_LINE="$READLINE_LINE_OLD"
-    READLINE_POINT="$READLINE_POINT_OLD"
-}
+    function restore_readline () {
+        READLINE_LINE="$READLINE_LINE_OLD"
+        READLINE_POINT="$READLINE_POINT_OLD"
+    }
 
-function redraw_ps1 () {
-    local drift="\e[$(( ${bash_prompt_lines} - 1 ))A"
-    hook_pre_prompt $_lcs
-    printf "${drift}${PS1@P}\r\033[K"
-}
+    function redraw_ps1 () {
+        local drift="\e[$(( ${bash_prompt_lines} - 1 ))A\r"
+        hook_pre_prompt $_lcs
+        printf "${drift}${PS1@P}\r\033[K"
+    }
 
-function my_cd_up () {
-    printf "\033[?25l"
-    store_readline
-    cd-- >/dev/null
-    redraw_ps1
-    restore_readline
-    printf "\033[?25h"
-}
+    function my_cd_up () {
+        printf "\033[?25l"
+        store_readline
+        cd-- >/dev/null
+        redraw_ps1
+        restore_readline
+        printf "\033[?25h"
+    }
 
-function my_cd_down () {
-    printf "\033[?25l"
-    store_readline
-    cd++ >/dev/null
-    redraw_ps1
-    restore_readline
-    printf "\033[?25h"
-}
+    function my_cd_down () {
+        printf "\033[?25l"
+        store_readline
+        cd++ >/dev/null
+        redraw_ps1
+        restore_readline
+        printf "\033[?25h"
+    }
 
-bind -x '"\e[1;5A": "my_cd_up"'
-bind -x '"\e[1;5B": "my_cd_down"'
+    bind -x '"\e[1;5A": "my_cd_up"'
+    bind -x '"\e[1;5B": "my_cd_down"'
+
+else
+    bind '"\e[1;5A": "\C-e\C-ucd--\n"'
+    bind '"\e[1;5B": "\C-e\C-ucd++\n"'
+
+fi
 
 
 # =============================================================================
