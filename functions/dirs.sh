@@ -1,3 +1,3 @@
 dirs () {
-    builtin dirs | tr ' ' '\n' | tac
+    builtin dirs -p -v | sed 's/\t/ │ /' | tac
 }
