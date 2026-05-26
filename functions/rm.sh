@@ -2,6 +2,6 @@ rm () {
     if [ -t 0 ]; then
         /bin/rm "$@"
     else
-        xargs -I{} /bin/rm "$@" '{}'
+        tr '\n' '\0' | xargs -0 -I{} /bin/rm "$@" '{}'
     fi
 }
