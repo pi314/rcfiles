@@ -29,3 +29,5 @@ orange="\[${esc}[38;2;255;165;0m\]"
 newline=$'\n'
 K="\[${esc}[K\]"
 knewline="${K}${newline}"
+
+left="\[\e[D\]"

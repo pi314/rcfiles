@@ -5,10 +5,14 @@
 # so that the length of color codes will not be calculate by terminal
 
 _bar () {
+    # Somehow stupid workaround:
+    # if the full-height bar is not wrapped with \[\], first char is not displayed
+    # if the full-height bar is wrapped with \[\], ctrl-u eats one more char
+    local bar=".${left}\[┃\]"
     if [ "$1" = '0' ]; then
-        echo "${black}\[┃\]${end}"
+        echo "${black}${bar}${end}"
     else
-        echo "${red}\[┃\]${end}"
+        echo "${red}${bar}${end}"
     fi
 }
 
