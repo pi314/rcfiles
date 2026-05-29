@@ -28,10 +28,12 @@ highlight CursorLine                    ctermbg=236     cterm=NONE
 highlight CursorLineNr                  ctermbg=236     cterm=NONE
 highlight CursorColumn                  ctermbg=236     cterm=NONE
 
+highlight SignColumn    ctermbg=233
+
 highlight Special    guifg=Orange
 highlight Special    ctermfg=Red
 
-highlight Comment    guifg=#80a0ff
+highlight Comment    guifg=Cyan
 highlight Comment    ctermfg=Cyan
 
 highlight StatusLine guifg=Black        guibg=Grey      gui=bold
