@@ -42,9 +42,13 @@ keybind = cmd+down=csi:1;5B
 keybind = cmd+quote=text:\x27
 keybind = cmd+enter=text:\x0a
 
+# cmd+0 -> C-b 0 (tmux)
+keybind = cmd+0=text:\x020
+keybind = cmd+9=text:\x029
+
 # Mimic some key encoding of Kitty Keyboard Protocol (KKP)
 # https://github.com/ghostty-org/ghostty/discussions/5071
 # This isn't a problem in ghostty-tmux-zsh, only in ghostty-zsh
-keybind=ctrl+left_bracket=text:\x1b
-keybind=ctrl+i=text:\x09
-keybind=ctrl+m=text:\x0d
+keybind = ctrl+left_bracket=text:\x1b
+keybind = ctrl+i=text:\x09
+keybind = ctrl+m=text:\x0d
