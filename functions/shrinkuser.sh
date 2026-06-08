@@ -1,20 +1,17 @@
 shrinkuser () {
-    if [ -n "$1" ]; then
-        where="$1"
-    elif [ ! -t 0 ]; then
-        read where
+    if [ -t 0 ]; then
+        for var in "$@"; do
+            echo "$1"
+        done
     else
-        where=''
-    fi
-
-    if [ -z "${where}" ]; then
-        return 1
-    fi
-
-    if ! startswith "$where" "$HOME"; then
-        echo "$where"
-        return 1
-    fi
-
-    echo "~${where:${#HOME}}"
+        cat
+    fi | while read where; do
+        if [ -n "${where}" ]; then
+            if ! startswith "$where" "$HOME"; then
+                echo "$where"
+            else
+                echo "~${where:${#HOME}}"
+            fi
+        fi
+    done
 }
