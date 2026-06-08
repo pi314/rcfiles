@@ -1,0 +1,62 @@
+#!/usr/bin/env sh
+
+arg_slim=0
+arg_join=0
+
+help () {
+    murasaki="\033[38;5;135m"
+    nocolor="\033[m"
+    ps="${murasaki}"'$'"${nocolor}"
+    echo 'Usage:'
+    echo "$ps"' echop [-h|--help]'
+    echo "$ps"' echop [-s|--slim] [-j|--join] $VAR [$VAR ...]'
+    echo "$ps"' echo $VAR | echop [-s|--slim] [-j|--join]'
+}
+
+
+while true; do
+    if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+        help
+        exit
+    elif [ "$1" = '-s' ] || [ "$1" = '--slim' ]; then
+        arg_slim=1
+        shift
+    elif [ "$1" = '-j' ] || [ "$1" = '--join' ]; then
+        arg_join=1
+        shift
+    else
+        break
+    fi
+done
+
+if [ $arg_slim -ne 0 ]; then
+    slim () {
+        awk '$0 && !seen[$0]++'
+    }
+else
+    slim () {
+        cat
+    }
+fi
+
+if [ $arg_join -ne 0 ]; then
+    join_lines () {
+        awk '$0{ print (NR == 1 ? "" : ":") $0 }' | tr -d '\n'
+        echo
+    }
+else
+    join_lines () {
+        grep -v '^$'
+    }
+fi
+
+(
+    if [ -t 0 ]; then
+        for var in "$@"; do
+            echo "$1"
+        done
+
+    else
+        cat
+    fi
+) | tr ':' '\n' | slim | join_lines
