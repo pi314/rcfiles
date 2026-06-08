@@ -2,6 +2,8 @@ basename () {
     if [ -t 0 ]; then
         /usr/bin/basename "$@"
     else
-        xargs -I{} /usr/bin/basename '{}'
+        while IFS='' read -r line; do
+            /usr/bin/basename -- "$line"
+        done
     fi
 }
