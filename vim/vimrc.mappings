@@ -307,7 +307,7 @@ vnoremap ]] <nop>
 function! s:resize_mode ()
     let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l'}
     let l:cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
-    let l:statusline_usage = 'Resize: HJKL hjkl q <space>'
+    let l:statusline_usage = 'Resize: HJKL hjkl q C-e C-y <space>'
     let l:statusline_user = &l:statusline
     let l:cc = &colorcolumn
     call s:highlight_pane()
@@ -318,6 +318,8 @@ function! s:resize_mode ()
             let l:key = nr2char(getchar())
             if l:key == 'q' || l:key == 'Q' || l:key == ' '
                 break
+            elseif l:key == "\<C-E>" || l:key == "\<C-Y>"
+                exec 'normal! '. l:key
             elseif has_key(l:cmd_resize, l:key)
                 let l:winnr_cur = winnr()
                 if l:key == 'H' || l:key == 'L'
