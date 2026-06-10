@@ -304,55 +304,77 @@ vnoremap ]] <nop>
 
 
 " Resize window interactively
-function! s:resize_mode ()
-    let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l', "\<C-W>": 'w', 'w': 'w'}
-    let l:cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
-    let l:statusline_usage = 'Resize: HJKL hjkl q C-E C-Y <space>'
-    let l:statusline_user = &l:statusline
-    let l:cc = &colorcolumn
-    call s:highlight_pane()
-    let &l:statusline = l:statusline_usage
-    redrawstatus
+function! ResizeMode ()
+    let cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l', "\<C-W>": 'w', 'w': 'w'}
+    let cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
+    let prompt_msg = '[Resize] HJKL hjkl q Q C-E C-Y <space>'
+
+    let orig_options = ResizeModeFocusPane()
+
     try
         while 1
-            let l:key = nr2char(getchar())
-            if l:key == 'q' || l:key == 'Q' || l:key == ' '
-                break
-            elseif l:key == "\<C-E>" || l:key == "\<C-Y>"
-                exec 'normal! '. l:key
-            elseif has_key(l:cmd_resize, l:key)
-                let l:winnr_cur = winnr()
-                if l:key == 'H' || l:key == 'L'
-                    wincmd l
-                    let l:winnr_probe = winnr()
-                elseif l:key == 'J' || l:key == 'K'
-                    wincmd j
-                    let l:winnr_probe = winnr()
-                endif
-                execute l:winnr_cur .'wincmd w'
-                execute 'wincmd '. l:cmd_resize[(l:key)][(l:winnr_cur == l:winnr_probe)]
-                call s:highlight_pane()
-            elseif has_key(l:cmd_focus, l:key)
-                let &l:statusline = l:statusline_user
-                let &colorcolumn = l:cc
-                execute 'wincmd '. l:cmd_focus[(l:key)]
-                let &l:statusline = l:statusline_usage
-                let l:cc = &colorcolumn
-                call s:highlight_pane()
-            endif
             redraw
+            echo prompt_msg
+
+            let key = nr2char(getchar())
+            if key == 'q' || key == 'Q' || key == ' '
+                break
+
+            elseif key == "\<C-E>" || key == "\<C-Y>"
+                exec 'normal! '. key
+
+            elseif has_key(cmd_resize, key)
+                let winnr_cur = winnr()
+                if key == 'H' || key == 'L'
+                    wincmd l
+                    let winnr_probe = winnr()
+                elseif key == 'J' || key == 'K'
+                    wincmd j
+                    let winnr_probe = winnr()
+                endif
+                exec winnr_cur .'wincmd w'
+                exec 'wincmd '. cmd_resize[(key)][(winnr_cur == winnr_probe)]
+                call ResizeModeFocusPane()
+
+            elseif has_key(cmd_focus, key)
+                call ResizeModeRestoreOptions(orig_options)
+                exec 'wincmd '. cmd_focus[(key)]
+                let orig_options = ResizeModeFocusPane()
+            endif
         endwhile
     catch
     endtry
-    let &l:statusline = l:statusline_user
-    let &colorcolumn = l:cc
+
+    call ResizeModeRestoreOptions(orig_options)
+    redraw
+    echo
+endfunction
+
+function! ResizeModeFocusPane ()
+    let ret = {}
+
+    if exists('+winhighlight')
+        let ret['winhighlight'] = &l:winhighlight
+        let &l:winhighlight = 'Normal:ColorColumn'
+    else
+        let ret['colorcolumn'] = &l:colorcolumn
+        let &l:colorcolumn = join(range(1, winwidth(0)), ',')
+    endif
+
+    return ret
+endfunction
+
+function! ResizeModeRestoreOptions (options)
+    let &l:statusline = get(a:options, 'statusline', &l:statusline)
+    let &l:colorcolumn = get(a:options, 'colorcolumn', &l:colorcolumn)
+    let &l:winhighlight = get(a:options, 'winhighlight', &l:winhighlight)
 endfunction
 
 function! s:highlight_pane ()
     let &colorcolumn=join(range(1, winwidth(0)), ',')
 endfunction
 
-nnoremap <silent> <C-w><Space> :call <SID>resize_mode()<CR>
+nnoremap <silent> <C-w><Space> :call ResizeMode()<CR>
 
 
 " Handy shortcut to write/reload file
