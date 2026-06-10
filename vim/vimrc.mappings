@@ -305,9 +305,9 @@ vnoremap ]] <nop>
 
 " Resize window interactively
 function! s:resize_mode ()
-    let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l'}
+    let l:cmd_focus = {'h': 'h', 'j': 'j', 'k': 'k', 'l': 'l', "\<C-W>": 'w', 'w': 'w'}
     let l:cmd_resize = {'H': '<>', 'J': '+-', 'K': '-+', 'L': '><'}
-    let l:statusline_usage = 'Resize: HJKL hjkl q C-e C-y <space>'
+    let l:statusline_usage = 'Resize: HJKL hjkl q C-E C-Y <space>'
     let l:statusline_user = &l:statusline
     let l:cc = &colorcolumn
     call s:highlight_pane()
