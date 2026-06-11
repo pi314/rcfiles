@@ -42,6 +42,12 @@ keybind = cmd+down=csi:1;5B
 keybind = cmd+quote=text:\x27
 keybind = cmd+enter=text:\x0a
 
+keybind = shift+up=csi:1;5A
+keybind = shift+down=csi:1;5B
+
+keybind = cmd+left=csi:1~
+keybind = cmd+right=csi:4~
+
 # cmd+0 -> C-b 0 (tmux)
 keybind = cmd+0=text:\x020
 keybind = cmd+9=text:\x029
