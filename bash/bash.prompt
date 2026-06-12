@@ -201,4 +201,6 @@ hook_pre_prompt () {
     bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
 
     PS1="${p}${K}"
+
+    _prompt_cleared=0
 }
