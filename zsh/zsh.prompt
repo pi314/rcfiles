@@ -248,7 +248,11 @@ hook_pre_prompt () {
     fi
 
     PROMPT="${p}"
+
+    _prompt_cleared=0
 }
+
+_prompt_cleared=0
 
 
 _prompt_padding='2'
