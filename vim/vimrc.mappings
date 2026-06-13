@@ -65,10 +65,6 @@ command! Qa execute "qa!"
 command! QA execute "qa!"
 
 
-" WRITE!
-cnoremap w!! w !sudo tee %
-
-
 " open file in new tab
 nnoremap gF <C-w>gF
 

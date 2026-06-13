@@ -25,6 +25,9 @@ augroup fnamelinenum
 augroup END
 
 
+command! W w !sudo tee %
+
+
 function! ExpandFileListToTab ()
     if &buftype != 'nofile'
         return
