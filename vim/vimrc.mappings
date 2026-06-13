@@ -138,6 +138,16 @@ endfunction
 nnoremap <silent> <C-w>@ :call MyMappingMergeWindowFromNextTab()<CR>
 
 
+function! FocusLeftRightWindow (which)
+    exec 'wincmd ' . a:which
+    let winwidth = &columns * 3 / 4
+    exec string(winwidth) . 'wincmd |'
+endfunction
+
+nnoremap <silent> <C-W>[ :call FocusLeftRightWindow('h')<CR>
+nnoremap <silent> <C-W>] :call FocusLeftRightWindow('l')<CR>
+
+
 " =============================================================================
 " Handy function to toggle all window in all tabs
 " -----------------------------------------------------------------------------
