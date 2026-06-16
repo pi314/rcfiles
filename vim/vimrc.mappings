@@ -385,12 +385,12 @@ nnoremap <silent> <C-w><Space> :call ResizeMode()<CR>
 
 " Handy shortcut to write/reload file
 function! MyMappingSaveOrReload ()
-    if &buftype == 'nofile'
+    if &filetype == 'nerdtree'
+        call feedkeys('R')
         return
     endif
 
-    if &filetype == 'nerdtree'
-        call feedkeys('R')
+    if &buftype == 'nofile'
         return
     endif
 
