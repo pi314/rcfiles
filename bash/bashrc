@@ -75,28 +75,28 @@ if [ ${BASH_VERSINFO[0]}${BASH_VERSINFO[1]} -gt 43 ]; then
         READLINE_POINT="$READLINE_POINT_OLD"
     }
 
-    function redraw_ps1 () {
+    function reeval_ps1 () {
         local drift="\e[$(( ${bash_prompt_lines} - 1 ))A\r"
         hook_pre_prompt $_lcs
-        printf "${drift}${PS1@P}\r\033[K"
+        printf "${drift}${PS1@P}\r\e[K"
     }
 
     function my_cd_up () {
-        printf "\033[?25l"
+        printf "\e[?25l"
         store_readline
         cd-- >/dev/null
-        redraw_ps1
+        reeval_ps1
         restore_readline
-        printf "\033[?25h"
+        printf "\e[?25h"
     }
 
     function my_cd_down () {
-        printf "\033[?25l"
+        printf "\e[?25l"
         store_readline
         cd++ >/dev/null
-        redraw_ps1
+        reeval_ps1
         restore_readline
-        printf "\033[?25h"
+        printf "\e[?25h"
     }
 
     bind -x '"\e[1;5A": "my_cd_up"'
@@ -104,20 +104,12 @@ if [ ${BASH_VERSINFO[0]}${BASH_VERSINFO[1]} -gt 43 ]; then
 
 
     function my_smart_clear () {
-        if [ $_prompt_cleared -eq 2 ]; then
-            redraw_ps1
-        elif [ $_prompt_cleared -eq 1 ]; then
-            clear
-            last_cmd_elapsed_time_ind=''
-            redraw_ps1
-            _prompt_cleared=2
-        elif [ $_prompt_cleared -eq 0 ]; then
-            clear
-            redraw_ps1
-            _prompt_cleared=1
+        clear
+        if [ $_prompt_cleared -ne 0 ]; then
+            PS1="${PS1_BODY}"
         fi
-        # store_readline
-        # restore_readline
+        printf "${PS1@P}\r\e[K"
+        _prompt_cleared=1
     }
 
     bind -x '"\C-l": "my_smart_clear"'

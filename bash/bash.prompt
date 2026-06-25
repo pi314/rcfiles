@@ -159,6 +159,7 @@ hook_post_cmd () {
 }
 
 
+PS1_BODY=''
 hook_pre_prompt () {
     bar="$(_bar $1)"
 
@@ -180,27 +181,28 @@ hook_pre_prompt () {
     local uid_str='\$'
 
     # start to compose prompt string
-    local p=''
+    local PS1_LCE=''
+    PS1_BODY=''
     bash_prompt_lines=1
 
     # last command elapsed time
     if [ -n "${last_cmd_elapsed_time_ind}" ]; then
-        p="${knewline}"
-        p="${p}${last_cmd_elapsed_time_ind}${knewline}"
+        PS1_LCE="${knewline}"
+        PS1_LCE="${PS1_LCE}${last_cmd_elapsed_time_ind}${knewline}"
         bash_prompt_lines=$(( $bash_prompt_lines + 2 ))
     fi
 
     if [ -n "${vg}" ] ; then
-        p="${p}${bar}${vg}${knewline}"
+        PS1_BODY="${PS1_BODY}${bar}${vg}${knewline}"
         bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
     fi
 
-    p="${p}${bar}${date_str}$(_cwd_ind)${jobs_str}${bash_version_str}${knewline}"
-    p="${p}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
+    PS1_BODY="${PS1_BODY}${bar}${date_str}$(_cwd_ind)${jobs_str}${bash_version_str}${knewline}"
+    PS1_BODY="${PS1_BODY}${bar}${time_str}${uname_str}${at_str}${hostname_str}${uid_str} "
 
     bash_prompt_lines=$(( $bash_prompt_lines + 1 ))
 
-    PS1="${p}${K}"
+    PS1="${PS1_LCE}${PS1_BODY}${K}"
 
     _prompt_cleared=0
 }
