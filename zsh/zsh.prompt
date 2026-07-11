@@ -177,22 +177,43 @@ hook_post_cmd () {
 }
 
 
+vi_mode () {
+    case "$KEYMAP" in
+        (vicmd) echo vicmd;;
+
+        (viins|main|)
+            if [[ "$ZLE_STATE" = *'overwrite'* ]]; then
+                echo replace
+            else
+                echo viins
+            fi
+            ;;
+
+        (*) echo "${KEYMAP}";;
+    esac
+}
+
+
 hook_pre_prompt () {
     today=$(date "+%Y%m%d")
 
     # vim mode and zsh version info
     local vim_mode_str=''
-    case "${KEYMAP}" in
+    case "$(vi_mode)" in
         (vicmd)
-            vim_mode_str="${cyan}:zsh$ZSH_VERSION:${nocolor}"
+            vim_mode_str="${cyan}[vicmd]${nocolor}"
             ;;
 
-        (viins|main|)
-            if [[ "$ZLE_STATE" = *'overwrite'* ]]; then
-                vim_mode_str="${murasaki}[zsh$ZSH_VERSION]${nocolor}"
+        (viins)
+            if [ "$_prompt_mode" = 'short' ] ; then
+                vim_mode_str=''
             else
                 vim_mode_str="${black}[zsh$ZSH_VERSION]${nocolor}"
             fi
+            ;;
+
+        (replace)
+            vim_mode_str="${murasaki}[replace]${nocolor}"
             ;;
     esac
 
