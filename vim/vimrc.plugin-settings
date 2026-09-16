@@ -62,7 +62,8 @@ function! s:git_gutter_diff()
     let b:git_gutter_associate_file = thisfile
     wincmd p
 endfunction
-nnoremap ,d :call <SID>git_gutter_diff()<CR>zz
+
+nnoremap ,gd :call <SID>git_gutter_diff()<CR>zz
 
 highlight SignColumn                ctermbg=0
 highlight GitGutterAdd    ctermfg=2 ctermbg=0
